@@ -63,7 +63,7 @@ type Framer[E] = Function1[immutable.Map[E,Any],untemplate.Result[D24nMetadata]]
 
 object Frame:
   object Input:
-    case class Main( mainContentHtml : String)
+    case class Main( mainContentHtml : String )
     case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant)
 type Frame[E] = Function1[E,untemplate.Result[D24nMetadata]]
 
@@ -198,7 +198,10 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
     val entry = Entry(info.mediaPath, MainSite)
     val result = untemplate( entry )
     val renderResult = renderer(result)
-    ???
+    val articleFrameInput = Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate)
+    val articleResult = frame_article_html(articleFrameInput)
+    val mainFrameInput = Frame.Input.Main( articleResult.text )
+    frame_main_html(mainFrameInput).text
 
 
 
