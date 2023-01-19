@@ -1,11 +1,14 @@
 package org.d24n.site
 
 import scala.collection.*
+import scala.util.Properties.{lineSeparator => LineSep}
+
 import java.time.*
 import java.time.format.DateTimeFormatter.{ISO_INSTANT, ISO_LOCAL_DATE}
 import java.time.temporal.ChronoField
 import java.nio.file.Path as JPath
 import com.mchange.sc.v3.failable.*
+import untemplate.Result
 
 import unstatic.*
 
@@ -64,7 +67,7 @@ type Framer[E] = Function1[immutable.Map[E,Any],untemplate.Result[D24nMetadata]]
 object Frame:
   object Input:
     case class Main( mainContentHtml : String )
-    case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant)
+    case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, presentationMultiple : Boolean)
 type Frame[E] = Function1[E,untemplate.Result[D24nMetadata]]
 
 
@@ -87,6 +90,8 @@ trait Site:
 
   def mbStaticResources : Option[JPath]
 
+  def siteRoot = serverUrl.resolve( basePath )
+
   //def serverRootPath( fromSiteRootPath : RelPath ) : RelPath = RelPath("/").resolve( serverUrl.relativize( sitePath.resolve( fromSiteRootPath ) ) )
   def serverRootPath( fromSiteRootPath : RelPath ) : RelPath = RelPath("/").resolve( basePath ).resolve( fromSiteRootPath )
 
@@ -94,13 +99,24 @@ trait Site:
 //       Build a Warned monad that collects warnings along the path
 trait Blog[S <: Site, M]:
   object Entry:
-    final case class Info(mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, contentType : String, mediaPath : RelPath, permalinkSiteRootPath : RelPath)
-  final case class Entry(mediaPath : RelPath, site : S)
+    final case class Info (
+      mbTitle : Option[String],
+      authors : Seq[String],
+      tags : Seq[String],
+      pubDate : Instant,
+      contentType : String,
+      mediaPath : RelPath,
+      permalinkSiteRootPath : RelPath
+    )
+    object Resolved:
+      given Ordering[Resolved] = Ordering.by( (r : Resolved) => (r.info.pubDate, r.untemplate.UntemplatePackage, r.untemplate.UntemplateName) ).reverse
+    final case class Resolved( untemplate : Blog.this.Untemplate, info : Entry.Info )
+  final case class Entry(mediaPathSiteRoot : RelPath, presentationMultiple : Boolean, site : S)
   type Untemplate = untemplate.Untemplate[Entry,M]
-  def untemplates                                    : immutable.Vector[Untemplate]
-  def entryInfo( template : Untemplate )             : Entry.Info
-  def renderSingle( template : Untemplate )          : String
-  // def renderLast( num : Int )                        : String
+  def untemplates                                                               : immutable.Vector[Untemplate]
+  def entryInfo( template : Untemplate )                                        : Entry.Info
+  def renderSingle( template : Entry.Resolved, presentationMultiple : Boolean ) : String
+  def renderLast( num : Int )                                                   : String
   // def renderRange( from : Instant, until : Instant ) : String
 
   // def renderSince( moment : Instant ) : String = renderRange( moment, Instant.now )
@@ -133,8 +149,12 @@ val MainSite : D24nSite = ???
 val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
   val rawTemplates = Untemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }
   val untemplates = rawTemplates.map( _.asInstanceOf[this.Untemplate] ).toVector
+
+  // reverse-chronological!
+  val resolveds = untemplates.map( ut => Entry.Resolved(ut, entryInfo(ut)) ).to(immutable.SortedSet)
+
   def entryInfo( untemplate : this.Untemplate ) =
-    val attrsLc = untemplate.UntemplateAttributes.map { case (k, v) => (k.toLowerCase, v) }.toMap
+    val attrsLc = untemplate.UntemplateAttributes.map { case (k, v) => (k.toLowerCase, v) }
     def getMaybeMultiple(keySingular : String) : Seq[String] =
       attrsLc.get(keySingular + "s") match
         case Some(seq: Seq[_]) => seq.map( _.toString ) // to avoid unchecked Seq[String] match
@@ -192,16 +212,28 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
     val (mediaPathStr, permalinkSiteRootPathStr) = mediaPathPermalink(pubDate, mbTitle.getOrElse("Untitled Post"))
     Entry.Info(mbTitle, authors, tags, pubDate, contentType, RelPath(mediaPathStr), RelPath(permalinkSiteRootPathStr))
 
-  def renderSingle( untemplate : Untemplate ) : String =
-    val info = entryInfo(untemplate)
-    val renderer = ContentRendererForContentType(info.contentType)
-    val entry = Entry(info.mediaPath, MainSite)
-    val result = untemplate( entry )
-    val renderResult = renderer(result)
-    val articleFrameInput = Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate)
-    val articleResult = frame_article_html(articleFrameInput)
-    val mainFrameInput = Frame.Input.Main( articleResult.text )
+  private def mainFrame( fragmentText : String ) : String =
+    val mainFrameInput = Frame.Input.Main(fragmentText)
     frame_main_html(mainFrameInput).text
+
+  private def renderSingleFragment( resolved : Entry.Resolved, presentationMultiple : Boolean ) : untemplate.Result[D24nMetadata] =
+    val Entry.Resolved(untemplate, info) = resolved
+    val renderer = ContentRendererForContentType(info.contentType)
+    val entry = Entry(info.mediaPath, presentationMultiple, MainSite)
+    val result = untemplate(entry)
+    val renderResult = renderer(result)
+    val articleFrameInput = Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, presentationMultiple)
+    frame_article_html(articleFrameInput)
+
+  def renderSingle( resolved : Entry.Resolved, presentationMultiple : Boolean ) : String =
+    val articleResult = renderSingleFragment( resolved, presentationMultiple )
+    mainFrame( articleResult.text )
+
+  def renderLast( num : Int ) : String =
+    val rs = resolveds.take(num)
+    val fragmentTexts = rs.map( resolved => renderSingleFragment( resolved, true).text )
+    val unifiedFragmentText = fragmentTexts.mkString(LineSep)
+    mainFrame( unifiedFragmentText )
 
 
 
