@@ -117,9 +117,9 @@ trait Blog[S <: Site, M]:
   def entryInfo( template : Untemplate )                                        : Entry.Info
   def renderSingle( template : Entry.Resolved, presentationMultiple : Boolean ) : String
   def renderLast( num : Int )                                                   : String
-  // def renderRange( from : Instant, until : Instant ) : String
+  def renderRange( from : Instant, until : Instant ) : String
 
-  // def renderSince( moment : Instant ) : String = renderRange( moment, Instant.now )
+  def renderSince( moment : Instant ) : String = renderRange( moment, Instant.now )
 
 object D24nSite:
   class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
@@ -229,11 +229,20 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
     val articleResult = renderSingleFragment( resolved, presentationMultiple )
     mainFrame( articleResult.text )
 
+  private def renderResolveds( ssr : immutable.SortedSet[Entry.Resolved] ) : String =
+    val fragmentTexts = ssr.map(resolved => renderSingleFragment(resolved, true).text)
+    val unifiedFragmentText = fragmentTexts.mkString(LineSep)
+    mainFrame(unifiedFragmentText)
+
   def renderLast( num : Int ) : String =
     val rs = resolveds.take(num)
-    val fragmentTexts = rs.map( resolved => renderSingleFragment( resolved, true).text )
-    val unifiedFragmentText = fragmentTexts.mkString(LineSep)
-    mainFrame( unifiedFragmentText )
+    renderResolveds( rs )
+
+  def renderRange( from : Instant, until : Instant ) : String =
+    val ordering = summon[Ordering[Instant]]
+    val rs = resolveds.filter( r => ordering.gteq(from,r.info.pubDate) && ordering.lt(r.info.pubDate, until) )
+    renderResolveds( rs )
+
 
 
 
