@@ -95,6 +95,7 @@ trait Site:
   //def serverRootPath( fromSiteRootPath : RelPath ) : RelPath = RelPath("/").resolve( serverUrl.relativize( sitePath.resolve( fromSiteRootPath ) ) )
   def serverRootPath( fromSiteRootPath : RelPath ) : RelPath = RelPath("/").resolve( basePath ).resolve( fromSiteRootPath )
 
+
 // TODO: Generalize Entry.Info type
 //       Build a Warned monad that collects warnings along the path
 trait Blog[S <: Site, M]:
@@ -121,6 +122,8 @@ trait Blog[S <: Site, M]:
 
   def renderSince( moment : Instant ) : String = renderRange( moment, Instant.now )
 
+  def endpointBindings : immutable.Set[AgnosticEndpointBinding[_,_,_,_,_]]
+
 object D24nSite:
   class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
 case class D24nSite (
@@ -142,7 +145,7 @@ private val ToDashChar = immutable.Set(' ','-')
 private val isWordChar = Character.isJavaIdentifierPart
 
 def inLinkTitle( title : String ) =
-  title.toLowerCase.filter( c => isWordChar(c) || ToDashChar(c) ).map( c => if ToDashChar(c) then '-' else c )
+  title.toLowerCase.filter( c => isWordChar(c) || ToDashChar(c) ).map( (c : Char) => if ToDashChar(c) then '-' else c )
 
 val MainSite : D24nSite = ???
 
@@ -242,6 +245,21 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
     val ordering = summon[Ordering[Instant]]
     val rs = resolveds.filter( r => ordering.gteq(from,r.info.pubDate) && ordering.lt(r.info.pubDate, until) )
     renderResolveds( rs )
+
+  def endpointBindings : immutable.Set[AgnosticEndpointBinding[_,_,_,_,_]] =
+    val endpointsFunctions =
+      resolveds.to(List)
+        .map { r =>
+          Tuple2(
+            endpointForFixedPath[Unit, Unit, Unit, String, Any](r.info.permalinkSiteRootPath),
+            (_: Unit) => renderSingle(r, false)
+          )
+        }
+    val fgaebs = endpointsFunctions.map(tup => FileGenerableAgnosticEndpointBinding(tup(0),tup(1)))
+    immutable.Set(
+      FileGenerableAgnosticEndpointBinding(RootEndpoint, _ => renderLast(10))
+    ) ++ fgaebs
+
 
 
 

@@ -14,6 +14,7 @@ import untemplate.mill._
 object Dependency {
   val Unstatic = ivy"com.mchange::unstatic:0.0.1-SNAPSHOT"
   val Failable = ivy"com.mchange::failable:0.0.6"
+  val Tapir    = ivy"com.softwaremill.sttp.tapir::tapir-core:1.2.6"
 }
 
 object d24n extends UntemplateModule {
@@ -40,7 +41,7 @@ object d24n extends UntemplateModule {
     out
   }
 
-  override def ivyDeps = T{ super.ivyDeps() ++ Agg(Dependency.Unstatic, Dependency.Failable)}
+  override def ivyDeps = T{ super.ivyDeps() ++ Agg(Dependency.Unstatic, Dependency.Failable, Dependency.Tapir)}
 }
 
 
