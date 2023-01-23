@@ -10,7 +10,7 @@ import java.nio.file.Path as JPath
 import com.mchange.sc.v3.failable.*
 import untemplate.Result
 
-import unstatic.*
+import unstatic.UrlPath.*
 
 /*
 enum ContentType( val mimeType : String ):
@@ -84,16 +84,16 @@ val ContentRendererForContentType = immutable.Map[String,ContentRenderer] (
 // don't forget a compose template
 
 trait Site:
-  def serverUrl : AbsPath
-  def basePath  : RelPath
-  def sitePath  : AbsPath = serverUrl.resolve(basePath)
+  def serverUrl : Abs
+  def basePath  : Rooted
+  def sitePath  : Abs = serverUrl.reroot(basePath)
 
   def mbStaticResources : Option[JPath]
 
-  def siteRoot = serverUrl.resolve( basePath )
+  def siteRoot = serverUrl.reroot( basePath )
 
   //def serverRootPath( fromSiteRootPath : RelPath ) : RelPath = RelPath("/").resolve( serverUrl.relativize( sitePath.resolve( fromSiteRootPath ) ) )
-  def serverRootPath( fromSiteRootPath : RelPath ) : RelPath = RelPath("/").resolve( basePath ).resolve( fromSiteRootPath )
+  def serverRootedPath( fromSiteRootedPath : Rooted ) : Rooted = basePath.reroot( fromSiteRootedPath )
 
 
 // TODO: Generalize Entry.Info type
@@ -106,13 +106,13 @@ trait Blog[S <: Site, M]:
       tags : Seq[String],
       pubDate : Instant,
       contentType : String,
-      mediaPath : RelPath,
-      permalinkSiteRootPath : RelPath
+      mediaPath : Rooted, // from Site root
+      permalinkSiteRootedPath : Rooted // from SiteRoot
     )
     object Resolved:
       given Ordering[Resolved] = Ordering.by( (r : Resolved) => (r.info.pubDate, r.untemplate.UntemplatePackage, r.untemplate.UntemplateName) ).reverse
     final case class Resolved( untemplate : Blog.this.Untemplate, info : Entry.Info )
-  final case class Entry(mediaPathSiteRoot : RelPath, presentationMultiple : Boolean, site : S)
+  final case class Entry(mediaPathSiteRooted : Rooted, presentationMultiple : Boolean, site : S)
   type Untemplate = untemplate.Untemplate[Entry,M]
   def untemplates                                                               : immutable.Vector[Untemplate]
   def entryInfo( template : Untemplate )                                        : Entry.Info
@@ -127,18 +127,18 @@ trait Blog[S <: Site, M]:
 object D24nSite:
   class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
 case class D24nSite (
-  val serverUrl         : AbsPath,
-  val basePath          : RelPath,
+  val serverUrl         : Abs,
+  val basePath          : Rooted,
   val mbStaticResources : Option[JPath]
 ) extends Site:
   object Link:
-    enum Inside(siteRootPath : RelPath):
-      def serverRootPath = D24nSite.this.serverRootPath(siteRootPath)
-      case Home extends Inside( RelPath("/") )
-      case AboutUs extends Inside( RelPath("/about-us/") )
-      case Donate extends Inside( RelPath("/donate/") )
-    enum Outside( url : AbsPath ):
-      case Apply extends Outside( AbsPath("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
+    enum Inside(siteRootedPath : Rooted):
+      def serverRootedPath = D24nSite.this.serverRootedPath(siteRootedPath)
+      case Home extends Inside( Rooted("/") )
+      case AboutUs extends Inside( Rooted("/about-us/") )
+      case Donate extends Inside( Rooted("/donate/") )
+    enum Outside( url : Abs ):
+      case Apply extends Outside( Abs("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
 
 private val ToDashChar = immutable.Set(' ','-')
@@ -147,10 +147,10 @@ private val isWordChar = Character.isJavaIdentifierPart
 def inLinkTitle( title : String ) =
   title.toLowerCase.filter( c => isWordChar(c) || ToDashChar(c) ).map( (c : Char) => if ToDashChar(c) then '-' else c )
 
-val MainSite : D24nSite = ???
+val MainSite : D24nSite = new D24nSite(Abs("https://d24n.org/"), Rooted.root, None )
 
 val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
-  val rawTemplates = Untemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }
+  val rawTemplates = Untemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
   val untemplates = rawTemplates.map( _.asInstanceOf[this.Untemplate] ).toVector
 
   // reverse-chronological!
@@ -195,9 +195,10 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
         None
 
     def mediaPathPermalink( pubDate : Instant, title : String ) : (String, String) =
-      val year  = pubDate.get(ChronoField.YEAR)
-      val month = pubDate.get(ChronoField.MONTH_OF_YEAR)
-      val day   = pubDate.get(ChronoField.DAY_OF_MONTH)
+      val zoned = pubDate.atZone(ZoneId.systemDefault())
+      val year  = zoned.get(ChronoField.YEAR)
+      val month = zoned.get(ChronoField.MONTH_OF_YEAR)
+      val day   = zoned.get(ChronoField.DAY_OF_MONTH)
       val mediaPath = f"/$year%d/$month%2d/$day%2d/${inLinkTitle(title)}%s/"
       ( mediaPath, mediaPath + "index.html" )
 
@@ -212,8 +213,8 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
         case None                       => throw new D24nSite.Exception(s"PubDate or PublicationDate attribute required, not found.")
     val contentType =
       (attrsLc.get("content-type").map( _.toString ) orElse contentTypeFromSuffix(untemplate.UntemplateName)).getOrElse("text/plain")
-    val (mediaPathStr, permalinkSiteRootPathStr) = mediaPathPermalink(pubDate, mbTitle.getOrElse("Untitled Post"))
-    Entry.Info(mbTitle, authors, tags, pubDate, contentType, RelPath(mediaPathStr), RelPath(permalinkSiteRootPathStr))
+    val (mediaPathStr, permalinkSiteRootedPathStr) = mediaPathPermalink(pubDate, mbTitle.getOrElse("Untitled Post"))
+    Entry.Info(mbTitle, authors, tags, pubDate, contentType, Rooted(mediaPathStr), Rooted(permalinkSiteRootedPathStr))
 
   private def mainFrame( fragmentText : String ) : String =
     val mainFrameInput = Frame.Input.Main(fragmentText)
@@ -246,18 +247,18 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
     val rs = resolveds.filter( r => ordering.gteq(from,r.info.pubDate) && ordering.lt(r.info.pubDate, until) )
     renderResolveds( rs )
 
-  def endpointBindings : immutable.Set[AgnosticEndpointBinding[_,_,_,_,_]] =
+  def endpointBindings : immutable.Set[AgnosticEndpointBinding[_, _, _, _, _]] =
     val endpointsFunctions =
       resolveds.to(List)
         .map { r =>
           Tuple2(
-            endpointForFixedPath[Unit, Unit, Unit, String, Any](r.info.permalinkSiteRootPath),
+            endpointForFixedPath(r.info.permalinkSiteRootedPath),
             (_: Unit) => renderSingle(r, false)
           )
         }
-    val fgaebs = endpointsFunctions.map(tup => FileGenerableAgnosticEndpointBinding(tup(0),tup(1)))
+    val fgaebs = endpointsFunctions.map(tup => AgnosticEndpointBinding[Unit, Unit, Unit, String, Any](tup(0),tup(1)))
     immutable.Set(
-      FileGenerableAgnosticEndpointBinding(RootEndpoint, _ => renderLast(10))
+      AgnosticEndpointBinding[Unit, Unit, Unit, String, Any](RootEndpoint, _ => renderLast(10))
     ) ++ fgaebs
 
 
