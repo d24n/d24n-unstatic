@@ -147,8 +147,6 @@ case class D24nSite (
 
   val bindingSources = immutable.Seq( MainBlog )
 
-  println(s"""bindingSources: ${bindingSources.mkString("  ")}""")
-
   def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]] = bindingSources.flatMap( _.endpointBindings )
 
 private val ToDashChar = immutable.Set(' ','-')
@@ -258,12 +256,11 @@ class TopBlog( mainSite : D24nSite) extends Blog[D24nSite,D24nMetadata]:
     renderResolveds( rs )
 
   def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]] =
-    Vector( Rooted("/test-start.txt") -> publicReadOnlyHtmlEndpoint( Rooted("/test-start.txt"), mainSite, ZIO.attempt("Test start succeeded") ) ) ++
-    resolveds.to(Vector)
+    val permalinks =  resolveds.to(Vector)
       .map { r =>
-          r.info.permalinkSiteRootedPath -> publicReadOnlyHtmlEndpoint(r.info.permalinkSiteRootedPath, mainSite, ZIO.attempt( renderSingle(r, false)))
-      } ++ Vector( Rooted.root -> publicReadOnlyHtmlEndpoint( Rooted.root, mainSite, ZIO.attempt( renderLast(10) ) ) ) ++
-      Vector( Rooted("/test-end.txt") -> publicReadOnlyHtmlEndpoint( Rooted("/test-end.txt"), mainSite, ZIO.attempt("Test end succeeded") ) )
+        publicReadOnlyHtmlEndpointBinding(r.info.permalinkSiteRootedPath, mainSite, ZIO.attempt( renderSingle(r, false)))
+      }
+    permalinks :+ publicReadOnlyHtmlEndpointBinding( Rooted.root, mainSite, ZIO.attempt( renderLast(10) ) )
 
 
 

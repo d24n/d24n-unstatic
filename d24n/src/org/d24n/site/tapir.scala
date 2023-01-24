@@ -9,8 +9,6 @@ import sttp.tapir.server.ServerEndpoint
 import unstatic.UrlPath.*
 import zio.*
 
-val RootEndpoint = endpoint.get
-
 private def endpointForFixedPath( siteRootedPath : Rooted ) : Endpoint[Unit, Unit, Unit, Unit, Any] =
   if (siteRootedPath == Rooted.root) then
     endpoint.get.in("")
@@ -23,19 +21,21 @@ type ZTServerEndpoint = ZServerEndpoint[Any,Any] //ServerEndpoint[Any,[t] =>> ZI
 trait ZTServerEndpointSource:
   def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
 
+def publicReadOnlyHtmlEndpointBinding( siteRootedPath: Rooted, site : Site, task: zio.Task[String] ) : ( Rooted, ZServerEndpoint[Any,Any] ) =
+  siteRootedPath -> publicReadOnlyHtmlEndpoint( siteRootedPath, site, task )
+
 def publicReadOnlyHtmlEndpoint( siteRootedPath: Rooted, site : Site, task: zio.Task[String] ) : ZServerEndpoint[Any,Any] =
   // XXX: Should I do something to break harder on non-nonFatal errors?
   val errMappedTask = task.mapError { t =>
-    // import java.io.*
-    // val sw = new StringWriter()
-    // t.printStackTrace(new PrintWriter(sw))
-    // sw.toString()
-    ()
+    import java.io.*
+    val sw = new StringWriter()
+    t.printStackTrace(new PrintWriter(sw))
+    sw.toString()
   }
   val endpoint =
     endpointForFixedPath(siteRootedPath.reroot(site.basePath))
-      //.errorOut(stringBody)
-      //.out(header(Header.contentType(MediaType.TextHtml)))
+      .errorOut(stringBody)
+      .out(header(Header.contentType(MediaType.TextHtml)))
       .out(stringBody)
   endpoint.zServerLogic( _ => errMappedTask )
 
