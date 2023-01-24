@@ -11,10 +11,14 @@ import $file.buildCompilationSettings
 import $ivy.`com.mchange::untemplate-mill:0.0.2`
 import untemplate.mill._
 
+val TapirVersion = "1.2.6"
+
 object Dependency {
-  val Unstatic = ivy"com.mchange::unstatic:0.0.1-SNAPSHOT"
-  val Failable = ivy"com.mchange::failable:0.0.6"
-  val Tapir    = ivy"com.softwaremill.sttp.tapir::tapir-core:1.2.6"
+  val Unstatic             = ivy"com.mchange::unstatic:0.0.1-SNAPSHOT"
+  val Failable             = ivy"com.mchange::failable:0.0.6"
+  //val Tapir              = ivy"com.softwaremill.sttp.tapir::tapir-core:${TapirVersion}"
+  val TapirZio             = ivy"com.softwaremill.sttp.tapir::tapir-zio:${TapirVersion}"
+  val TapirZioHttpServer   = ivy"com.softwaremill.sttp.tapir::tapir-zio-http-server:${TapirVersion}"
 }
 
 object d24n extends UntemplateModule {
@@ -41,7 +45,15 @@ object d24n extends UntemplateModule {
     out
   }
 
-  override def ivyDeps = T{ super.ivyDeps() ++ Agg(Dependency.Unstatic, Dependency.Failable, Dependency.Tapir)}
+  override def ivyDeps = T {
+    super.ivyDeps() ++
+      Agg (
+        Dependency.Unstatic,
+        Dependency.Failable,
+        Dependency.TapirZio,
+        Dependency.TapirZioHttpServer,
+      )
+  }
 }
 
 

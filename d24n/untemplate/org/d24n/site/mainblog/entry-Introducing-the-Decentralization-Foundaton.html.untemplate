@@ -5,7 +5,7 @@
 >   "Permalink" -> "2019/03/15/intro-d24n/index.html"
 > )
 
-(entry : MainBlog.Entry)[]~()>
+(entry : MainSite.MainBlog.Entry)[]~()>
 
 <p><strong>Update on 8 Apr 2019</strong>: We received our 501(c)(3) <a href="https://d24n.org/wp-content/uploads/2021/09/417a2-501c3approval.pdf">approval letter</a> today! This allows tax-deductible <a href="https://d24n.org/donate/">donations</a> from US taxpayers. It is an important step for the foundation.</p>
 <p><strong>Original post:</strong> We are pleased to announce the launch of the Decentralization Foundation, with a mission of promoting decentralizing technology, educating the world on its potential, and funding relevant scientific research.  The foundation will raise donations and fund projects and communities that are consistent with the mission.</p>

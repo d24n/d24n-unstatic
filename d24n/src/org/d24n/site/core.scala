@@ -10,13 +10,14 @@ import java.nio.file.Path as JPath
 import com.mchange.sc.v3.failable.*
 import untemplate.Result
 
+import zio.*
+
 import unstatic.UrlPath.*
 
-/*
-enum ContentType( val mimeType : String ):
-  case Html extends ContentType("text/html")
-  case Markdown extends ContentType("text/markdown")
-*/
+//enum ContentType( val mimeType : String ):
+//  case Html extends ContentType("text/html")
+//  case Markdown extends ContentType("text/markdown")
+
 
 
 // case class Page[S <: Site]( mainContentHtml : String, relPath : String, site : S )
@@ -38,31 +39,31 @@ type ContentRenderer =
 // type Framer = // input contentType should be text/html, isEmbeddable should be true
 //   Function1[untemplate.Result[D24nMetadata], untemplate.Result[D24nMetadata]]
 
-/*
-enum FrameElement:
-  case MainContent extends FrameElement
-  case ArticleContent extends FrameElement // combine content, title, other metadata into a case class for framing?
-  case ArticleTitle extends FrameElement
 
-case class FrameInput( elems : immutable.Map[FrameElement,String], location : RelPath, site : Site )
+//enum FrameElement:
+//  case MainContent extends FrameElement
+//  case ArticleContent extends FrameElement // combine content, title, other metadata into a case class for framing?
+//  case ArticleTitle extends FrameElement
+//
+//case class FrameInput( elems : immutable.Map[FrameElement,String], location : RelPath, site : Site )
+//
+//object Framer:
+//  object Main:
+//    enum Key:
+//      case Content extends Key
+//    val Function : Framer[Framer.Main.Key] = main_frame_html
+//  object Article:
+//    enum Key:
+//      case Title extends Key    // String
+//      case Authors extends Key  // Seq[String]
+//      case PubDate extends Key  // ISO_INSTANCE
+//      case Tags extends Key     // Seq[String]
+//    val Function = ???
+//  object Articles:
+//    val Function = ???
+//
+//type Framer[E] = Function1[immutable.Map[E,Any],untemplate.Result[D24nMetadata]]
 
-object Framer:
-  object Main:
-    enum Key:
-      case Content extends Key
-    val Function : Framer[Framer.Main.Key] = main_frame_html
-  object Article:
-    enum Key:
-      case Title extends Key    // String
-      case Authors extends Key  // Seq[String]
-      case PubDate extends Key  // ISO_INSTANCE
-      case Tags extends Key     // Seq[String]
-    val Function = ???
-  object Articles:
-    val Function = ???
-
-type Framer[E] = Function1[immutable.Map[E,Any],untemplate.Result[D24nMetadata]]
-*/
 
 object Frame:
   object Input:
@@ -83,10 +84,7 @@ val ContentRendererForContentType = immutable.Map[String,ContentRenderer] (
 
 // don't forget a compose template
 
-trait EndpointBindingSource:
-  def endpointBindings : immutable.Seq[AgnosticEndpointBinding[_,_,_,_,_]]
-
-trait Site extends EndpointBindingSource:
+trait Site extends ZTServerEndpointSource:
   def serverUrl : Abs
   def basePath  : Rooted
   def sitePath  : Abs = serverUrl.reroot(basePath)
@@ -98,12 +96,12 @@ trait Site extends EndpointBindingSource:
   //def serverRootPath( fromSiteRootPath : RelPath ) : RelPath = RelPath("/").resolve( serverUrl.relativize( sitePath.resolve( fromSiteRootPath ) ) )
   def serverRootedPath( fromSiteRootedPath : Rooted ) : Rooted = basePath.reroot( fromSiteRootedPath )
 
-  def endpointBindings : immutable.Seq[AgnosticEndpointBinding[_,_,_,_,_]]
-
+  // Keys are site-rooted, but endpoints are server rooted!
+  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
 
 // TODO: Generalize Entry.Info type
 //       Build a Warned monad that collects warnings along the path
-trait Blog[S <: Site, M] extends EndpointBindingSource:
+trait Blog[S <: Site, M] extends ZTServerEndpointSource:
   object Entry:
     final case class Info (
       mbTitle : Option[String],
@@ -127,15 +125,14 @@ trait Blog[S <: Site, M] extends EndpointBindingSource:
 
   def renderSince( moment : Instant ) : String = renderRange( moment, Instant.now )
 
-  def endpointBindings : immutable.Seq[AgnosticEndpointBinding[_,_,_,_,_]]
+  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
 
 object D24nSite:
   class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
 case class D24nSite (
   val serverUrl               : Abs,
   val basePath                : Rooted,
-  val mbStaticResources       : Option[JPath],
-  val endpointeBindingSources : immutable.Seq[EndpointBindingSource]
+  val mbStaticResources       : Option[JPath]
 ) extends Site:
   object Link:
     enum Inside(siteRootedPath : Rooted):
@@ -146,7 +143,13 @@ case class D24nSite (
     enum Outside( url : Abs ):
       case Apply extends Outside( Abs("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
-  def endpointBindings : immutable.Seq[AgnosticEndpointBinding[_,_,_,_,_]] = endpointeBindingSources.flatMap( _.endpointBindings )
+  val MainBlog = new TopBlog(this)
+
+  val bindingSources = immutable.Seq( MainBlog )
+
+  println(s"""bindingSources: ${bindingSources.mkString("  ")}""")
+
+  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]] = bindingSources.flatMap( _.endpointBindings )
 
 private val ToDashChar = immutable.Set(' ','-')
 private val isWordChar = Character.isJavaIdentifierPart
@@ -154,9 +157,9 @@ private val isWordChar = Character.isJavaIdentifierPart
 def inLinkTitle( title : String ) =
   title.toLowerCase.filter( c => isWordChar(c) || ToDashChar(c) ).map( (c : Char) => if ToDashChar(c) then '-' else c )
 
-val MainSite : D24nSite = new D24nSite(Abs("https://d24n.org/"), Rooted.root, None, MainBlog::Nil )
+val MainSite : D24nSite = new D24nSite(Abs("https://d24n.org/"), Rooted.root, None )
 
-val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
+class TopBlog( mainSite : D24nSite) extends Blog[D24nSite,D24nMetadata]:
   val rawTemplates = Untemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
   val untemplates = rawTemplates.map( _.asInstanceOf[this.Untemplate] ).toVector
 
@@ -206,7 +209,7 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
       val year  = zoned.get(ChronoField.YEAR)
       val month = zoned.get(ChronoField.MONTH_OF_YEAR)
       val day   = zoned.get(ChronoField.DAY_OF_MONTH)
-      val mediaPath = f"/$year%d/$month%2d/$day%2d/${inLinkTitle(title)}%s/"
+      val mediaPath = f"/$year%d/$month%02d/$day%02d/${inLinkTitle(title)}%s/"
       ( mediaPath, mediaPath + "index.html" )
 
     val mbTitle = attrsLc.get("title").map( _.toString )
@@ -230,7 +233,7 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
   private def renderSingleFragment( resolved : Entry.Resolved, presentationMultiple : Boolean ) : untemplate.Result[D24nMetadata] =
     val Entry.Resolved(untemplate, info) = resolved
     val renderer = ContentRendererForContentType(info.contentType)
-    val entry = Entry(info.mediaPath, presentationMultiple, MainSite)
+    val entry = Entry(info.mediaPath, presentationMultiple, mainSite)
     val result = untemplate(entry)
     val renderResult = renderer(result)
     val articleFrameInput = Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, presentationMultiple)
@@ -254,19 +257,14 @@ val MainBlog : Blog[D24nSite,D24nMetadata] = new Blog[D24nSite,D24nMetadata]:
     val rs = resolveds.filter( r => ordering.gteq(from,r.info.pubDate) && ordering.lt(r.info.pubDate, until) )
     renderResolveds( rs )
 
-  def endpointBindings : immutable.Seq[AgnosticEndpointBinding[_, _, _, _, _]] =
-    val endpointsFunctions =
-      resolveds.to(List)
-        .map { r =>
-          Tuple2(
-            endpointForFixedPath(r.info.permalinkSiteRootedPath),
-            (_: Unit) => renderSingle(r, false)
-          )
-        }
-    val fgaebs = endpointsFunctions.map(tup => AgnosticEndpointBinding[Unit, Unit, Unit, String, Any](tup(0),tup(1)))
-    immutable.Seq(
-      AgnosticEndpointBinding[Unit, Unit, Unit, String, Any](RootEndpoint, _ => renderLast(10))
-    ) ++ fgaebs
+  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]] =
+    Vector( Rooted("/test-start.txt") -> publicReadOnlyHtmlEndpoint( Rooted("/test-start.txt"), mainSite, ZIO.attempt("Test start succeeded") ) ) ++
+    resolveds.to(Vector)
+      .map { r =>
+          r.info.permalinkSiteRootedPath -> publicReadOnlyHtmlEndpoint(r.info.permalinkSiteRootedPath, mainSite, ZIO.attempt( renderSingle(r, false)))
+      } ++ Vector( Rooted.root -> publicReadOnlyHtmlEndpoint( Rooted.root, mainSite, ZIO.attempt( renderLast(10) ) ) ) ++
+      Vector( Rooted("/test-end.txt") -> publicReadOnlyHtmlEndpoint( Rooted("/test-end.txt"), mainSite, ZIO.attempt("Test end succeeded") ) )
+
 
 
 
