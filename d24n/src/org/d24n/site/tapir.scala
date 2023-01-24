@@ -2,7 +2,7 @@ package org.d24n.site
 
 import scala.collection.*
 import sttp.tapir.ztapir.*
-import sttp.tapir.{Endpoint,EndpointInput}
+import sttp.tapir.{Endpoint,EndpointInput,EndpointIO}
 import sttp.tapir.internal.RichEndpoint
 import sttp.model.{Header,MediaType,Method}
 import sttp.tapir.server.ServerEndpoint
@@ -55,16 +55,18 @@ def staticDirectoryServingEndpoint( siteRootedPath: Rooted, site: Site, dir : JP
   val serverRootedPath = site.serverRootedPath(siteRootedPath)
   filesGetServerEndpoint[Task](inputsForFixedPath(serverRootedPath))(dir.toAbsolutePath.toString)
 
-private def endpointStaticallyGenerableFilePath[R,F[_]]( serverEndpoint : ServerEndpoint[R,F] ) : Option[Rooted] =
+def endpointStaticallyGenerableFilePath[R,F[_]]( serverEndpoint : ServerEndpoint[R,F] ) : Option[Rooted] =
   endpointStaticallyGenerableFilePath(serverEndpoint.endpoint)
 
-private def endpointStaticallyGenerableFilePath[SECURITY_INPUT, INPUT, ERROR_OUTPUT, OUTPUT, R]( endpoint : Endpoint[SECURITY_INPUT, INPUT, ERROR_OUTPUT, OUTPUT, R] ) : Option[Rooted] =
+def endpointStaticallyGenerableFilePath[SECURITY_INPUT, INPUT, ERROR_OUTPUT, OUTPUT, R]( endpoint : Endpoint[SECURITY_INPUT, INPUT, ERROR_OUTPUT, OUTPUT, R] ) : Option[Rooted] =
   val inputs = endpoint.asVectorOfBasicInputs(includeAuth = true)
   val acceptableInputs = inputs.collect {
-    case a : EndpointInput.FixedPath[_]                                                              => a
+    case a : EndpointInput.FixedPath[_]                                                                           => a
     case b @ EndpointInput.FixedMethod(Method(methodName),_,_) if methodName.equalsIgnoreCase("GET") => b
+    case c : EndpointIO.Empty[_]                                                                                  => c
   }
   if (inputs.size != acceptableInputs.size) // we have some unacceptable inputs
+    // println("Unacceptable inputs: " + inputs.filter( inp => !acceptableInputs.contains(inp) ).mkString(", "))
     None
   else
     Some( Rooted.fromElements( inputs.collect{ case input : EndpointInput.FixedPath[_] => input.s } : _* ) )

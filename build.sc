@@ -28,7 +28,7 @@ object d24n extends UntemplateModule {
   override def ammoniteVersion = "2.5.6"
 
   // we'll build an index!
-  override def untemplateIndexNameFullyQualified : Option[String] = Some("org.d24n.site.Untemplates")
+  override def untemplateIndexNameFullyQualified : Option[String] = Some("org.d24n.site.IndexedUntemplates")
 
   override def untemplateSelectCustomizer: untemplate.Customizer.Selector = { key =>
     var out = untemplate.Customizer.empty

@@ -42,8 +42,8 @@ trait Site extends ZTServerEndpointSource:
 
   def siteRoot = serverUrl.reroot( basePath )
 
-  //def serverRootPath( fromSiteRootPath : RelPath ) : RelPath = RelPath("/").resolve( serverUrl.relativize( sitePath.resolve( fromSiteRootPath ) ) )
   def serverRootedPath( fromSiteRootedPath : Rooted ) : Rooted = basePath.reroot( fromSiteRootedPath )
+  def serverRootedPath( fromSiteRootedPath : String ) : Rooted = serverRootedPath( Rooted(fromSiteRootedPath) )
 
   // Keys are site-rooted, but endpoints are server rooted!
   def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
@@ -90,7 +90,7 @@ object D24nSite:
   object Frame:
     object Input:
       case class Main( mainContentHtml : String, site : D24nSite )
-      case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, presentationMultiple : Boolean, site : D24nSite )
+      case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, permalinkServerRooted : Rooted, presentationMultiple : Boolean, site : D24nSite )
   type Frame[E] = Function1[E,untemplate.Result[D24nMetadata]]
   class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
 case class D24nSite (
@@ -127,7 +127,7 @@ class D24nStaticResources( val site : D24nSite ) extends StaticResources[D24nSit
       .map( dir => ( Rooted.fromElements(dir) -> JPath.of("d24n/static", dir) ) )
 
 class D24nTopBlog( val site : D24nSite ) extends Blog[D24nSite,D24nMetadata]:
-  val rawTemplates = Untemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
+  val rawTemplates = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
   val untemplates = rawTemplates.map( _.asInstanceOf[this.Untemplate] ).toVector
 
   // reverse-chronological!
@@ -203,7 +203,7 @@ class D24nTopBlog( val site : D24nSite ) extends Blog[D24nSite,D24nMetadata]:
     val entry = Entry(info.mediaPath, presentationMultiple, site)
     val result = untemplate(entry)
     val renderResult = renderer(result)
-    val articleFrameInput = D24nSite.Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, presentationMultiple, site)
+    val articleFrameInput = D24nSite.Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, site.serverRootedPath(info.permalinkSiteRootedPath), presentationMultiple, site)
     frame_article_html(articleFrameInput)
 
   def renderSingle( resolved : Entry.Resolved, presentationMultiple : Boolean ) : String =
@@ -211,7 +211,7 @@ class D24nTopBlog( val site : D24nSite ) extends Blog[D24nSite,D24nMetadata]:
     mainFrame( articleResult.text )
 
   private def renderResolveds( ssr : immutable.SortedSet[Entry.Resolved] ) : String =
-    val fragmentTexts = ssr.map(resolved => renderSingleFragment(resolved, true).text)
+    val fragmentTexts = ssr.to(List).map(resolved => renderSingleFragment(resolved, true).text)
     val unifiedFragmentText = fragmentTexts.mkString(decorative.article_separator_html().text)
     mainFrame(unifiedFragmentText)
 

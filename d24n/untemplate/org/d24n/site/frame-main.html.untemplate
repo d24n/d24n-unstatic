@@ -33,7 +33,7 @@
           <div><a href="<( input.site.Link.Inside.Donate.serverRootedPath )>">Donate</div>
       </div>
       <div id="logo">
-        <a href="#"><img src="image/d24n-web-logo-x2.png" width="120" height="37" /></a>
+        <a href="#"><img src="<( input.site.serverRootedPath( "/image/d24n-web-logo-x2.png" ) )>" width="120" height="37" /></a>
       </div>
       <div id="tagline-nav">
         <div id="tagline">

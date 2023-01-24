@@ -40,6 +40,14 @@ a {
     text-decoration: none;
     color: red;
 }
+a.permalink {
+    color: unset;
+    text-decoration: none;
+}
+a.permalink:hover {
+    color: unset;
+    text-decoration: underline;
+}
 hr {
     margin-left:  var( --side-margin );
     margin-right: var( --side-margin );
