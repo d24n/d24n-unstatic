@@ -9,11 +9,20 @@ import sttp.tapir.server.ServerEndpoint
 import unstatic.UrlPath.*
 import zio.*
 
-private def endpointForFixedPath( siteRootedPath : Rooted ) : Endpoint[Unit, Unit, Unit, Unit, Any] =
-  if (siteRootedPath == Rooted.root) then
+import java.nio.file.Path as JPath
+
+
+private def endpointForFixedPath( serverRootedPath : Rooted ) : Endpoint[Unit, Unit, Unit, Unit, Any] =
+  if (serverRootedPath == Rooted.root) then
     endpoint.get.in("")
   else
-    siteRootedPath.elements.foldLeft(endpoint.get)( (accum, next) => accum.in( next ) )
+    serverRootedPath.elements.foldLeft(endpoint.get)( (accum, next) => accum.in( next ) )
+
+private def inputsForFixedPath( serverRootedPath : Rooted ) : EndpointInput[Unit] =
+  if (serverRootedPath == Rooted.root) then
+    "" : EndpointInput[Unit]
+  else
+    serverRootedPath.elements.tail.foldLeft(serverRootedPath.elements.head : EndpointInput[Unit])( (accum, next) => accum / next )
 
 type ZTServerEndpoint = ZServerEndpoint[Any,Any] //ServerEndpoint[Any,[t] =>> ZIO[Any,String,t]]
 
@@ -38,6 +47,13 @@ def publicReadOnlyHtmlEndpoint( siteRootedPath: Rooted, site : Site, task: zio.T
       .out(header(Header.contentType(MediaType.TextHtml)))
       .out(stringBody)
   endpoint.zServerLogic( _ => errMappedTask )
+
+def staticDirectoryServingEndpointBinding( siteRootedPath: Rooted, site: Site, dir : JPath ) : ( Rooted, ZServerEndpoint[Any,Any] ) =
+  siteRootedPath -> staticDirectoryServingEndpoint( siteRootedPath, site, dir )
+
+def staticDirectoryServingEndpoint( siteRootedPath: Rooted, site: Site, dir : JPath ) : ZServerEndpoint[Any,Any] =
+  val serverRootedPath = site.serverRootedPath(siteRootedPath)
+  filesGetServerEndpoint[Task](inputsForFixedPath(serverRootedPath))(dir.toAbsolutePath.toString)
 
 private def endpointStaticallyGenerableFilePath[R,F[_]]( serverEndpoint : ServerEndpoint[R,F] ) : Option[Rooted] =
   endpointStaticallyGenerableFilePath(serverEndpoint.endpoint)

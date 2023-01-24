@@ -1,8 +1,8 @@
-import java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 
-> val Formatter = RFC_1123_DATE_TIME.withZone(java.time.ZoneId.systemDefault())
+> val Formatter = ISO_LOCAL_DATE.withZone(java.time.ZoneId.systemDefault())
 
-(input : Frame.Input.Article)[]~()>
+(input : D24nSite.Frame.Input.Article)[]~()>
       <article>
 <()
 input.mbTitle.foreach { title =>
@@ -22,7 +22,7 @@ val publishedLine =
   if input.authors.isEmpty then
     "Published " + datePart
   else
-    """Published by ${authors.mkString(", ")} """ + datePart
+    s"""Published by ${input.authors.mkString(", ")} """ + datePart
 end publishedLine
 ()>
         <div class="article-footer">

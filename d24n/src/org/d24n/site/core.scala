@@ -14,63 +14,12 @@ import zio.*
 
 import unstatic.UrlPath.*
 
-//enum ContentType( val mimeType : String ):
-//  case Html extends ContentType("text/html")
-//  case Markdown extends ContentType("text/markdown")
-
-
-
-// case class Page[S <: Site]( mainContentHtml : String, relPath : String, site : S )
-
-// it would be great if we had compile time content-type info so that we'd fail
-// on compile if our renderer wiring is bad, but it doesn't seem practical to use
-// at the moment. Even if we parameterized metadatas by content type, we'd just have
-// to cast everything to what we think it should be, as only convention binds indexed
-// untemplates to what we expect of them.
-// case class D24nMetadata( location : RelPath, contentType : ContentType, isEmbeddable : Boolean, site : D24nSite )
-
 case class D24nMetadata()
 
 
 // things that render fragments to output, usually HTML
 type ContentRenderer =
   Function1[untemplate.Result[D24nMetadata], untemplate.Result[D24nMetadata]]
-
-// type Framer = // input contentType should be text/html, isEmbeddable should be true
-//   Function1[untemplate.Result[D24nMetadata], untemplate.Result[D24nMetadata]]
-
-
-//enum FrameElement:
-//  case MainContent extends FrameElement
-//  case ArticleContent extends FrameElement // combine content, title, other metadata into a case class for framing?
-//  case ArticleTitle extends FrameElement
-//
-//case class FrameInput( elems : immutable.Map[FrameElement,String], location : RelPath, site : Site )
-//
-//object Framer:
-//  object Main:
-//    enum Key:
-//      case Content extends Key
-//    val Function : Framer[Framer.Main.Key] = main_frame_html
-//  object Article:
-//    enum Key:
-//      case Title extends Key    // String
-//      case Authors extends Key  // Seq[String]
-//      case PubDate extends Key  // ISO_INSTANCE
-//      case Tags extends Key     // Seq[String]
-//    val Function = ???
-//  object Articles:
-//    val Function = ???
-//
-//type Framer[E] = Function1[immutable.Map[E,Any],untemplate.Result[D24nMetadata]]
-
-
-object Frame:
-  object Input:
-    case class Main( mainContentHtml : String )
-    case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, presentationMultiple : Boolean)
-type Frame[E] = Function1[E,untemplate.Result[D24nMetadata]]
-
 
 val ContentTypeBySuffix = immutable.Map (
   "html" -> "text/html",
@@ -89,7 +38,7 @@ trait Site extends ZTServerEndpointSource:
   def basePath  : Rooted
   def sitePath  : Abs = serverUrl.reroot(basePath)
 
-  def mbStaticResources : Option[JPath]
+  // def staticResources : immutable.Seq[Tuple2[Rooted,JPath]]
 
   def siteRoot = serverUrl.reroot( basePath )
 
@@ -98,6 +47,15 @@ trait Site extends ZTServerEndpointSource:
 
   // Keys are site-rooted, but endpoints are server rooted!
   def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
+
+trait StaticResources[S <: Site] extends ZTServerEndpointSource:
+  val site : S
+
+  def locations : immutable.Seq[Tuple2[Rooted,JPath]]
+
+  // Keys are site-rooted, but endpoints are server rooted!
+  def endpointBindings: immutable.Seq[Tuple2[Rooted, ZTServerEndpoint]] =
+    locations.map { case (rooted, jpath) => staticDirectoryServingEndpointBinding( rooted, site, jpath ) }
 
 // TODO: Generalize Entry.Info type
 //       Build a Warned monad that collects warnings along the path
@@ -117,6 +75,7 @@ trait Blog[S <: Site, M] extends ZTServerEndpointSource:
     final case class Resolved( untemplate : Blog.this.Untemplate, info : Entry.Info )
   final case class Entry(mediaPathSiteRooted : Rooted, presentationMultiple : Boolean, site : S)
   type Untemplate = untemplate.Untemplate[Entry,M]
+  val site : S
   def untemplates                                                               : immutable.Vector[Untemplate]
   def entryInfo( template : Untemplate )                                        : Entry.Info
   def renderSingle( template : Entry.Resolved, presentationMultiple : Boolean ) : String
@@ -128,6 +87,11 @@ trait Blog[S <: Site, M] extends ZTServerEndpointSource:
   def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
 
 object D24nSite:
+  object Frame:
+    object Input:
+      case class Main( mainContentHtml : String, site : D24nSite )
+      case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, presentationMultiple : Boolean, site : D24nSite )
+  type Frame[E] = Function1[E,untemplate.Result[D24nMetadata]]
   class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
 case class D24nSite (
   val serverUrl               : Abs,
@@ -140,12 +104,14 @@ case class D24nSite (
       case Home extends Inside( Rooted("/") )
       case AboutUs extends Inside( Rooted("/about-us/") )
       case Donate extends Inside( Rooted("/donate/") )
-    enum Outside( url : Abs ):
+      case Stylesheet extends Inside( Rooted("/css/style.css") )
+    enum Outside( val url : Abs ):
       case Apply extends Outside( Abs("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
-  val MainBlog = new TopBlog(this)
+  val MainBlog        = new D24nTopBlog(this)
+  val StaticResources = D24nStaticResources(this)
 
-  val bindingSources = immutable.Seq( MainBlog )
+  val bindingSources = immutable.Seq( MainBlog, StaticResources )
 
   def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]] = bindingSources.flatMap( _.endpointBindings )
 
@@ -155,9 +121,12 @@ private val isWordChar = Character.isJavaIdentifierPart
 def inLinkTitle( title : String ) =
   title.toLowerCase.filter( c => isWordChar(c) || ToDashChar(c) ).map( (c : Char) => if ToDashChar(c) then '-' else c )
 
-val MainSite : D24nSite = new D24nSite(Abs("https://d24n.org/"), Rooted.root, None )
+class D24nStaticResources( val site : D24nSite ) extends StaticResources[D24nSite]:
+  def locations : immutable.Seq[Tuple2[Rooted,JPath]] =
+    Vector("wp-content","css","font","image")
+      .map( dir => ( Rooted.fromElements(dir) -> JPath.of("d24n/static", dir) ) )
 
-class TopBlog( mainSite : D24nSite) extends Blog[D24nSite,D24nMetadata]:
+class D24nTopBlog( val site : D24nSite ) extends Blog[D24nSite,D24nMetadata]:
   val rawTemplates = Untemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
   val untemplates = rawTemplates.map( _.asInstanceOf[this.Untemplate] ).toVector
 
@@ -225,16 +194,16 @@ class TopBlog( mainSite : D24nSite) extends Blog[D24nSite,D24nMetadata]:
     Entry.Info(mbTitle, authors, tags, pubDate, contentType, Rooted(mediaPathStr), Rooted(permalinkSiteRootedPathStr))
 
   private def mainFrame( fragmentText : String ) : String =
-    val mainFrameInput = Frame.Input.Main(fragmentText)
+    val mainFrameInput = D24nSite.Frame.Input.Main(fragmentText, site)
     frame_main_html(mainFrameInput).text
 
   private def renderSingleFragment( resolved : Entry.Resolved, presentationMultiple : Boolean ) : untemplate.Result[D24nMetadata] =
     val Entry.Resolved(untemplate, info) = resolved
     val renderer = ContentRendererForContentType(info.contentType)
-    val entry = Entry(info.mediaPath, presentationMultiple, mainSite)
+    val entry = Entry(info.mediaPath, presentationMultiple, site)
     val result = untemplate(entry)
     val renderResult = renderer(result)
-    val articleFrameInput = Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, presentationMultiple)
+    val articleFrameInput = D24nSite.Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, presentationMultiple, site)
     frame_article_html(articleFrameInput)
 
   def renderSingle( resolved : Entry.Resolved, presentationMultiple : Boolean ) : String =
@@ -243,7 +212,7 @@ class TopBlog( mainSite : D24nSite) extends Blog[D24nSite,D24nMetadata]:
 
   private def renderResolveds( ssr : immutable.SortedSet[Entry.Resolved] ) : String =
     val fragmentTexts = ssr.map(resolved => renderSingleFragment(resolved, true).text)
-    val unifiedFragmentText = fragmentTexts.mkString(LineSep)
+    val unifiedFragmentText = fragmentTexts.mkString(decorative.article_separator_html().text)
     mainFrame(unifiedFragmentText)
 
   def renderLast( num : Int ) : String =
@@ -258,12 +227,11 @@ class TopBlog( mainSite : D24nSite) extends Blog[D24nSite,D24nMetadata]:
   def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]] =
     val permalinks =  resolveds.to(Vector)
       .map { r =>
-        publicReadOnlyHtmlEndpointBinding(r.info.permalinkSiteRootedPath, mainSite, ZIO.attempt( renderSingle(r, false)))
+        publicReadOnlyHtmlEndpointBinding(r.info.permalinkSiteRootedPath, site, ZIO.attempt( renderSingle(r, false)))
       }
-    permalinks :+ publicReadOnlyHtmlEndpointBinding( Rooted.root, mainSite, ZIO.attempt( renderLast(10) ) )
+    permalinks :+ publicReadOnlyHtmlEndpointBinding( Rooted.root, site, ZIO.attempt( renderLast(10) ) )
 
-
-
+val MainSite : D24nSite = new D24nSite(Abs("https://d24n.org/"), Rooted.root, None )
 
 
 
