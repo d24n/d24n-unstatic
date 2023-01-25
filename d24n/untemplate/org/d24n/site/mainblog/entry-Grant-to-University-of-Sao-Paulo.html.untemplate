@@ -6,7 +6,7 @@
 > )
 
 
-(entry : MainSite.MainBlog.Entry)[]~()>
+(entry : D24nSite.MainBlog.Entry)[]~()>
 <p>The Foundation has made a grant of $18,000 to the University of São Paulo (USP) for development of a technical credit-bearing course on blockchain and other decentralizing technologies to be offered at USP. An open version of the course will also be made available online to all, even those not enrolled at the university.</p>
 <p>Quoting our very <a href="https://d24n.org/2019/03/15/intro-d24n/">first</a> blog post &#8220;We want to educate this community and others on the underlying technology, including its potential and its limitations.&#8221;  As a step in this direction, we started an effort last year to <a href="https://d24n.org/2021/08/17/funding-technical-classes/">fund technical classes</a>; the USP courses are the first results. Here is a quote from our grant agreement with USP (with some legalese removed):</p>
 <blockquote><p>The credit-bearing course will be developed with the expectation of becoming part of the curriculum of the Computer Engineering program offered at USP’s Escola Politécnica.</p><p>The open version will be offered free for any interested party, even for those not enrolled at the university via USP’s official platforms for online courses (namely, <a href="https://eaulas.usp.br/">https://eaulas.usp.br/</a> and <a href="https://edisciplinas.usp.br/">https://edisciplinas.usp.br/</a>). All material (slides for lectures, lecture video recordings, lecture notes, syllabus, homework, and other support material) will also be made available for free online on a site that does not require creating a login for access.</p><p>The course will be entirely built in Brazilian Portuguese, by native speakers.</p></blockquote>

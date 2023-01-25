@@ -42,7 +42,7 @@ object MainSiteHttpServer extends ZIOAppDefault:
   override def run =
     val server =
       for
-        app       <- ZIO.attempt(buildApp(MainSite))
+        app       <- ZIO.attempt(buildApp(D24nSite))
         server    <- Server.serve(app)
       yield server
     server

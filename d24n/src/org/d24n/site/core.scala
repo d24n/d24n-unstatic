@@ -87,18 +87,13 @@ trait Blog[S <: Site, M] extends ZTServerEndpointSource:
 
   def endpointBindings : immutable.Seq[ZTEndpointBinding]
 
-object D24nSite:
+object D24nSite extends Site:
   object Frame:
     object Input:
-      case class Main( mainContentHtml : String, site : D24nSite )
-      case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, permalinkServerRooted : Rooted, presentationMultiple : Boolean, site : D24nSite )
+      case class Main( mainContentHtml : String, site : D24nSite.type )
+      case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, permalinkServerRooted : Rooted, presentationMultiple : Boolean, site : D24nSite.type )
   type Frame[E] = Function1[E,untemplate.Result[D24nMetadata]]
-  class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
-case class D24nSite (
-  val serverUrl               : Abs,
-  val basePath                : Rooted,
-  val mbStaticResources       : Option[JPath]
-) extends Site:
+
   object Link:
     enum Inside(siteRootedPath : Rooted):
       def serverRootedPath = D24nSite.this.serverRootedPath(siteRootedPath)
@@ -108,6 +103,11 @@ case class D24nSite (
       case Stylesheet extends Inside( Rooted("/css/style.css") )
     enum Outside( val url : Abs ):
       case Apply extends Outside( Abs("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
+
+  class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
+
+  val serverUrl : Abs    = Abs("https://d24n.org/")
+  val basePath  : Rooted = Rooted.root
 
   val MainBlog        = new D24nTopBlog(this)
   val StaticResources = D24nStaticResources(this)
@@ -125,12 +125,12 @@ private val isWordChar = Character.isJavaIdentifierPart
 def inLinkTitle( title : String ) =
   title.toLowerCase.filter( c => isWordChar(c) || ToDashChar(c) ).map( (c : Char) => if ToDashChar(c) then '-' else c )
 
-class D24nStaticResources( val site : D24nSite ) extends StaticResources[D24nSite]:
+class D24nStaticResources( val site : D24nSite.type ) extends StaticResources[D24nSite.type]:
   def locationBindings: immutable.Seq[StaticLocationBinding] =
     Vector("wp-content","css","font","image")
       .map( dir => StaticLocationBinding( Rooted.fromElements(dir), JPath.of("d24n/static", dir) ) )
 
-class D24nTopBlog( val site : D24nSite ) extends Blog[D24nSite,D24nMetadata]:
+class D24nTopBlog( val site : D24nSite.type ) extends Blog[D24nSite.type,D24nMetadata]:
   val rawTemplates = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
   val untemplates = rawTemplates.map( _.asInstanceOf[this.Untemplate] ).toVector
 
@@ -235,7 +235,6 @@ class D24nTopBlog( val site : D24nSite ) extends Blog[D24nSite,D24nMetadata]:
       }
     permalinks :+ publicReadOnlyHtmlEndpointBinding( Rooted.root, site, ZIO.attempt( renderLast(10) ) )
 
-val MainSite : D24nSite = new D24nSite(Abs("https://d24n.org/"), Rooted.root, None )
 
 
 
