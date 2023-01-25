@@ -34,7 +34,6 @@ object D24nSite extends Site:
   val basePath  : Rooted = Rooted.root
 
   val MainBlog        = new D24nTopBlog(this)
-  val StaticResources = D24nStaticResources(this)
 
   val locationSources : immutable.Seq[StaticLocationBindingSource] = immutable.Seq( StaticResources )
   val bindingSources  : immutable.Seq[ZTServerEndpointSource]      = immutable.Seq( MainBlog, StaticResources )
@@ -43,10 +42,11 @@ object D24nSite extends Site:
 
   def endpointBindings : immutable.Seq[ZTEndpointBinding] = bindingSources.flatMap( _.endpointBindings )
 
-class D24nStaticResources( val site : D24nSite.type ) extends StaticResources[D24nSite.type]:
-  def locationBindings: immutable.Seq[StaticLocationBinding] =
-    Vector("wp-content","css","font","image")
-      .map( dir => StaticLocationBinding( Rooted.fromElements(dir), JPath.of("d24n/static", dir) ) )
+  val StaticResources = new StaticResources[D24nSite.type]:
+    val site = D24nSite.this
+    def locationBindings: immutable.Seq[StaticLocationBinding] =
+      Vector("wp-content","css","font","image")
+        .map( dir => StaticLocationBinding( Rooted.fromElements(dir), JPath.of("d24n/static", dir) ) )
 
 class D24nTopBlog( val site : D24nSite.type ) extends Blog[D24nSite.type,D24nMetadata]:
   val rawTemplates = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
