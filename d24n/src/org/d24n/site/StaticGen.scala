@@ -77,3 +77,4 @@ object StaticGen:
 
   def generateSite( site : Site, genSiteRootDir: JPath, ignorePrefixes: immutable.Seq[Rooted] = Nil) : Task[Result] =
     generate( site.endpointBindings, site.locationBindings, genSiteRootDir, ignorePrefixes )
+
