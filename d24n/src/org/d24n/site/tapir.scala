@@ -2,10 +2,11 @@ package org.d24n.site
 
 import scala.collection.*
 import sttp.tapir.ztapir.*
-import sttp.tapir.{Endpoint,EndpointInput,EndpointIO}
+import sttp.tapir.{Endpoint, EndpointIO, EndpointInput}
 import sttp.tapir.internal.RichEndpoint
-import sttp.model.{Header,MediaType,Method}
+import sttp.model.{Header, MediaType, Method}
 import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.server.ziohttp.ZioHttpToResponseBody
 import unstatic.UrlPath.*
 import zio.*
 
@@ -26,14 +27,35 @@ private def inputsForFixedPath( serverRootedPath : Rooted ) : EndpointInput[Unit
 
 type ZTServerEndpoint = ZServerEndpoint[Any,Any] //ServerEndpoint[Any,[t] =>> ZIO[Any,String,t]]
 
-// Keys are site-rooted, but endpoints are server rooted!
+// Keys (initial elements) are site-rooted, but endpoints are server rooted!
 trait ZTServerEndpointSource:
-  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
+  def endpointBindings : immutable.Seq[ZTEndpointBinding]
 
-def publicReadOnlyHtmlEndpointBinding( siteRootedPath: Rooted, site : Site, task: zio.Task[String] ) : ( Rooted, ZServerEndpoint[Any,Any] ) =
-  siteRootedPath -> publicReadOnlyHtmlEndpoint( siteRootedPath, site, task )
+/**
+ *  Endpoints are statically-generable iff their endpoint is and
+ *  their logic is available as Unit => Task[String] (for now)
+ *
+ *  Keys (initial elements) are site-rooted, but endpoints are server rooted!
+ */
+case class ZTEndpointBinding( siteRootedPath : Rooted, ztServerEndpoint : ZTServerEndpoint, mbLogic : Option[ZTLogic[_,_]] ):
+  lazy val mbGenerator : Option[Task[String]] =
+    endpointStaticallyGenerableFilePath(ztServerEndpoint).flatMap { _ =>
+      mbLogic match
+        case Some(us : ZTLogic.UnitString) => Some(us.task)
+        case _                             => None
+    }
 
-def publicReadOnlyHtmlEndpoint( siteRootedPath: Rooted, site : Site, task: zio.Task[String] ) : ZServerEndpoint[Any,Any] =
+object ZTLogic:
+  case class Generic[-I,+O]( val logic : Function1[I,Task[O]] ) extends ZTLogic[I,O]
+  case class UnitString( val task : Task[String])  extends ZTLogic[Unit,String]:
+    def logic : Function1[Unit,Task[String]] = (_ : Unit) => task
+sealed trait ZTLogic[-I,+O]:
+  def logic : Function1[I,Task[O]]
+
+def publicReadOnlyHtmlEndpointBinding( siteRootedPath: Rooted, site : Site, task: zio.Task[String] ) : ZTEndpointBinding =
+  ZTEndpointBinding( siteRootedPath, publicReadOnlyHtmlEndpoint( siteRootedPath, site, task ), Some(ZTLogic.UnitString( task )) )
+
+def publicReadOnlyHtmlEndpoint( siteRootedPath: Rooted, site : Site, task: zio.Task[String] ) : ZTServerEndpoint =
   // XXX: Should I do something to break harder on non-nonFatal errors?
   val errMappedTask = task.mapError { t =>
     import java.io.*
@@ -48,10 +70,10 @@ def publicReadOnlyHtmlEndpoint( siteRootedPath: Rooted, site : Site, task: zio.T
       .out(stringBody)
   endpoint.zServerLogic( _ => errMappedTask )
 
-def staticDirectoryServingEndpointBinding( siteRootedPath: Rooted, site: Site, dir : JPath ) : ( Rooted, ZServerEndpoint[Any,Any] ) =
-  siteRootedPath -> staticDirectoryServingEndpoint( siteRootedPath, site, dir )
+def staticDirectoryServingEndpointBinding( siteRootedPath: Rooted, site: Site, dir : JPath ) : ZTEndpointBinding =
+  ZTEndpointBinding(siteRootedPath, staticDirectoryServingEndpoint( siteRootedPath, site, dir ), None)
 
-def staticDirectoryServingEndpoint( siteRootedPath: Rooted, site: Site, dir : JPath ) : ZServerEndpoint[Any,Any] =
+def staticDirectoryServingEndpoint( siteRootedPath: Rooted, site: Site, dir : JPath ) : ZTServerEndpoint =
   val serverRootedPath = site.serverRootedPath(siteRootedPath)
   filesGetServerEndpoint[Task](inputsForFixedPath(serverRootedPath))(dir.toAbsolutePath.toString)
 

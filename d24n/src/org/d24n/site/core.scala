@@ -1,21 +1,17 @@
 package org.d24n.site
 
 import scala.collection.*
-import scala.util.Properties.{lineSeparator => LineSep}
-
+import scala.util.Properties.lineSeparator as LineSep
 import java.time.*
 import java.time.format.DateTimeFormatter.{ISO_INSTANT, ISO_LOCAL_DATE}
 import java.time.temporal.ChronoField
 import java.nio.file.Path as JPath
 import com.mchange.sc.v3.failable.*
 import untemplate.Result
-
 import zio.*
-
 import unstatic.UrlPath.*
 
 case class D24nMetadata()
-
 
 // things that render fragments to output, usually HTML
 type ContentRenderer =
@@ -46,7 +42,7 @@ trait Site extends ZTServerEndpointSource:
   def serverRootedPath( fromSiteRootedPath : String ) : Rooted = serverRootedPath( Rooted(fromSiteRootedPath) )
 
   // Keys are site-rooted, but endpoints are server rooted!
-  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
+  def endpointBindings : immutable.Seq[ZTEndpointBinding]
 
 trait StaticResources[S <: Site] extends ZTServerEndpointSource:
   val site : S
@@ -54,7 +50,7 @@ trait StaticResources[S <: Site] extends ZTServerEndpointSource:
   def locations : immutable.Seq[Tuple2[Rooted,JPath]]
 
   // Keys are site-rooted, but endpoints are server rooted!
-  def endpointBindings: immutable.Seq[Tuple2[Rooted, ZTServerEndpoint]] =
+  def endpointBindings: immutable.Seq[ZTEndpointBinding] =
     locations.map { case (rooted, jpath) => staticDirectoryServingEndpointBinding( rooted, site, jpath ) }
 
 // TODO: Generalize Entry.Info type
@@ -84,7 +80,7 @@ trait Blog[S <: Site, M] extends ZTServerEndpointSource:
 
   def renderSince( moment : Instant ) : String = renderRange( moment, Instant.now )
 
-  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]]
+  def endpointBindings : immutable.Seq[ZTEndpointBinding]
 
 object D24nSite:
   object Frame:
@@ -113,7 +109,7 @@ case class D24nSite (
 
   val bindingSources = immutable.Seq( MainBlog, StaticResources )
 
-  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]] = bindingSources.flatMap( _.endpointBindings )
+  def endpointBindings : immutable.Seq[ZTEndpointBinding] = bindingSources.flatMap( _.endpointBindings )
 
 private val ToDashChar = immutable.Set(' ','-')
 private val isWordChar = Character.isJavaIdentifierPart
@@ -224,7 +220,7 @@ class D24nTopBlog( val site : D24nSite ) extends Blog[D24nSite,D24nMetadata]:
     val rs = resolveds.filter( r => ordering.gteq(from,r.info.pubDate) && ordering.lt(r.info.pubDate, until) )
     renderResolveds( rs )
 
-  def endpointBindings : immutable.Seq[Tuple2[Rooted,ZTServerEndpoint]] =
+  def endpointBindings : immutable.Seq[ZTEndpointBinding] =
     val permalinks =  resolveds.to(Vector)
       .map { r =>
         publicReadOnlyHtmlEndpointBinding(r.info.permalinkSiteRootedPath, site, ZIO.attempt( renderSingle(r, false)))

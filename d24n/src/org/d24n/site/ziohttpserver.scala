@@ -33,7 +33,7 @@ object MainSiteHttpServer extends ZIOAppDefault:
 
   def buildApp( endpointSource: ZTServerEndpointSource ) : HttpApp[Any,Throwable] =
     val endpointBindings = endpointSource.endpointBindings
-    val endpoints = endpointBindings.map( _(1) )
+    val endpoints = endpointBindings.map( _.ztServerEndpoint )
     if (endpoints.isEmpty) throw new Exception("No endpoints defined.") //XXX: Better Exceptions
     def toHttp( endpoint : ZTServerEndpoint) = ZioHttpInterpreter( serverOptions ).toHttp( endpoint )
       endpoints.tail.foldLeft(toHttp(endpoints.head))( (accum, next) => accum ++ toHttp(next) )
