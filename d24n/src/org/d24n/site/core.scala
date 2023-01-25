@@ -29,7 +29,7 @@ val ContentRendererForContentType = immutable.Map[String,ContentRenderer] (
 
 // don't forget a compose template
 
-trait Site extends ZTServerEndpointSource:
+trait Site extends ZTServerEndpointSource with StaticLocationBindingSource:
   def serverUrl : Abs
   def basePath  : Rooted
   def sitePath  : Abs = serverUrl.reroot(basePath)
@@ -44,14 +44,19 @@ trait Site extends ZTServerEndpointSource:
   // Keys are site-rooted, but endpoints are server rooted!
   def endpointBindings : immutable.Seq[ZTEndpointBinding]
 
-trait StaticResources[S <: Site] extends ZTServerEndpointSource:
+trait StaticLocationBindingSource:
+  def locationBindings : immutable.Seq[StaticLocationBinding]
+
+case class StaticLocationBinding( siteRootedPath : Rooted, source : JPath )
+
+trait StaticResources[S <: Site] extends ZTServerEndpointSource with StaticLocationBindingSource:
   val site : S
 
-  def locations : immutable.Seq[Tuple2[Rooted,JPath]]
+  def locationBindings : immutable.Seq[StaticLocationBinding]
 
   // Keys are site-rooted, but endpoints are server rooted!
   def endpointBindings: immutable.Seq[ZTEndpointBinding] =
-    locations.map { case (rooted, jpath) => staticDirectoryServingEndpointBinding( rooted, site, jpath ) }
+    locationBindings.map { case StaticLocationBinding(siteRootedPath, source) => staticDirectoryServingEndpointBinding( siteRootedPath, site, source ) }
 
 // TODO: Generalize Entry.Info type
 //       Build a Warned monad that collects warnings along the path
@@ -107,7 +112,10 @@ case class D24nSite (
   val MainBlog        = new D24nTopBlog(this)
   val StaticResources = D24nStaticResources(this)
 
-  val bindingSources = immutable.Seq( MainBlog, StaticResources )
+  val locationSources : immutable.Seq[StaticLocationBindingSource] = immutable.Seq( StaticResources )
+  val bindingSources  : immutable.Seq[ZTServerEndpointSource]      = immutable.Seq( MainBlog, StaticResources )
+
+  def locationBindings : immutable.Seq[StaticLocationBinding] = locationSources.flatMap( _.locationBindings )
 
   def endpointBindings : immutable.Seq[ZTEndpointBinding] = bindingSources.flatMap( _.endpointBindings )
 
@@ -118,9 +126,9 @@ def inLinkTitle( title : String ) =
   title.toLowerCase.filter( c => isWordChar(c) || ToDashChar(c) ).map( (c : Char) => if ToDashChar(c) then '-' else c )
 
 class D24nStaticResources( val site : D24nSite ) extends StaticResources[D24nSite]:
-  def locations : immutable.Seq[Tuple2[Rooted,JPath]] =
+  def locationBindings: immutable.Seq[StaticLocationBinding] =
     Vector("wp-content","css","font","image")
-      .map( dir => ( Rooted.fromElements(dir) -> JPath.of("d24n/static", dir) ) )
+      .map( dir => StaticLocationBinding( Rooted.fromElements(dir), JPath.of("d24n/static", dir) ) )
 
 class D24nTopBlog( val site : D24nSite ) extends Blog[D24nSite,D24nMetadata]:
   val rawTemplates = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )

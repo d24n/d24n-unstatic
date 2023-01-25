@@ -27,23 +27,23 @@ object StaticGen:
   private def checkIsDir(path : JPath) = ZIO.attempt( Files.isDirectory(path) )
 
   def generate(
-    endpointBindings    : immutable.Seq[ZTEndpointBinding],
-    staticLocationTups  : immutable.Seq[Tuple2[Rooted,JPath]],
-    ignorePrefixes      : immutable.Seq[Rooted],
-    genSiteRootDir      : JPath
+    endpointBindings        : immutable.Seq[ZTEndpointBinding],
+    staticLocationBindings  : immutable.Seq[StaticLocationBinding],
+    genSiteRootDir          : JPath,
+    ignorePrefixes          : immutable.Seq[Rooted] = Nil
   ) : Task[Result] =
     val (ignoredEndpointBindings, unignoredEndpointBindings)
       = endpointBindings.partition( epb => ignorePrefixes.exists(pfx => pfx.isPrefixOf(epb.siteRootedPath)) )
 
-    val (ignoredLocationTups, unignoredLocationTups)
-      = staticLocationTups.partition( slt => ignorePrefixes.exists(pfx => pfx.isPrefixOf(slt(0))) )
+    val (ignoredLocationBindings, unignoredLocationBindings)
+      = staticLocationBindings.partition( slb => ignorePrefixes.exists(pfx => pfx.isPrefixOf(slb.siteRootedPath) ) )
 
     val (ungenerableEndpointBindings, generableEndpointBindings)
       = unignoredEndpointBindings.partition( ep => ep.mbGenerator.isEmpty )
 
     val noExceptionResult =
       val generated = generableEndpointBindings.map( _.siteRootedPath )
-      val ignored = ignoredEndpointBindings.map( _.siteRootedPath ) ++ ignoredLocationTups.map( _(0) )
+      val ignored = ignoredEndpointBindings.map( _.siteRootedPath ) ++ ignoredLocationBindings.map( _.siteRootedPath )
       val ungenerable = ungenerableEndpointBindings.map( _.siteRootedPath ).filter( siteRootedPath => !ignored.contains(siteRootedPath) )
       Result( generated, ignored, ungenerable )
 
@@ -66,7 +66,7 @@ object StaticGen:
         _        <- ZIO.attempt( Files.writeString(destPath, contents, codec.charSet) )
       yield()
 
-    val locationTasks = unignoredLocationTups.map(generateLocation.tupled)
+    val locationTasks = unignoredLocationBindings.map( slb => generateLocation(slb.siteRootedPath, slb.source) )
     val endpointTasks = generableEndpointBindings.map { case generable: ZTEndpointBinding =>
       for
         contents <- generable.mbGenerator.get // we've already verified this is non-empty, see above
@@ -74,3 +74,6 @@ object StaticGen:
       yield ()
     }
     ZIO.foreachDiscard(locationTasks ++ endpointTasks)(identity).map( _ => noExceptionResult )
+
+  def generateSite( site : Site, genSiteRootDir: JPath, ignorePrefixes: immutable.Seq[Rooted] = Nil) : Task[Result] =
+    generate( site.endpointBindings, site.locationBindings, genSiteRootDir, ignorePrefixes )
