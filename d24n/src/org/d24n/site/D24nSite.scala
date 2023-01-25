@@ -33,8 +33,9 @@ object D24nSite extends Site:
   val serverUrl : Abs    = Abs("https://d24n.org/")
   val basePath  : Rooted = Rooted.root
 
-  val locationSources : immutable.Seq[StaticLocationBindingSource] = immutable.Seq( StaticResources )
-  val bindingSources  : immutable.Seq[ZTServerEndpointSource]      = immutable.Seq( MainBlog, StaticResources )
+  // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
+  lazy val locationSources : immutable.Seq[StaticLocationBindingSource] = immutable.Seq( StaticResources )
+  lazy val bindingSources  : immutable.Seq[ZTServerEndpointSource]      = immutable.Seq( MainBlog, StaticResources )
 
   def locationBindings : immutable.Seq[StaticLocationBinding] = locationSources.flatMap( _.locationBindings )
 

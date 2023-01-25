@@ -46,5 +46,5 @@ object MainSiteHttpServer extends ZIOAppDefault:
         server    <- Server.serve(app)
       yield server
     server
-      .provide(ServerConfig.live(ServerConfig.default.port(8999)), Server.live)
+      .provide(ServerConfig.live(ServerConfig.default.port(8999)), Server.live).debug
       .exitCode
