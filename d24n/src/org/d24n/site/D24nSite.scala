@@ -11,8 +11,9 @@ import untemplate.Result
 import zio.*
 import unstatic.UrlPath.*
 import unstatic.*
+import unstatic.ztapir.*
 
-object D24nSite extends Site:
+object D24nSite extends ZTSite:
   object Frame:
     object Input:
       case class Main( mainContentHtml : String, site : D24nSite.type )
@@ -36,19 +37,19 @@ object D24nSite extends Site:
 
   // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
   lazy val locationSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( StaticResources )
-  lazy val bindingSources  : immutable.Seq[ZTServerEndpointSource]      = immutable.Seq( MainBlog, StaticResources )
+  lazy val bindingSources  : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, StaticResources )
 
   def locationBindings : immutable.Seq[StaticLocationBinding] = locationSources.flatMap( _.locationBindings )
 
   def endpointBindings : immutable.Seq[ZTEndpointBinding] = bindingSources.flatMap( _.endpointBindings )
 
-  val StaticResources = new StaticResources[D24nSite.type]:
+  val StaticResources = new ZTStaticResources[D24nSite.type]:
     val site = D24nSite.this
     def locationBindings: immutable.Seq[StaticLocationBinding] =
       Vector("wp-content","css","font","image")
         .map( dir => StaticLocationBinding( Rooted.fromElements(dir), JPath.of("d24n/static", dir) ) )
 
-  val MainBlog : Blog[D24nSite.type,D24nMetadata] = new Blog[D24nSite.type,D24nMetadata]:
+  val MainBlog : ZTBlog[D24nSite.type,D24nMetadata] = new ZTBlog[D24nSite.type,D24nMetadata]:
     val site = D24nSite.this
     val rawTemplates = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
     val untemplates = rawTemplates.map( _.asInstanceOf[this.Untemplate] ).toVector
@@ -99,7 +100,7 @@ object D24nSite extends Site:
         val year  = zoned.get(ChronoField.YEAR)
         val month = zoned.get(ChronoField.MONTH_OF_YEAR)
         val day   = zoned.get(ChronoField.DAY_OF_MONTH)
-        val mediaPath = f"/$year%d/$month%02d/$day%02d/${inLinkTitle(title)}%s/"
+        val mediaPath = f"/$year%d/$month%02d/$day%02d/${linkableTitle(title)}%s/"
         ( mediaPath, mediaPath + "index.html" )
 
       val mbTitle = attrsLc.get("title").map( _.toString )
@@ -150,9 +151,9 @@ object D24nSite extends Site:
     def endpointBindings : immutable.Seq[ZTEndpointBinding] =
       val permalinks =  resolveds.to(Vector)
         .map { r =>
-          publicReadOnlyHtmlEndpointBinding(r.info.permalinkSiteRootedPath, site, ZIO.attempt( renderSingle(r, false)))
+          ZTEndpointBinding.publicReadOnlyHtml(r.info.permalinkSiteRootedPath, site, ZIO.attempt( renderSingle(r, false)))
         }
-      permalinks :+ publicReadOnlyHtmlEndpointBinding( Rooted.root, site, ZIO.attempt( renderLast(10) ) )
+      permalinks :+ ZTEndpointBinding.publicReadOnlyHtml( Rooted.root, site, ZIO.attempt( renderLast(10) ) )
 
 
-
+object D24nSiteServer extends ZTSiteHttpServer(D24nSite)

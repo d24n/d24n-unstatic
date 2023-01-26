@@ -13,8 +13,11 @@ import untemplate.mill._
 
 val TapirVersion = "1.2.6"
 
+val UnstaticVersion = "0.0.1-SNAPSHOT"
+
 object Dependency {
-  val Unstatic             = ivy"com.mchange::unstatic:0.0.1-SNAPSHOT"
+  val Unstatic             = ivy"com.mchange::unstatic:${UnstaticVersion}"
+  val UnstaticZTapir       = ivy"com.mchange::unstatic-ztapir:${UnstaticVersion}"
   val Failable             = ivy"com.mchange::failable:0.0.6"
   //val Tapir              = ivy"com.softwaremill.sttp.tapir::tapir-core:${TapirVersion}"
   val TapirZio             = ivy"com.softwaremill.sttp.tapir::tapir-zio:${TapirVersion}"
@@ -49,6 +52,7 @@ object d24n extends UntemplateModule {
     super.ivyDeps() ++
       Agg (
         Dependency.Unstatic,
+        Dependency.UnstaticZTapir,
         Dependency.Failable,
         Dependency.TapirZio,
         Dependency.TapirZioHttpServer,
