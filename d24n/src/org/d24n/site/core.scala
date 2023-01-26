@@ -4,6 +4,7 @@ import scala.collection.*
 import java.time.Instant
 import java.nio.file.Path as JPath
 import unstatic.UrlPath.*
+import unstatic.*
 
 case class D24nMetadata()
 
@@ -23,27 +24,17 @@ val ContentRendererForContentType = immutable.Map[String,ContentRenderer] (
 
 // don't forget a compose template
 
-trait Site extends ZTServerEndpointSource with StaticLocationBindingSource:
+trait Site extends ZTServerEndpointSource with StaticLocationBinding.Source:
   def serverUrl : Abs
   def basePath  : Rooted
   def sitePath  : Abs = serverUrl.reroot(basePath)
-
-  // def staticResources : immutable.Seq[Tuple2[Rooted,JPath]]
 
   def siteRoot = serverUrl.reroot( basePath )
 
   def serverRootedPath( fromSiteRootedPath : Rooted ) : Rooted = basePath.reroot( fromSiteRootedPath )
   def serverRootedPath( fromSiteRootedPath : String ) : Rooted = serverRootedPath( Rooted(fromSiteRootedPath) )
 
-  // Keys are site-rooted, but endpoints are server rooted!
-  def endpointBindings : immutable.Seq[ZTEndpointBinding]
-
-trait StaticLocationBindingSource:
-  def locationBindings : immutable.Seq[StaticLocationBinding]
-
-case class StaticLocationBinding( siteRootedPath : Rooted, source : JPath )
-
-trait StaticResources[S <: Site] extends ZTServerEndpointSource with StaticLocationBindingSource:
+trait StaticResources[S <: Site] extends ZTServerEndpointSource with StaticLocationBinding.Source:
   val site : S
 
   def locationBindings : immutable.Seq[StaticLocationBinding]

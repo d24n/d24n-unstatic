@@ -10,6 +10,7 @@ import com.mchange.sc.v3.failable.*
 import untemplate.Result
 import zio.*
 import unstatic.UrlPath.*
+import unstatic.*
 
 object D24nSite extends Site:
   object Frame:
@@ -34,7 +35,7 @@ object D24nSite extends Site:
   val basePath  : Rooted = Rooted.root
 
   // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
-  lazy val locationSources : immutable.Seq[StaticLocationBindingSource] = immutable.Seq( StaticResources )
+  lazy val locationSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( StaticResources )
   lazy val bindingSources  : immutable.Seq[ZTServerEndpointSource]      = immutable.Seq( MainBlog, StaticResources )
 
   def locationBindings : immutable.Seq[StaticLocationBinding] = locationSources.flatMap( _.locationBindings )
