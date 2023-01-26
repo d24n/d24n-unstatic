@@ -33,7 +33,7 @@ object D24nSite extends ZTSite:
   class Exception( msg : String, cause : Throwable = null ) extends java.lang.Exception( msg, cause )
 
   val serverUrl : Abs    = Abs("https://d24n.org/")
-  val basePath  : Rooted = Rooted.root
+  val basePath  : Rooted = Rooted("/d24n-test")
 
   // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
   lazy val locationSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( StaticResources )
