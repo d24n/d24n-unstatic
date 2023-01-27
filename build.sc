@@ -19,9 +19,6 @@ object Dependency {
   val Unstatic             = ivy"com.mchange::unstatic:${UnstaticVersion}"
   val UnstaticZTapir       = ivy"com.mchange::unstatic-ztapir:${UnstaticVersion}"
   val Failable             = ivy"com.mchange::failable:0.0.6"
-  //val Tapir              = ivy"com.softwaremill.sttp.tapir::tapir-core:${TapirVersion}"
-  val TapirZio             = ivy"com.softwaremill.sttp.tapir::tapir-zio:${TapirVersion}"
-  val TapirZioHttpServer   = ivy"com.softwaremill.sttp.tapir::tapir-zio-http-server:${TapirVersion}"
 }
 
 object d24n extends UntemplateModule {
@@ -54,8 +51,6 @@ object d24n extends UntemplateModule {
         Dependency.Unstatic,
         Dependency.UnstaticZTapir,
         Dependency.Failable,
-        Dependency.TapirZio,
-        Dependency.TapirZioHttpServer,
       )
   }
 }
