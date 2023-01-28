@@ -2,7 +2,7 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 
 > val Formatter = ISO_LOCAL_DATE.withZone(java.time.ZoneId.systemDefault())
 
-given PageBase = toPageBase(input.renderLocation.parent)
+given PageBase = PageBase.fromPage(input.renderLocation)
 
 (input : D24nSite.Frame.Input.Article)[]~()>
       <article>

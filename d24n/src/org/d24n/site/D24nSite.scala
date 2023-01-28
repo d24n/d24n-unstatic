@@ -16,8 +16,8 @@ import unstatic.ztapir.*
 object D24nSite extends ZTSite:
   object Frame:
     object Input:
-      case class Main( renderLocation : SiteLocation, mainContentHtml : String, site : D24nSite.type )
-      case class Article( renderLocation : SiteLocation, articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, permalinkLocation : SiteLocation, presentationMultiple : Boolean, site : D24nSite.type )
+      case class Main( renderLocation : SiteLocation, mainContentHtml : String )
+      case class Article( renderLocation : SiteLocation, articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, permalinkLocation : SiteLocation, presentationMultiple : Boolean )
   type Frame[E] = Function1[E,untemplate.Result[D24nMetadata]]
   object Link:
     enum Inside(siteRootedPath : Rooted) extends SiteLocation(siteRootedPath, D24nSite.this):
@@ -130,7 +130,7 @@ object D24nSite extends ZTSite:
       Entry.Info(mbTitle, authors, tags, pubDate, contentType, mediaPath, permalinkSiteRootedPath)
 
     private def mainFrame( renderLocation : SiteLocation, fragmentText : String ) : String =
-      val mainFrameInput = D24nSite.Frame.Input.Main(renderLocation, fragmentText, site)
+      val mainFrameInput = D24nSite.Frame.Input.Main(renderLocation, fragmentText )
       frame_main_html(mainFrameInput).text
 
     private def renderSingleFragment( renderLocation : SiteLocation, resolved : Entry.Resolved, presentationMultiple : Boolean ) : untemplate.Result[D24nMetadata] =
@@ -139,7 +139,7 @@ object D24nSite extends ZTSite:
       val entry = Entry(info.mediaPath, presentationMultiple, site)
       val result = untemplate(entry)
       val renderResult = renderer(result)
-      val articleFrameInput = D24nSite.Frame.Input.Article(renderLocation, renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, SiteLocation(info.permalinkSiteRootedPath,D24nSite.this), presentationMultiple, site)
+      val articleFrameInput = D24nSite.Frame.Input.Article(renderLocation, renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, SiteLocation(info.permalinkSiteRootedPath,D24nSite.this), presentationMultiple )
       frame_article_html(articleFrameInput)
 
     def renderSingle( renderLocation : SiteLocation, resolved : Entry.Resolved, presentationMultiple : Boolean ) : String =

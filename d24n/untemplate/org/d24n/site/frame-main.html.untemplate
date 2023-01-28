@@ -1,12 +1,13 @@
-given PageBase = toPageBase(input.renderLocation.parent)
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+val Link = input.renderLocation.site.Link
 
 (input : D24nSite.Frame.Input.Main)[]~()>
-
 <!doctype html>
 <html lang="en-US">
   <head>
     <title>Empowering the Edges</title>
-    <link rel="stylesheet" href="<( input.site.Link.Inside.Stylesheet.relative )>" />
+    <link rel="stylesheet" href="<( Link.Inside.Stylesheet.relative )>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8"/>
     <script type="application/javascript">
@@ -29,23 +30,23 @@ given PageBase = toPageBase(input.renderLocation.parent)
         <div class="burger"></div>
       </div>
       <div id="hamburger-menu">
-          <div><a href="<( input.site.Link.Inside.Home.relative )>">Home</a></div>
-          <div><a href="<( input.site.Link.Inside.AboutUs.relative )>">About</a></div>
-          <div><a href="<( input.site.Link.Outside.Apply.url )>">Apply</a></div>
-          <div><a href="<( input.site.Link.Inside.Donate.relative )>">Donate</div>
+          <div><a href="<( Link.Inside.Home.relative )>">Home</a></div>
+          <div><a href="<( Link.Inside.AboutUs.relative )>">About</a></div>
+          <div><a href="<( Link.Outside.Apply.url )>">Apply</a></div>
+          <div><a href="<( Link.Inside.Donate.relative )>">Donate</div>
       </div>
       <div id="logo">
-        <a href="<( input.site.Link.Inside.Home.relative )>"><img src="<( input.site.Link.Inside.Logo.relative )>" width="120" height="37" /></a>
+        <a href="<( Link.Inside.Home.relative )>"><img src="<( Link.Inside.Logo.relative )>" width="120" height="37" /></a>
       </div>
       <div id="tagline-nav">
         <div id="tagline">
           Empowering the Edges
         </div>
         <nav>
-          <div><a href="<( input.site.Link.Inside.Donate.relative )>">Donate</div>
-          <div><a href="<( input.site.Link.Outside.Apply.url )>">Apply</a></div>
-          <div><a href="<( input.site.Link.Inside.AboutUs.relative )>">About</a></div>
-          <div><a href="<( input.site.Link.Inside.Home.relative )>">Home</a></div>
+          <div><a href="<( Link.Inside.Donate.relative )>">Donate</div>
+          <div><a href="<( Link.Outside.Apply.url )>">Apply</a></div>
+          <div><a href="<( Link.Inside.AboutUs.relative )>">About</a></div>
+          <div><a href="<( Link.Inside.Home.relative )>">Home</a></div>
         </nav>
       </div>
     </header>
