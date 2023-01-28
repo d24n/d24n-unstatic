@@ -2,13 +2,15 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
 
 > val Formatter = ISO_LOCAL_DATE.withZone(java.time.ZoneId.systemDefault())
 
+given PageBase = toPageBase(input.renderLocation.parent)
+
 (input : D24nSite.Frame.Input.Article)[]~()>
       <article>
 <()
 input.mbTitle.foreach { title =>
 ()>       
         <div class="article-header">
-          <h2><a class="permalink" href="<( input.permalinkServerRooted )>"><( title )></a></h2>
+          <h2><a class="permalink" href="<( input.permalinkLocation.relative )>"><( title )></a></h2>
         </div>
 <()
 }
@@ -26,7 +28,7 @@ val publishedLine =
 end publishedLine
 ()>
         <div class="article-footer">
-          <a class="permalink" href="<( input.permalinkServerRooted )>"><( publishedLine )></a>
+          <a class="permalink" href="<( input.permalinkLocation.relative )>"><( publishedLine )></a>
         </div>
       </article>
 

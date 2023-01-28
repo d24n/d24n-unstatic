@@ -37,10 +37,8 @@ object d24n extends UntemplateModule {
     if (key.resolvedPackage.contains(".mainblog") && key.resolvedFunctionName.startsWith("entry"))
       out = out.copy(mbDefaultMetadataType = Some("D24nMetadata"), extraImports=out.extraImports :+ "org.d24n.site.*")
 
-    // to customize, examine key and modify the customer
-    // with out = out.copy=...
-    //
-    // e.g. out = out.copy(extraImports=Seq("d24n.*"))
+    if (key.resolvedFunctionName.startsWith("frame_"))
+      out = out.copy(extraImports=out.extraImports ++ Seq("org.d24n.site.*","unstatic.*"))
 
     out
   }

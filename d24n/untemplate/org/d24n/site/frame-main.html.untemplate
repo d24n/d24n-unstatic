@@ -1,10 +1,12 @@
+given PageBase = toPageBase(input.renderLocation.parent)
+
 (input : D24nSite.Frame.Input.Main)[]~()>
 
 <!doctype html>
 <html lang="en-US">
   <head>
     <title>Empowering the Edges</title>
-    <link rel="stylesheet" href="<( input.site.Link.Inside.Stylesheet.serverRootedPath )>" />
+    <link rel="stylesheet" href="<( input.site.Link.Inside.Stylesheet.relative )>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8"/>
     <script type="application/javascript">
@@ -27,23 +29,23 @@
         <div class="burger"></div>
       </div>
       <div id="hamburger-menu">
-          <div><a href="<( input.site.Link.Inside.Home.serverRootedPath )>">Home</a></div>
-          <div><a href="<( input.site.Link.Inside.AboutUs.serverRootedPath )>">About</a></div>
+          <div><a href="<( input.site.Link.Inside.Home.relative )>">Home</a></div>
+          <div><a href="<( input.site.Link.Inside.AboutUs.relative )>">About</a></div>
           <div><a href="<( input.site.Link.Outside.Apply.url )>">Apply</a></div>
-          <div><a href="<( input.site.Link.Inside.Donate.serverRootedPath )>">Donate</div>
+          <div><a href="<( input.site.Link.Inside.Donate.relative )>">Donate</div>
       </div>
       <div id="logo">
-        <a href="<( input.site.sitePath )>"><img src="<( input.site.serverRootedPath( "/image/d24n-web-logo-x2.png" ) )>" width="120" height="37" /></a>
+        <a href="<( input.site.Link.Inside.Home.relative )>"><img src="<( input.site.Link.Inside.Logo.relative )>" width="120" height="37" /></a>
       </div>
       <div id="tagline-nav">
         <div id="tagline">
           Empowering the Edges
         </div>
         <nav>
-          <div><a href="<( input.site.Link.Inside.Donate.serverRootedPath )>">Donate</div>
+          <div><a href="<( input.site.Link.Inside.Donate.relative )>">Donate</div>
           <div><a href="<( input.site.Link.Outside.Apply.url )>">Apply</a></div>
-          <div><a href="<( input.site.Link.Inside.AboutUs.serverRootedPath )>">About</a></div>
-          <div><a href="<( input.site.Link.Inside.Home.serverRootedPath )>">Home</a></div>
+          <div><a href="<( input.site.Link.Inside.AboutUs.relative )>">About</a></div>
+          <div><a href="<( input.site.Link.Inside.Home.relative )>">Home</a></div>
         </nav>
       </div>
     </header>

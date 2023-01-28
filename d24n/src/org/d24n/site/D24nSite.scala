@@ -16,17 +16,16 @@ import unstatic.ztapir.*
 object D24nSite extends ZTSite:
   object Frame:
     object Input:
-      case class Main( mainContentHtml : String, site : D24nSite.type )
-      case class Article( articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, permalinkServerRooted : Rooted, presentationMultiple : Boolean, site : D24nSite.type )
+      case class Main( renderLocation : SiteLocation, mainContentHtml : String, site : D24nSite.type )
+      case class Article( renderLocation : SiteLocation, articleContentHtml : String, mbTitle : Option[String], authors : Seq[String], tags : Seq[String], pubDate : Instant, permalinkLocation : SiteLocation, presentationMultiple : Boolean, site : D24nSite.type )
   type Frame[E] = Function1[E,untemplate.Result[D24nMetadata]]
-
   object Link:
-    enum Inside(siteRootedPath : Rooted):
-      def serverRootedPath = D24nSite.this.serverRootedPath(siteRootedPath)
-      case Home extends Inside( Rooted("/") )
-      case AboutUs extends Inside( Rooted("/about-us/") )
-      case Donate extends Inside( Rooted("/donate/") )
+    enum Inside(siteRootedPath : Rooted) extends SiteLocation(siteRootedPath, D24nSite.this):
+      case Home extends Inside( Rooted("/index.html") )
+      case AboutUs extends Inside( Rooted("/about-us/index.html") )
+      case Donate extends Inside( Rooted("/donate/index.html") )
       case Stylesheet extends Inside( Rooted("/css/style.css") )
+      case Logo extends Inside(Rooted("/image/d24n-web-logo-x2.png"))
     enum Outside( val url : Abs ):
       case Apply extends Outside( Abs("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
@@ -95,13 +94,24 @@ object D24nSite extends ZTSite:
         else
           None
 
-      def mediaPathPermalink( pubDate : Instant, title : String ) : (String, String) =
-        val zoned = pubDate.atZone(ZoneId.systemDefault())
-        val year  = zoned.get(ChronoField.YEAR)
-        val month = zoned.get(ChronoField.MONTH_OF_YEAR)
-        val day   = zoned.get(ChronoField.DAY_OF_MONTH)
-        val mediaPath = f"/$year%d/$month%02d/$day%02d/${linkableTitle(title)}%s/"
-        ( mediaPath, mediaPath + "index.html" )
+      val FilePathChars = immutable.Set('/','\\', ':')
+      def ensureNoFilePathChars( s : String ) =
+        assert(!s.exists(FilePathChars.apply), s"File path characters not permitted: ${s}")
+
+      def mediaPathPermalink( mbPermalink : Option[String], pubDate : Instant, title : String, mbLinkName : Option[String] ) : (Rooted, Rooted) =
+        mbPermalink match
+          case Some( permalink ) =>
+            val pl = Rooted.parseAndRoot(permalink)
+            ( pl.parent, pl )
+          case None =>
+            val zoned = pubDate.atZone(ZoneId.systemDefault())
+            val year  = zoned.get(ChronoField.YEAR)
+            val month = zoned.get(ChronoField.MONTH_OF_YEAR)
+            val day   = zoned.get(ChronoField.DAY_OF_MONTH)
+            val linkName = mbLinkName.getOrElse(linkableTitle(title))
+            ensureNoFilePathChars(linkName)
+            val mediaPath = f"/$year%d/$month%02d/$day%02d/${linkName}%s/"
+            ( Rooted(mediaPath), Rooted(mediaPath + "index.html") )
 
       val mbTitle = attrsLc.get("title").map( _.toString )
       val authors = getMaybeMultiple("author")
@@ -114,46 +124,49 @@ object D24nSite extends ZTSite:
           case None                       => throw new D24nSite.Exception(s"PubDate or PublicationDate attribute required, not found.")
       val contentType =
         (attrsLc.get("content-type").map( _.toString ) orElse contentTypeFromSuffix(untemplate.UntemplateName)).getOrElse("text/plain")
-      val (mediaPathStr, permalinkSiteRootedPathStr) = mediaPathPermalink(pubDate, mbTitle.getOrElse("Untitled Post"))
-      Entry.Info(mbTitle, authors, tags, pubDate, contentType, Rooted(mediaPathStr), Rooted(permalinkSiteRootedPathStr))
+      val mbPermalink = attrsLc.get("permalink").map( _.toString )
+      val mbLinkName = attrsLc.get("linkname").map( _.toString )
+      val (mediaPath, permalinkSiteRootedPath) = mediaPathPermalink(mbPermalink, pubDate, mbTitle.getOrElse("Untitled Post"), mbLinkName)
+      Entry.Info(mbTitle, authors, tags, pubDate, contentType, mediaPath, permalinkSiteRootedPath)
 
-    private def mainFrame( fragmentText : String ) : String =
-      val mainFrameInput = D24nSite.Frame.Input.Main(fragmentText, site)
+    private def mainFrame( renderLocation : SiteLocation, fragmentText : String ) : String =
+      val mainFrameInput = D24nSite.Frame.Input.Main(renderLocation, fragmentText, site)
       frame_main_html(mainFrameInput).text
 
-    private def renderSingleFragment( resolved : Entry.Resolved, presentationMultiple : Boolean ) : untemplate.Result[D24nMetadata] =
+    private def renderSingleFragment( renderLocation : SiteLocation, resolved : Entry.Resolved, presentationMultiple : Boolean ) : untemplate.Result[D24nMetadata] =
       val Entry.Resolved(untemplate, info) = resolved
       val renderer = ContentRendererForContentType(info.contentType)
       val entry = Entry(info.mediaPath, presentationMultiple, site)
       val result = untemplate(entry)
       val renderResult = renderer(result)
-      val articleFrameInput = D24nSite.Frame.Input.Article(renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, site.serverRootedPath(info.permalinkSiteRootedPath), presentationMultiple, site)
+      val articleFrameInput = D24nSite.Frame.Input.Article(renderLocation, renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, SiteLocation(info.permalinkSiteRootedPath,D24nSite.this), presentationMultiple, site)
       frame_article_html(articleFrameInput)
 
-    def renderSingle( resolved : Entry.Resolved, presentationMultiple : Boolean ) : String =
-      val articleResult = renderSingleFragment( resolved, presentationMultiple )
-      mainFrame( articleResult.text )
+    def renderSingle( renderLocation : SiteLocation, resolved : Entry.Resolved, presentationMultiple : Boolean ) : String =
+      val articleResult = renderSingleFragment(renderLocation, resolved, presentationMultiple )
+      mainFrame( renderLocation, articleResult.text )
 
-    private def renderResolveds( ssr : immutable.SortedSet[Entry.Resolved] ) : String =
-      val fragmentTexts = ssr.to(List).map(resolved => renderSingleFragment(resolved, true).text)
+    private def renderResolveds( renderLocation : SiteLocation, ssr : immutable.SortedSet[Entry.Resolved] ) : String =
+      val fragmentTexts = ssr.to(List).map(resolved => renderSingleFragment(renderLocation, resolved, true).text)
       val unifiedFragmentText = fragmentTexts.mkString(decorative.article_separator_html().text)
-      mainFrame(unifiedFragmentText)
+      mainFrame(renderLocation, unifiedFragmentText)
 
-    def renderLast( num : Int ) : String =
+    def renderLast( renderLocation : SiteLocation, num : Int ) : String =
       val rs = resolveds.take(num)
-      renderResolveds( rs )
+      renderResolveds( renderLocation, rs )
 
-    def renderRange( from : Instant, until : Instant ) : String =
+    def renderRange( renderLocation : SiteLocation, from : Instant, until : Instant ) : String =
       val ordering = summon[Ordering[Instant]]
       val rs = resolveds.filter( r => ordering.gteq(from,r.info.pubDate) && ordering.lt(r.info.pubDate, until) )
-      renderResolveds( rs )
+      renderResolveds( renderLocation, rs )
 
     def endpointBindings : immutable.Seq[ZTEndpointBinding] =
       val permalinks =  resolveds.to(Vector)
         .map { r =>
-          ZTEndpointBinding.publicReadOnlyHtml(r.info.permalinkSiteRootedPath, site, ZIO.attempt( renderSingle(r, false)))
+          val renderLocation = SiteLocation(r.info.permalinkSiteRootedPath, D24nSite.this)
+          ZTEndpointBinding.publicReadOnlyHtml(renderLocation, site, ZIO.attempt( renderSingle(renderLocation, r, false)))
         }
-      permalinks :+ ZTEndpointBinding.publicReadOnlyHtml( Rooted.root, site, ZIO.attempt( renderLast(10) ) )
+      permalinks :+ ZTEndpointBinding.publicReadOnlyHtml( Link.Inside.Home, site, ZIO.attempt( renderLast(Link.Inside.Home, 10) ) )
 
 
-object D24nSiteServer extends ZTSiteHttpServer(D24nSite)
+object D24nSiteGenerator extends ZTSite.Static.Main(D24nSite)

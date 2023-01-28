@@ -2,9 +2,8 @@
 >   "Title"     -> "Grant to University of São Paulo",
 >   "Author"    -> "Chris Peel",
 >   "PubDate"   -> "2022-01-25T10:08:05-08:00",
->   "Permalink" -> "2022/01/25/grant-to-usp/index.html"
+>   "Permalink" -> "2022/01/25/grant-to-usp/index.html",
 > )
-
 
 (entry : D24nSite.MainBlog.Entry)[]~()>
 <p>The Foundation has made a grant of $18,000 to the University of São Paulo (USP) for development of a technical credit-bearing course on blockchain and other decentralizing technologies to be offered at USP. An open version of the course will also be made available online to all, even those not enrolled at the university.</p>

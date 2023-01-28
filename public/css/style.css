@@ -1,0 +1,241 @@
+@font-face {
+    font-family: 'LibreFranklin';
+    src: url('../font/Libre_Franklin/LibreFranklin-VariableFont_wght.ttf');
+}
+@font-face {
+    font-family: 'LibreFranklinItalic';
+    src: url('../font/Libre_Franklin/LibreFranklin-Italic-VariableFont_wght.ttf');
+}
+
+:root {
+    --side-margin:    40px;
+    --main-font-size: 17px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    background: white;
+    font-family: 'LibreFranklin';
+    font-variation-settings: "wght" 400;
+    font-size: var( --main-font-size );
+    line-height: 190%;
+    padding: 0;
+    margin: 0;
+}
+i, em {
+    font-family: 'LibreFranklinItalic';
+}
+blockquote {
+    margin-left: 0;
+    padding-left: 40px;
+    border-left: 1px solid black;
+    font-variation-settings: "wght" 450;
+    line-height: 150%;
+}
+a {
+    text-decoration: none;
+    color: red;
+}
+a.permalink {
+    color: unset;
+    text-decoration: none;
+}
+a.permalink:hover {
+    color: unset;
+    text-decoration: underline;
+}
+hr {
+    margin-left:  var( --side-margin );
+    margin-right: var( --side-margin );
+}
+hr.centered-black {
+    border: 1px solid black;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+/* modified from https://medium.com/towards-more-beautiful-web-typography/everything-about-hr-when-to-use-it-and-how-to-style-it-fd17b66573 */
+hr.article-separator {
+    border: none;
+}
+hr.article-separator::before {
+    font-size: 120%;
+    content: '* * *';
+    display: block;
+    text-align: center;
+}
+#hamburger {
+    display:  none;
+    z-index:  1;
+    position: absolute;
+    right:    10px;
+    top:      10px;
+    width:    35px;
+    height:   35px;
+}
+#hamburger div.burger {
+    width: 35px;
+    height: 5px;
+    background-color: black;
+    margin: 6px 0;
+}
+#hamburger-menu {
+    position: absolute;
+    top: 45px;
+    right: 10px;
+    width: calc(100% - 20px);
+    display: none;
+    position: absolute;
+    background: rgba(0,0,0,0.8);
+    flex-direction: column;
+    
+}
+#hamburger-menu div {
+    width: 100%;
+    border: 2px solid white;
+    color: white;
+    font-size: 150%;
+    text-align: center;
+    line-height: 200%;
+}
+#hamburger-menu div a {
+    color: white;
+}
+#hamburger-menu div a:hover {
+    color: red;
+}
+
+#main-header {
+    padding-top:    35px;
+    padding-bottom: 10px;
+
+    margin-left:  var(--side-margin);
+    margin-right: var(--side-margin);
+
+    font-variation-settings: "wght" 400;
+    line-height: 100%;
+}
+#logo {
+    text-align: center;
+}
+#main-header #tagline-nav {
+    padding-top: 35px;
+    
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 50% 50%;
+}
+#main-header #tagline {
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+}
+#main-header nav {
+    display: flex;
+    flex-direction: row-reverse;
+    
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 1;
+
+    text-align: right;
+}
+#main-header nav div {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+#main-header nav div a {
+    color: black;
+}
+#main-header nav div a:hover {
+    color: red;
+}
+main {
+    margin-left:  var(--side-margin);
+    margin-right: var(--side-margin);
+}
+article {
+    padding-top: 1.5em;
+}
+
+.article-header h2 {
+    font-variation-settings: "wght" 650;
+    font-size: 130%;
+}
+.article-body {
+}
+.article-body h3 {
+    font-variation-settings: "wght" 600;
+}
+.article-footer {
+    text-align: right;
+    font-size: 75%;
+}
+#main-footer {
+    margin-left:  var(--side-margin);
+    margin-right: var(--side-margin);
+    
+    display: grid;
+    grid-template-rows: auto 4em;
+    grid-template-columns: 50% 50%;
+}
+#footer-foundation {
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+}
+#footer-connect {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 1;
+}
+.footer-contact {
+    margin-left:  20px;
+}
+.footer-contact h4 {
+    font-variation-settings: "wght" 700;
+    line-height: 100%;
+    margin-bottom: 12px;
+}
+#footer-credits {
+    grid-column: 1 / span 2;
+    grid-row: 2 / span 1;
+}
+#footer-credits div {
+    padding-top: 1.5em;
+    font-size: 90%;
+}
+
+
+@media only screen and (max-width: 700px) {
+    :root {
+	--side-margin:    28px;
+	--main-font-size: 15px;
+    }
+    #hamburger {
+	display: block;
+    }
+    #main-header #tagline-nav {
+	display: none;
+    }
+    #main-footer {
+	margin-left:  var(--side-margin);
+	margin-right: var(--side-margin);
+    
+	display: grid;
+	grid-template-rows: auto auto 4em;
+	grid-template-columns: auto;
+    }
+    #footer-foundation {
+	grid-column: 1 / span 1;
+	grid-row: 1 / span 1;
+    }
+    #footer-connect {
+	grid-column: 1 / span 1;
+	grid-row: 2 / span 1;
+    }
+    #footer-credits {
+	grid-column: 1 / span 1;
+	grid-row: 3 / span 1;
+    }
+}
