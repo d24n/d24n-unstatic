@@ -18,7 +18,6 @@ val UnstaticVersion = "0.0.1-SNAPSHOT"
 object Dependency {
   val Unstatic             = ivy"com.mchange::unstatic:${UnstaticVersion}"
   val UnstaticZTapir       = ivy"com.mchange::unstatic-ztapir:${UnstaticVersion}"
-  val Failable             = ivy"com.mchange::failable:0.0.6"
 }
 
 object d24n extends UntemplateModule {
@@ -26,6 +25,8 @@ object d24n extends UntemplateModule {
 
   // supports Scala 3.2.1
   override def ammoniteVersion = "2.5.6"
+
+  override def scalacOptions = T{ Seq("-explain") }
 
   // we'll build an index!
   override def untemplateIndexNameFullyQualified : Option[String] = Some("org.d24n.site.IndexedUntemplates")
@@ -35,10 +36,10 @@ object d24n extends UntemplateModule {
 
     // imports and types for mainblog entries
     if (key.resolvedPackage.contains(".mainblog") && key.resolvedFunctionName.startsWith("entry"))
-      out = out.copy(mbDefaultMetadataType = Some("D24nMetadata"), extraImports=out.extraImports :+ "org.d24n.site.*")
+      out = out.copy(extraImports=out.extraImports :+ "org.d24n.site.*")
 
-    if (key.resolvedFunctionName.startsWith("frame_"))
-      out = out.copy(extraImports=out.extraImports ++ Seq("org.d24n.site.*","unstatic.*"))
+    if (key.resolvedFunctionName.startsWith("layout_"))
+      out = out.copy(extraImports=out.extraImports ++ Seq("org.d24n.site.*","unstatic.*", "D24nSite.MainBlog.Layout"))
 
     out
   }
@@ -48,7 +49,6 @@ object d24n extends UntemplateModule {
       Agg (
         Dependency.Unstatic,
         Dependency.UnstaticZTapir,
-        Dependency.Failable,
       )
   }
 }

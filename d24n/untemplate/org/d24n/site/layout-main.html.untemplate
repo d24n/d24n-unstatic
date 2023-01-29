@@ -2,7 +2,7 @@ given PageBase = PageBase.fromPage(input.renderLocation)
 
 val Link = input.renderLocation.site.Link
 
-(input : D24nSite.Frame.Input.Main)[]~()>
+(input : Layout.Input.Page)[]~()>
 <!doctype html>
 <html lang="en-US">
   <head>

@@ -6,12 +6,12 @@ import java.time.*
 import java.time.format.DateTimeFormatter.{ISO_INSTANT, ISO_LOCAL_DATE}
 import java.time.temporal.ChronoField
 import java.nio.file.Path as JPath
-import com.mchange.sc.v3.failable.*
 import untemplate.Result
 import zio.*
 import unstatic.UrlPath.*
 import unstatic.*
 import unstatic.ztapir.*
+import unstatic.ztapir.simple.*
 
 object D24nSite extends ZTSite:
   object Frame:
@@ -48,125 +48,29 @@ object D24nSite extends ZTSite:
       Vector("wp-content","css","font","image")
         .map( dir => StaticLocationBinding( Rooted.fromElements(dir), JPath.of("d24n/static", dir) ) )
 
-  val MainBlog : ZTBlog[D24nSite.type,D24nMetadata] = new ZTBlog[D24nSite.type,D24nMetadata]:
-    val site = D24nSite.this
-    val rawTemplates = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
-    val untemplates = rawTemplates.map( _.asInstanceOf[this.Untemplate] ).toVector
+  object MainBlog extends SimpleBlog:
+    override type Site = D24nSite.type
+    override val site = D24nSite.this
+    override val frontPage = Link.Inside.Home
+    override val maxFrontPageEntries = 8
+    override def entryUntemplates =
+      val raw = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
+      raw.map( _.asInstanceOf[EntryUntemplate] ).toSet
+    override def mediaPathPermalink( checkable : Attribute.Checkable, ut : untemplate.Untemplate[?,?] ) : MediaPathPermalink =
+      MediaPathPermalink.yearMonthDayNameDir( checkable, ut )
 
-    // reverse-chronological!
-    val resolveds = untemplates.map( ut => Entry.Resolved(ut, entryInfo(ut)) ).to(immutable.SortedSet)
+    /**
+     * Lays out only the entry, the fragment which will later become the main content of the page
+     */
+    override def layoutEntry(input: Layout.Input.Entry): String =
+      layout_entry_html(input).text
 
-    def entryInfo( untemplate : this.Untemplate ) =
-      val attrsLc = untemplate.UntemplateAttributes.map { case (k, v) => (k.toLowerCase, v) }
-      def getMaybeMultiple(keySingular : String) : Seq[String] =
-        attrsLc.get(keySingular + "s") match
-          case Some(seq: Seq[_]) => seq.map( _.toString ) // to avoid unchecked Seq[String] match
-          case Some(str: String) => str.split(",").map(_.trim).toSeq
-          case Some( other ) => throw new D24nSite.Exception(s"Unexpected '${keySingular}s' type: ${other}")
-          case None =>
-            attrsLc.get(keySingular) match
-              case Some(str: String) => Seq(str)
-              case Some( other ) => throw new D24nSite.Exception(s"Unexpected '${keySingular}' type: ${other}")
-              case None => Nil
+    // overriding a def, but it's just a constant, so we override with lazy val
+    override def entrySeparator : String =
+      decorative.article_separator_html().text
 
-      def parseTimestampIsoInstant( timestamp : String ) : Failable[Instant] =
-        for
-          temporalAccessor <- Failable( ISO_INSTANT.parse(timestamp) )
-        yield
-          Instant.from(temporalAccessor)
-
-      def parseTimestampFromIsoLocalDate( timestamp : String ) : Failable[Instant] =
-        for
-          temporalAccessor <- Failable( ISO_LOCAL_DATE.parse(timestamp)  )
-          ld               <- Failable( LocalDate.from(temporalAccessor) )
-          zdt              <- Failable( ld.atTime(12,0).atZone(ZoneId.systemDefault()) )
-        yield
-          Instant.from(zdt)
-
-      def parseTimestamp( timestamp : String ) : Instant =
-        (parseTimestampIsoInstant(timestamp) orElseTrace parseTimestampFromIsoLocalDate(timestamp)).assert
-
-      def contentTypeFromSuffix( name : String ) : Option[String] =
-        val suffixDelimiter = name.lastIndexOf("_")
-        if suffixDelimiter >= 0 then
-          val suffix = name.substring(suffixDelimiter + 1)
-          ContentTypeBySuffix.get(suffix)
-        else
-          None
-
-      val FilePathChars = immutable.Set('/','\\', ':')
-      def ensureNoFilePathChars( s : String ) =
-        assert(!s.exists(FilePathChars.apply), s"File path characters not permitted: ${s}")
-
-      def mediaPathPermalink( mbPermalink : Option[String], pubDate : Instant, title : String, mbLinkName : Option[String] ) : (Rooted, Rooted) =
-        mbPermalink match
-          case Some( permalink ) =>
-            val pl = Rooted.parseAndRoot(permalink)
-            ( pl.parent, pl )
-          case None =>
-            val zoned = pubDate.atZone(ZoneId.systemDefault())
-            val year  = zoned.get(ChronoField.YEAR)
-            val month = zoned.get(ChronoField.MONTH_OF_YEAR)
-            val day   = zoned.get(ChronoField.DAY_OF_MONTH)
-            val linkName = mbLinkName.getOrElse(linkableTitle(title))
-            ensureNoFilePathChars(linkName)
-            val mediaPath = f"/$year%d/$month%02d/$day%02d/${linkName}%s/"
-            ( Rooted(mediaPath), Rooted(mediaPath + "index.html") )
-
-      val mbTitle = attrsLc.get("title").map( _.toString )
-      val authors = getMaybeMultiple("author")
-      val tags    = getMaybeMultiple("tag")
-      val pubDate =
-        attrsLc.get("pubdate") orElse attrsLc.get("publicationdate") match
-          case Some( instant : Instant )  => instant
-          case Some( timestamp : String ) => parseTimestamp( timestamp.trim )
-          case Some( other )              => throw new D24nSite.Exception(s"Unexpected publication date format: ${other}")
-          case None                       => throw new D24nSite.Exception(s"PubDate or PublicationDate attribute required, not found.")
-      val contentType =
-        (attrsLc.get("content-type").map( _.toString ) orElse contentTypeFromSuffix(untemplate.UntemplateName)).getOrElse("text/plain")
-      val mbPermalink = attrsLc.get("permalink").map( _.toString )
-      val mbLinkName = attrsLc.get("linkname").map( _.toString )
-      val (mediaPath, permalinkSiteRootedPath) = mediaPathPermalink(mbPermalink, pubDate, mbTitle.getOrElse("Untitled Post"), mbLinkName)
-      Entry.Info(mbTitle, authors, tags, pubDate, contentType, mediaPath, permalinkSiteRootedPath)
-
-    private def mainFrame( renderLocation : SiteLocation, fragmentText : String ) : String =
-      val mainFrameInput = D24nSite.Frame.Input.Main(renderLocation, fragmentText )
-      frame_main_html(mainFrameInput).text
-
-    private def renderSingleFragment( renderLocation : SiteLocation, resolved : Entry.Resolved, presentationMultiple : Boolean ) : untemplate.Result[D24nMetadata] =
-      val Entry.Resolved(untemplate, info) = resolved
-      val renderer = ContentRendererForContentType(info.contentType)
-      val entry = Entry(info.mediaPath, presentationMultiple, site)
-      val result = untemplate(entry)
-      val renderResult = renderer(result)
-      val articleFrameInput = D24nSite.Frame.Input.Article(renderLocation, renderResult.text, info.mbTitle, info.authors, info.tags, info.pubDate, SiteLocation(info.permalinkSiteRootedPath,D24nSite.this), presentationMultiple )
-      frame_article_html(articleFrameInput)
-
-    def renderSingle( renderLocation : SiteLocation, resolved : Entry.Resolved, presentationMultiple : Boolean ) : String =
-      val articleResult = renderSingleFragment(renderLocation, resolved, presentationMultiple )
-      mainFrame( renderLocation, articleResult.text )
-
-    private def renderResolveds( renderLocation : SiteLocation, ssr : immutable.SortedSet[Entry.Resolved] ) : String =
-      val fragmentTexts = ssr.to(List).map(resolved => renderSingleFragment(renderLocation, resolved, true).text)
-      val unifiedFragmentText = fragmentTexts.mkString(decorative.article_separator_html().text)
-      mainFrame(renderLocation, unifiedFragmentText)
-
-    def renderLast( renderLocation : SiteLocation, num : Int ) : String =
-      val rs = resolveds.take(num)
-      renderResolveds( renderLocation, rs )
-
-    def renderRange( renderLocation : SiteLocation, from : Instant, until : Instant ) : String =
-      val ordering = summon[Ordering[Instant]]
-      val rs = resolveds.filter( r => ordering.gteq(from,r.info.pubDate) && ordering.lt(r.info.pubDate, until) )
-      renderResolveds( renderLocation, rs )
-
-    def endpointBindings : immutable.Seq[ZTEndpointBinding] =
-      val permalinks =  resolveds.to(Vector)
-        .map { r =>
-          val renderLocation = SiteLocation(r.info.permalinkSiteRootedPath, D24nSite.this)
-          ZTEndpointBinding.publicReadOnlyHtml(renderLocation, site, ZIO.attempt( renderSingle(renderLocation, r, false)))
-        }
-      permalinks :+ ZTEndpointBinding.publicReadOnlyHtml( Link.Inside.Home, site, ZIO.attempt( renderLast(Link.Inside.Home, 10) ) )
+    override def layoutPage(input: Layout.Input.Page): String =
+      layout_main_html(input).text
 
 
 object D24nSiteGenerator extends ZTSite.Static.Main(D24nSite)
