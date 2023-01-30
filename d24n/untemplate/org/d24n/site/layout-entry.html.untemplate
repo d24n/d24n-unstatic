@@ -10,7 +10,7 @@ given PageBase = PageBase.fromPage(input.renderLocation)
 input.mbTitle.foreach { title =>
 ()>       
         <div class="article-header">
-          <h2><a class="permalink" href="<( input.permalinkLocation.relative )>"><( title )></a></h2>
+          <h1><a class="permalink" href="<( input.permalinkLocation.relative )>"><( title )></a></h1>
         </div>
 <()
 }

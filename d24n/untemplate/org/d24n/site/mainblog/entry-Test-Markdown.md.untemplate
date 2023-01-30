@@ -1,0 +1,69 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "Let's test markdown posts",
+>   "Author"    -> "Steve Waldman",
+>   "PubDate"   -> "2023-01-29T19:53:00-05:00",
+> )
+
+import unstatic.PageBase
+given PageBase = PageBase.fromPage(input.renderPath)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>
+
+# <( attrs("Title") )>
+
+This is a markdown post. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. [^1]
+
+## Let's look at lists
+
+### Unordered
+
+It might have lists
+ - of things
+ - like this
+
+### Numbered
+
+It might even have
+1. Some number of
+2. numbered
+3. items
+
+## Can we link?
+
+This should be a link to [our home page](<( input.site.Link.Inside.Home.relative )>). **Boldly**. _Italically,_ ideally.
+No. ~~Strike that.~~
+
+## Let's code
+
+This would be code by indentation:
+
+    println("Hello World!")
+    for ( i <- 0 until 10 )
+      println(i)
+
+This would be code by code-fencing (scala):
+
+```scala
+implicit val LongHalfer : Halfable[Long] = {
+  override def half( l : Long ) : Long = l / 2
+}
+```
+
+Maybe soon we'll try extensions like tables and stuff.
+
+## Table!
+
+Here's a table! Stolen from [here](https://www.tablesgenerator.com/markdown_tables).
+
+| Tables   |      Are      |  Cool |
+|----------|:-------------:|------:|
+| col 1 is |  left-aligned | $1600 |
+| col 2 is |    centered   |   $12 |
+| col 3 is | right-aligned |    $1 |
+
+Cool.
+
+[^1]: If you could read this, you would be very moved.

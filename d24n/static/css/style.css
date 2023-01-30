@@ -29,6 +29,9 @@ body {
 i, em {
     font-family: 'LibreFranklinItalic';
 }
+b, strong {
+    font-variation-settings: "wght" 500;
+}
 blockquote {
     margin-left: 0;
     padding-left: 40px;
@@ -160,14 +163,28 @@ article {
     padding-top: 1.5em;
 }
 
-.article-header h2 {
+.article-header h1 {
     font-variation-settings: "wght" 650;
     font-size: 130%;
 }
 .article-body {
 }
+.article-body h1 {
+    font-variation-settings: "wght" 600;
+    font-size: 130%;
+}
+.article-body h2 {
+    font-variation-settings: "wght" 600;
+    font-size: 115%;
+}
 .article-body h3 {
     font-variation-settings: "wght" 600;
+}
+.article-body h4 {
+    font-variation-settings: "wght" 500;
+}
+.article-body h5 {
+    font-variation-settings: "wght" 500;
 }
 .article-footer {
     text-align: right;
@@ -204,6 +221,10 @@ article {
 #footer-credits div {
     padding-top: 1.5em;
     font-size: 90%;
+}
+
+.flexmark .footnotes p {
+    display: inline;
 }
 
 
