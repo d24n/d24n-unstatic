@@ -1,15 +1,10 @@
 package org.d24n.site
 
 import scala.collection.*
-import scala.util.Properties.lineSeparator as LineSep
-import java.time.*
-import java.time.format.DateTimeFormatter.{ISO_INSTANT, ISO_LOCAL_DATE}
-import java.time.temporal.ChronoField
 import java.nio.file.Path as JPath
-import untemplate.Result
-import zio.*
-import unstatic.UrlPath.*
+import java.net.URL
 import unstatic.*
+import unstatic.UrlPath.*
 import unstatic.ztapir.*
 import unstatic.ztapir.simple.*
 
@@ -21,8 +16,8 @@ object D24nSite extends ZTSite.Composite:
       case Donate extends Inside( Rooted("/donate/index.html") )
       case Stylesheet extends Inside( Rooted("/css/style.css") )
       case Logo extends Inside(Rooted("/image/d24n-web-logo-x2.png"))
-    enum Outside( val url : Abs ):
-      case Apply extends Outside( Abs("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
+    enum Outside( val url : URL ):
+      case Apply extends Outside( URL("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
   override val serverUrl : Abs    = Abs("https://d24n.org/")
   override val basePath  : Rooted = Rooted("/d24n-test")
