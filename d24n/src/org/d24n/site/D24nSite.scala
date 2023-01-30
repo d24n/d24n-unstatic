@@ -23,10 +23,10 @@ object D24nSite extends ZTSite.Composite:
   override val basePath  : Rooted = Rooted("/d24n-test")
 
   // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
-  override lazy val locationBindingSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( StaticResources )
-  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, StaticResources )
+  override lazy val locationBindingSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( AllStaticResources )
+  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, AllStaticResources )
 
-  val StaticResources = new ZTStaticResources[D24nSite.type]:
+  object AllStaticResources extends ZTStaticResources[D24nSite.type]:
     override val site = D24nSite.this
     override def locationBindings: immutable.Seq[StaticLocationBinding] =
       Vector("wp-content","css","font","image")
