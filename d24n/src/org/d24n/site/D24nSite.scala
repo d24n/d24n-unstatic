@@ -35,6 +35,7 @@ object D24nSite extends ZTSite.Composite:
   object MainBlog extends SimpleBlog:
     override type Site = D24nSite.type
     override val site = D24nSite.this
+    override val title = "Decentralization Foundation Updates"
     override val frontPage = Link.Inside.Home
     override val maxFrontPageEntries = 8
     override def entryUntemplates =
