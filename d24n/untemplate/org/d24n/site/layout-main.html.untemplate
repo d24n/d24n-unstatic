@@ -8,6 +8,7 @@ val Link = input.renderLocation.site.Link
   <head>
     <title>Empowering the Edges</title>
     <link rel="stylesheet" href="<( Link.Inside.Stylesheet.relative )>" />
+    <( input.blog.feedLinkHtml )>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8"/>
     <script type="application/javascript">
