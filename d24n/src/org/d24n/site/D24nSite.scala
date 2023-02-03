@@ -77,5 +77,5 @@ object D24nSite extends ZTSite.Composite:
       val mainLayoutInput = MainLayoutInput( input.renderLocation, input.mainContentHtml )
       layout_main_html(mainLayoutInput).text
 
-// object D24nSiteGenerator extends ZTSite.Dynamic.Main(D24nSite)
+//object D24nSiteGenerator extends ZTSite.Dynamic.Main(D24nSite)
 object D24nSiteGenerator extends ZTSite.Static.Main(D24nSite)

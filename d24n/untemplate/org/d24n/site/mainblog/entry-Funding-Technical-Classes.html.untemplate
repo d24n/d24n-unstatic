@@ -1,0 +1,28 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "Funding Technical Classes",
+>   "Author"    -> "Chris Peel",
+>   "PubDate"   -> "2021-08-17",
+>   "Permalink" -> "2021/08/17/funding-technical-classes/index.html",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>
+
+<p style="font-size:smaller"><em>Updated 10 November 2022: The requirement that classes be in a language other than English was removed.</em></p>
+
+<p>d24n.org is looking for academic courses focused on decentralizing technology to fund with significant grants. We are especially interested in funding such courses in Latin America and in other locations where such grants would go farther and where a course in the local language would allow more people to learn about blockchain technology. We require that video and other course material be made available for free online.</p>
+
+<p>Education has been part of our mission from the start; quoting our first blog post &#8220;We want to educate this community and others on the underlying technology, including its potential and limitations.&#8221; We are open to courses that are not focused on the technology, such as those focused on cryptocurrency economics and sociology, though such will face more scrutiny during the review process. We believe that high-quality technical courses (such as those below) at universities are a great aid in building local communities that are knowledgeable about decentralizing technology.</p>
+
+<p>Here are examples of technical courses that we see as excellent models:</p>
+
+<ul>
+<li>&#8220;<a href="http://web.stanford.edu/class/ee374/">Internet-Scale Consensus in the Blockchain Era</a>&#8221; taught by David Tse at Stanford in 2021. The focus of this course is on blockchain consensus such as proof-of-work and proof-of-stake, which are analyzed in terms of throughput, efficiency, and security.</li>
+<li>&#8220;<a href="https://cs251.stanford.edu/syllabus.html">Bitcoin and Cryptocurrencies</a>&#8221; was taught by Dan Boneh at Stanford in 2020. This course covered blockchain basics, consensus protocols, and blockchain scaling. This has a broader focus than Tse. &#8220;<a href="https://soc1024.ece.illinois.edu/teaching/ece398sc/spring2018/">Smart Contracts and Blockchain Security</a>&#8221; by Andrew Miller at UIUC is a similar broadly-focused course.</li>
+<li>A technical cryptography course that focuses on other areas (one-way functions, public-key cryptography, zero-knowledge proofs) yet includes significant content on the basics of how a blockchain works is acceptable.</li>
+</ul>
+
+<p>In all cases we require that the course be taught in an academic setting, that video, syllabi, and homework be made available online, and that a connection with the community outside the academic setting be made (say local meetups). We require that such courses cover potential problems with the technology (e.g. energy efficiency and scalability). We are mainly interested in funding such courses in areas where English proficiency is not as high and where online material for a course in the local language would facilitate better understanding of blockchain technology. </p>
+
+<p>We believe that these technical courses would provide critical context for local cryptocurrency, IPFS, or similar communities in which a strong technical background is not common.  Please go to <a href="<( input.site.Link.Inside.Home.relative )>">d24n.org</a> and fill out an <a href="https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform">application</a>!</p>
