@@ -12,8 +12,10 @@
 }
 
 :root {
-    --side-margin:    60px;
     --main-font-size: 17px;
+
+    --min-side-margin:    60px;
+    --max-main-width: min(calc(100vw - 2 * var(--min-side-margin)), 800px);
 }
 
 * {
@@ -55,8 +57,9 @@ a.permalink:hover {
     text-decoration: underline;
 }
 hr {
-    margin-left:  var( --side-margin );
-    margin-right: var( --side-margin );
+    max-width:    var( --max-main-width );
+    margin-left:  auto;
+    margin-right: auto;
 }
 hr.centered-black {
     border: 1px solid black;
@@ -119,8 +122,9 @@ hr.article-separator::before {
     padding-top:    35px;
     padding-bottom: 1.5em;
 
-    margin-left:  var(--side-margin);
-    margin-right: var(--side-margin);
+    max-width:    var( --max-main-width );
+    margin-left:  auto;
+    margin-right: auto;
 
     font-variation-settings: "wght" 400;
     line-height: 100%;
@@ -130,7 +134,11 @@ hr.article-separator::before {
 }
 #main-header #tagline-nav {
     padding-top: 35px;
-    
+
+    max-width:    var( --max-main-width );
+    padding-left:  auto;
+    padding-right: auto;
+
     display: grid;
     grid-template-rows: auto;
     grid-template-columns: 50% 50%;
@@ -159,8 +167,9 @@ hr.article-separator::before {
     color: red;
 }
 main {
-    margin-left:  var(--side-margin);
-    margin-right: var(--side-margin);
+    max-width:    var( --max-main-width );
+    margin-left:  auto;
+    margin-right: auto;
 }
 article {
     padding-top: 0em;
@@ -209,8 +218,8 @@ article {
     font-size: 75%;
 }
 #main-footer {
-    margin-left:  var(--side-margin);
-    margin-right: var(--side-margin);
+    margin-left:  var(--min-side-margin);
+    margin-right: var(--min-side-margin);
     
     display: grid;
     grid-template-rows: auto 4em;
@@ -248,7 +257,7 @@ article {
 #about-us-main {
     display: grid;
     grid-template-rows: repeat(5, fit-content);
-    grid-template-columns: 400px auto;
+    grid-template-columns: min-content auto;
     column-gap: 2em;
     row-gap: 2em;
     align-items: start;
@@ -258,12 +267,15 @@ article {
 }
 .about-us-left-header {
     font-variation-settings: "wght" 600;
+    padding-left: 50px;
     text-align: right;
+    white-space: nowrap;
 }
 #about-us-top-header-a {
     text-align: right;
     grid-column: 1 / span 1;
     grid-row: 1 / span 1;
+    white-space: nowrap;
 }
 #about-us-headertext {
     position: relative;
@@ -332,7 +344,7 @@ a.donate-with-crypto {
 
 @media only screen and (max-width: 700px) {
     :root {
-        --side-margin:    28px;
+        --min-side-margin:    28px;
         --main-font-size: 15px;
     }
     #hamburger {
@@ -342,8 +354,8 @@ a.donate-with-crypto {
 	    display: none;
     }
     #main-footer {
-	    margin-left:  var(--side-margin);
-	    margin-right: var(--side-margin);
+	    margin-left:  var(--min-side-margin);
+	    margin-right: var(--min-side-margin);
     
     	display: grid;
         grid-template-rows: auto auto 4em;
@@ -368,8 +380,11 @@ a.donate-with-crypto {
     }
     .about-us-left-header {
         font-size: 110%;
+        padding-left: 0px;
+        text-align: left;
     }
     #about-us-top-header-a {
+        text-align: left;
         grid-column: 1 / span 1;
         grid-row: 1 / span 1;
     }
