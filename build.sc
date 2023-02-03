@@ -34,12 +34,12 @@ object d24n extends UntemplateModule {
   override def untemplateSelectCustomizer: untemplate.Customizer.Selector = { key =>
     var out = untemplate.Customizer.empty
 
-    // imports and types for mainblog entries
-    if (key.resolvedPackage.contains(".mainblog") && key.resolvedFunctionName.startsWith("entry"))
-      out = out.copy(extraImports=out.extraImports :+ "org.d24n.site.*")
+    // for everything
+    out = out.copy(extraImports=out.extraImports :+ "org.d24n.site.*" :+ "unstatic.*")
 
-    if (key.resolvedFunctionName.startsWith("layout_"))
-      out = out.copy(extraImports=out.extraImports ++ Seq("org.d24n.site.*","unstatic.*", "D24nSite.MainBlog.Layout"))
+    // imports and types for mainblog entries
+    if (key.resolvedPackage.contains(".mainblog") && key.resolvedFunctionName.startsWith("layout_"))
+        out = out.copy(extraImports=out.extraImports ++ Seq("D24nSite.MainBlog.Layout"))
 
     out
   }

@@ -1,0 +1,95 @@
+given PageBase = PageBase.fromPage(renderLocation)
+
+val site = renderLocation.site
+
+val appLoc      = site.location("wp-content/uploads/2021/09/7840f-form-1023.pdf")
+val approvalLoc = site.location("wp-content/uploads/2021/09/417a2-501c3approval.pdf")
+val bylawsLoc   = site.location("wp-content/uploads/2021/09/ff810-bylaws-signed-by-secretary-the-decentralization-foundation.pdf")
+val artIncLoc   = site.location("wp-content/uploads/2021/09/30067-articles-of-incorporation-signed.pdf")
+
+// external
+val tax2018 = "https://drive.google.com/file/d/1vXRnARcjcz3JHpg6D-JGFbohJ7-ZGCU2/view?usp=sharing"
+val tax2019 = "https://drive.google.com/file/d/10Mo1Lu9vSvTTsij5XIbYXkaKHoUVe4L8/view?usp=sharing"
+val tax2020 = "https://apps.irs.gov/pub/epostcard/cor/831507845_202012_990_2021052418173721.pdf"
+val tax2021 = "https://drive.google.com/file/d/1ErO9fTORBdobWyN_jJU7GgwgNp6uQORI/view?usp=share_link"
+
+(renderLocation : D24nSite.SiteLocation)[]~()>
+
+<div id="about-us-main">
+    <div id="about-us-top-header-a">
+        <div id="about-us-headertext">About Us</div>
+    </div>
+    <div id="about-us-top-header-b">
+        &nbsp;
+    </div>
+    <div id="about-us-mission-header" class="about-us-left-header">
+        Mission
+    </div>
+    <div id="about-us-mission-text" class="about-us-text">
+        The Decentralization Foundation (d24n for short) is a 501(c)(3) non-profit founded to promote
+        decentralizing technology, educate the world on its potential, and fund research to improve it.
+    </div>
+    <div id="about-us-techsoc-header" class="about-us-left-header">
+        Technology and Society
+    </div>
+    <div id="about-us-techsoc-text" class="about-us-text">
+        <p>
+            Technology has been an important part of the dramatic drop in extreme poverty, increase in literacy and
+            basic education, and spread of democracy worldwide; unfortunately technology has also contributed to
+            growing disparities in wealth, opportunity, and economic security.
+        </p>
+        <p>
+            Decentralized technology can dramatically improve access to finance, facilitate commerce, and
+            enable distributed organizations. We do not think this improvement is a given; a long-term goal
+            of the organization is to ensure that decentralized technology improves the world we live in.
+        </p>
+    </div>
+    <div id="about-us-whodafuk-header" class="about-us-left-header">
+        Who We Are
+    </div>
+    <div id="about-us-whodafuk-text" class="about-us-text">
+        <p>
+            Chris Peel is the president and a director of d24n. He has degrees in electrical engineering, and is
+            a senior member of the Institute of Electrical and Electronics Engineers. Chris is a wireless
+            physical-layer engineer and organizer of the <i>Silicon Valley Ethereum</i> meetup.
+        </p>
+        <p>
+            Steve Waldman is secretary, treasurer, and a director of d24n. He is a software developer and
+            economics writer. His work at the blog <a href="https://www.interfluidity.com/"><i>Interfluidity</i></a>  has been cited by the <i>New York Times</i>,
+            the <i>Financial Times</i>, and <i>The Economist</i>. He has taught financial modeling and corporate finance
+            at the University of Kentucky, and is currently working on tools and applications for the
+            Ethereum blockchain.
+        </p>
+        <p>
+            <a href="http://elaineou.com/">Elaine Ou</a> is a director of d24n; she is a Bloomberg Opinion columnist and a blockchain engineer
+            at Global Financial Access in San Francisco. Previously she was a lecturer in the Electrical and
+            Information Engineering department at the University of Sydney.
+        </p>
+        <p>
+            Jeff Flowers is vice president of d24n; he is a professor of chemistry at the College of San Mateo
+            and holds a EdD from San Francisco State University as well as his MS in Physical Chemistry from
+            University of California, Riverside. He has taught classes on blockchain technology in venues around
+            the world.
+        </p>
+    </div>
+    <div id="about-us-nondocs-header" class="about-us-left-header">
+        Non-profit documents
+    </div>
+    <div id="about-us-nondocs-text" class="about-us-text">
+        <p>
+            The foundation has been granted 501(c)(3) status by the IRS. For transparency, here are documents related
+            to our non-profit status:
+        </p>
+        <ul>
+            <li><a href="<( appLoc.relative )>">Our application (f1023)</a> to the IRS for non-profit status</li>
+            <li>The <a href="<( approvalLoc.relative )>">letter</a> approving our application</li>
+            <li>Our <a href="<( bylawsLoc.relative )>">bylaws</a></li>
+            <li>Our <a href="<( artIncLoc.relative )>">Articles of Incorporation</a></li>
+            <li>
+                Postcard (f990n) tax returns for <a href="<( tax2018 )>">2018</a> and
+                <a href="<( tax2019 )>">2019</a>, the form 990 tax return for
+                <a href="<( tax2019 )>">2020</a>, and a form 990-EZ for <a href="<( tax2021 )>">2021</a>.
+            </li>
+        </ul>
+    </div>
+</div>

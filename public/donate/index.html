@@ -1,16 +1,9 @@
-given PageBase = PageBase.fromPage(input.renderLocation)
-
-val site = input.renderLocation.site
-val Link = site.Link
-val blog = site.MainBlog
-
-(input : D24nSite.MainLayoutInput)[]~()>
 <!doctype html>
 <html lang="en-US">
   <head>
     <title>Empowering the Edges</title>
-    <link rel="stylesheet" href="<( Link.Inside.Stylesheet.relative )>" />
-    <( blog.feedLinkHtml )>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Decentralization Foundation Updates" href="https://d24n.org/d24n-test/feed.rss" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8"/>
     <script type="application/javascript">
@@ -33,29 +26,45 @@ val blog = site.MainBlog
         <div class="burger"></div>
       </div>
       <div id="hamburger-menu">
-          <div><a href="<( Link.Inside.Home.relative )>">Home</a></div>
-          <div><a href="<( Link.Inside.AboutUs.relative )>">About</a></div>
-          <div><a href="<( Link.Outside.Apply.url )>">Apply</a></div>
-          <div><a href="<( Link.Inside.Donate.relative )>">Donate</div>
+          <div><a href="../index.html">Home</a></div>
+          <div><a href="../about-us/index.html">About</a></div>
+          <div><a href="https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform">Apply</a></div>
+          <div><a href="index.html">Donate</div>
       </div>
       <div id="logo">
-        <a href="<( Link.Inside.Home.relative )>"><img src="<( Link.Inside.Logo.relative )>" width="120" height="37" /></a>
+        <a href="../index.html"><img src="../image/d24n-web-logo-x2.png" width="120" height="37" /></a>
       </div>
       <div id="tagline-nav">
         <div id="tagline">
           Empowering the Edges
         </div>
         <nav>
-          <div><a href="<( Link.Inside.Donate.relative )>">Donate</div>
-          <div><a href="<( Link.Outside.Apply.url )>">Apply</a></div>
-          <div><a href="<( Link.Inside.AboutUs.relative )>">About</a></div>
-          <div><a href="<( Link.Inside.Home.relative )>">Home</a></div>
+          <div><a href="index.html">Donate</div>
+          <div><a href="https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform">Apply</a></div>
+          <div><a href="../about-us/index.html">About</a></div>
+          <div><a href="../index.html">Home</a></div>
         </nav>
       </div>
     </header>
     <main>
 
-      <( input.mainContentHtml )>
+      
+<div id="donate-main" class="article-body">
+    <h1>Donate</h1>
+
+	<div class="donate-main-content">
+        <p>The Decentralization Foundation is a 501(c)(3) organization; donations are tax deductible for US taxpayers.</p>
+        <p>We welcome cryptocurrency donations <a href="https://commerce.coinbase.com/checkout/833936c7-3c59-469a-95ec-74e69055c4d1">here</a> or using the widget below, where you can donate Bitcoin, Bitcoin Cash, Ethereum, Litecoin, Dogecoin, DAI, or USD Coin.&nbsp; If you&#8217;d like to donate another token or currency, contact us at <a href="mailto:decentralizationfoundation@gmail.com">decentralizationfoundation@gmail.com.</a></p>
+
+        <div id="coinbase-widget">
+            <a class="donate-with-crypto" href="https://commerce.coinbase.com/checkout/833936c7-3c59-469a-95ec-74e69055c4d1">
+                <span>Donate with Crypto</span>
+            </a>
+            <script src="https://commerce.coinbase.com/v1/checkout.js?version=201807"></script>
+        </div>
+    </div>
+</div>
+
       
     </main>
     <hr />

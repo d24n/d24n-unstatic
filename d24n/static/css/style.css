@@ -227,36 +227,172 @@ article {
     display: inline;
 }
 
+#about-us-main {
+    display: grid;
+    grid-template-rows: repeat(5, fit-content);
+    grid-template-columns: 400px auto;
+    column-gap: 2em;
+    row-gap: 2em;
+    align-items: start;
+}
+#about-us-main p {
+    margin-top: 0;
+}
+.about-us-left-header {
+    font-variation-settings: "wght" 600;
+    text-align: right;
+}
+#about-us-top-header-a {
+    text-align: right;
+    grid-column: 1 / span 1;
+    grid-row: 1 / span 1;
+}
+#about-us-headertext {
+    position: relative;
+    left: 1em;
+    font-size: 250%;
+    font-variation-settings: "wght" 600;
+    margin-top: 1em;
+    margin-bottom; 1em;
+}
+#about-us-top-header-b {
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 1;
+}
+#about-us-mission-header {
+    grid-column: 1 / span 1;
+    grid-row: 2 / span 1;
+}
+#about-us-mission-text {
+    grid-column: 2 / span 1;
+    grid-row: 2 / span 1;
+}
+#about-us-techsoc-header {
+    grid-column: 1 / span 1;
+    grid-row: 3 / span 1;
+}
+#about-us-techsoc-text {
+    grid-column: 2 / span 1;
+    grid-row: 3 / span 1;
+}
+#about-us-whodafuk-header {
+    grid-column: 1 / span 1;
+    grid-row: 4 / span 1;
+}
+#about-us-whodafuk-text {
+    grid-column: 2 / span 1;
+    grid-row: 4 / span 1;
+}
+#about-us-nondocs-header {
+    grid-column: 1 / span 1;
+    grid-row: 5 / span 1;
+}
+#about-us-nondocs-text {
+    grid-column: 2 / span 1;
+    grid-row: 5 / span 1;
+}
+
+#donate-main #coinbase-widget {
+    text-align: center;
+    margin-bottom: 1.5em;
+}
+
+/* scraped from Brave's computed CSS */
+a.donate-with-crypto {
+    user-select: none;
+    -webkit-user-drag: none;
+    text-decoration: none;
+    background: #1652f0 linear-gradient(#1652f0, #0655ab);
+    cursor: pointer;
+    transition: background 0.2s ease-in-out, padding 0.2s;
+    border-radius: 6px;
+    display: inline-block;
+    height: 40px;
+    padding: 9px 15px 11px 15px;
+    position: relative;
+}
 
 @media only screen and (max-width: 700px) {
     :root {
-	--side-margin:    28px;
-	--main-font-size: 15px;
+        --side-margin:    28px;
+        --main-font-size: 15px;
     }
     #hamburger {
-	display: block;
+	    display: block;
     }
     #main-header #tagline-nav {
-	display: none;
+	    display: none;
     }
     #main-footer {
-	margin-left:  var(--side-margin);
-	margin-right: var(--side-margin);
+	    margin-left:  var(--side-margin);
+	    margin-right: var(--side-margin);
     
-	display: grid;
-	grid-template-rows: auto auto 4em;
-	grid-template-columns: auto;
+    	display: grid;
+        grid-template-rows: auto auto 4em;
+        grid-template-columns: auto;
     }
     #footer-foundation {
-	grid-column: 1 / span 1;
-	grid-row: 1 / span 1;
+        grid-column: 1 / span 1;
+        grid-row: 1 / span 1;
     }
     #footer-connect {
-	grid-column: 1 / span 1;
-	grid-row: 2 / span 1;
+        grid-column: 1 / span 1;
+        grid-row: 2 / span 1;
     }
     #footer-credits {
-	grid-column: 1 / span 1;
-	grid-row: 3 / span 1;
+        grid-column: 1 / span 1;
+        grid-row: 3 / span 1;
+    }
+    #about-us-main {
+        display: grid;
+        grid-template-rows: repeat(10, fit-content);
+        grid-template-columns: auto;
+    }
+    .about-us-left-header {
+        font-size: 110%;
+    }
+    #about-us-top-header-a {
+        grid-column: 1 / span 1;
+        grid-row: 1 / span 1;
+    }
+    #about-us-headertext {
+        position: relative;
+        left: 0em;
+    }
+    #about-us-top-header-b {
+        grid-column: 1 / span 1;
+        grid-row: 2 / span 1;
+    }
+    #about-us-mission-header {
+        grid-column: 1 / span 1;
+        grid-row: 3 / span 1;
+    }
+    #about-us-mission-text {
+        grid-column: 1 / span 1;
+        grid-row: 4 / span 1;
+    }
+    #about-us-techsoc-header {
+        grid-column: 1 / span 1;
+        grid-row: 5 / span 1;
+    }
+    #about-us-techsoc-text {
+        grid-column: 1 / span 1;
+        grid-row: 6 / span 1;
+    }
+    #about-us-whodafuk-header {
+        grid-column: 1 / span 1;
+        grid-row: 7 / span 1;
+    }
+    #about-us-whodafuk-text {
+        grid-column: 1 / span 1;
+        grid-row: 8 / span 1;
+    }
+    #about-us-nondocs-header {
+        grid-column: 1 / span 1;
+        grid-row: 9 / span 1;
+    }
+    #about-us-nondocs-text {
+        grid-column: 1 / span 1;
+        grid-row: 10 / span 1;
     }
 }

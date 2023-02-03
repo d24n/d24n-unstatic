@@ -19,12 +19,27 @@ object D24nSite extends ZTSite.Composite:
     enum Outside( val url : URL ):
       case Apply extends Outside( URL("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
+  case class MainLayoutInput( renderLocation : SiteLocation, mainContentHtml : String )
+
   override val serverUrl : Abs    = Abs("https://d24n.org/")
   override val basePath  : Rooted = Rooted("/d24n-test")
 
   // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
   override lazy val locationBindingSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( AllStaticResources )
-  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, AllStaticResources )
+  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, MiscPageResources, AllStaticResources )
+
+  object MiscPageResources extends ZTEndpointBinding.Source:
+    // Home is the blog front page, the MainBlog generates
+
+    def task( renderLocation : SiteLocation, generator : SiteLocation => untemplate.Result[Nothing]) = zio.ZIO.attempt {
+      val mainContentHtml = generator(renderLocation).text
+      layout_main_html(MainLayoutInput(renderLocation, mainContentHtml)).text
+    }
+
+    val AboutUsBinding = ZTEndpointBinding.publicReadOnlyHtml(Link.Inside.AboutUs, task(Link.Inside.AboutUs, page_about_us_html))
+    val DonateBinding  = ZTEndpointBinding.publicReadOnlyHtml(Link.Inside.Donate,  task(Link.Inside.Donate, page_donate_html))
+
+    def endpointBindings : immutable.Seq[ZTEndpointBinding] = Vector(AboutUsBinding,DonateBinding)
 
   object AllStaticResources extends ZTStaticResources[D24nSite.type]:
     override val site = D24nSite.this
@@ -47,11 +62,15 @@ object D24nSite extends ZTSite.Composite:
       val generator : MediaPathPermalink.Generator = givenPermalinkInMediaDirOrElse( yearMonthDayNameDir )
       generator( checkable, ut )
 
-    override def layoutEntry(input: Layout.Input.Entry): String = layout_entry_html(input).text
+    override def layoutEntry(input: Layout.Input.Entry): String = mainblog.layout_entry_html(input).text
 
     // overriding a def, but it's just a constant, so we override with lazy val
     override lazy val entrySeparator : String = decorative.article_separator_html().text
 
-    override def layoutPage(input: Layout.Input.Page): String = layout_main_html(input).text
+    // here the blog shares the sites main overall layout
+    override def layoutPage(input: Layout.Input.Page): String =
+      val mainLayoutInput = MainLayoutInput( input.renderLocation, input.mainContentHtml )
+      layout_main_html(mainLayoutInput).text
 
+// object D24nSiteGenerator extends ZTSite.Dynamic.Main(D24nSite)
 object D24nSiteGenerator extends ZTSite.Static.Main(D24nSite)
