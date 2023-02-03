@@ -7,4 +7,5 @@
 
 given PageBase = PageBase.fromPage(input.renderLocation)
 
-(input : D24nSite.MainBlog.EntryInput)[]~()>
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### just add markup or html below!
+
