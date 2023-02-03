@@ -25,8 +25,15 @@ object D24nSite extends ZTSite.Composite:
   override val basePath  : Rooted = Rooted("/d24n-test")
 
   // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
-  override lazy val locationBindingSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( AllStaticResources )
-  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, MiscPageResources, AllStaticResources )
+  // note that static resources need to be included both as static locations and as endpoints, so that they can be
+  // both generated and served!
+  //
+  // avoid conflicts, but...
+  //   (1) early items in the lists take precedence over later items
+  //   (2) endpoint bindings take precedence over location bindings
+  //
+  override lazy val locationBindingSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( RootStaticResource )
+  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, MiscPageResources, RootStaticResource )
 
   object MiscPageResources extends ZTEndpointBinding.Source:
     // Home is the blog front page, the MainBlog generates
@@ -41,11 +48,9 @@ object D24nSite extends ZTSite.Composite:
 
     def endpointBindings : immutable.Seq[ZTEndpointBinding] = Vector(AboutUsBinding,DonateBinding)
 
-  object AllStaticResources extends ZTStaticResources[D24nSite.type]:
+  object RootStaticResource extends ZTStaticResources[D24nSite.type]:
     override val site = D24nSite.this
-    override def locationBindings: immutable.Seq[StaticLocationBinding] =
-      Vector("wp-content","css","font","image")
-        .map( dir => StaticLocationBinding( Rooted.fromElements(dir), JPath.of("d24n/static", dir) ) )
+    override def locationBindings: immutable.Seq[StaticLocationBinding] = List(StaticLocationBinding(Rooted.root, JPath.of("d24n/static")))
 
   object MainBlog extends SimpleBlog:
     override type Site = D24nSite.type
