@@ -6,16 +6,19 @@
     font-family: 'LibreFranklinItalic';
     src: url('../font/Libre_Franklin/LibreFranklin-Italic-VariableFont_wght.ttf');
 }
+@font-face {
+    font-family: 'IBMPlexMonoLight';
+    src: url('../font/IBM_Plex_Mono/IBMPlexMono-Light.ttf');
+}
 
 :root {
-    --side-margin:    40px;
+    --side-margin:    60px;
     --main-font-size: 17px;
 }
 
 * {
     box-sizing: border-box;
 }
-
 
 body {
     background: white;
@@ -114,7 +117,7 @@ hr.article-separator::before {
 
 #main-header {
     padding-top:    35px;
-    padding-bottom: 10px;
+    padding-bottom: 1.5em;
 
     margin-left:  var(--side-margin);
     margin-right: var(--side-margin);
@@ -160,12 +163,27 @@ main {
     margin-right: var(--side-margin);
 }
 article {
-    padding-top: 1.5em;
+    padding-top: 0em;
+}
+.article-top-date {
+    font-family: 'IBMPlexMonoLight';
+    font-size: 110%;
+    margin-top: 2em;
+    margin-bottom: 1.5em;
+}
+
+.presentation-multiple .article-top-date {
+    display: none;
 }
 
 .article-header h1 {
     font-variation-settings: "wght" 650;
     font-size: 130%;
+}
+.article-header.presentation-single h1, #donate-main h1 {
+    font-variation-settings: "wght" 650;
+    font-size: 230%;
+    line-height: 120%
 }
 .article-body {
 }
