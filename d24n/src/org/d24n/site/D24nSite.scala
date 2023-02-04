@@ -36,13 +36,12 @@ object D24nSite extends ZTSite.Composite:
   override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, MiscPageResources, RootStaticResource )
 
   object MiscPageResources extends ZTEndpointBinding.Source:
-    // Home is the blog front page, the MainBlog generates
-
     def task( renderLocation : SiteLocation, generator : SiteLocation => untemplate.Result[Nothing]) = zio.ZIO.attempt {
       val mainContentHtml = generator(renderLocation).text
       layout_main_html(MainLayoutInput(renderLocation, mainContentHtml)).text
     }
 
+    // Home is the blog front page, which MainBlog generates
     val AboutUsBinding = ZTEndpointBinding.publicReadOnlyHtml(Link.Inside.AboutUs, task(Link.Inside.AboutUs, page_about_us_html))
     val DonateBinding  = ZTEndpointBinding.publicReadOnlyHtml(Link.Inside.Donate,  task(Link.Inside.Donate, page_donate_html))
 
@@ -72,8 +71,8 @@ object D24nSite extends ZTSite.Composite:
 
     override def layoutEntry(input: Layout.Input.Entry): String = mainblog.layout_entry_html(input).text
 
-    // overriding a def, but it's just a constant, so we override with lazy val
-    override lazy val entrySeparator : String = decorative.article_separator_html().text
+    // overriding a def, but it's just a constant, so we override with val
+    override val entrySeparator : String = decorative.article_separator_html().text
 
     // here the blog shares the sites main overall layout
     override def layoutPage(input: Layout.Input.Page): String =
