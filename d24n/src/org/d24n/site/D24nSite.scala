@@ -57,7 +57,7 @@ object D24nSite extends ZTSite.Composite:
     override val site = D24nSite.this
     override val feedTitle = "Decentralization Foundation Updates"
     override val frontPage = Link.Inside.Home
-    override val maxFrontPageEntries = 8
+    override val maxFrontPageEntries = None
     override def entryUntemplates =
       val raw = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
       raw.map( _.asInstanceOf[EntryUntemplate] ).toSet
