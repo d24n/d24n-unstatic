@@ -60,6 +60,8 @@ hr {
     max-width:    var( --max-main-width );
     margin-left:  auto;
     margin-right: auto;
+
+    border: 1px solid black; /* let's default to thin black */
 }
 hr.centered-black {
     border: 1px solid black;
@@ -122,9 +124,8 @@ hr.article-separator::before {
     padding-top:    35px;
     padding-bottom: 1.5em;
 
-    max-width:    var( --max-main-width );
-    margin-left:  auto;
-    margin-right: auto;
+    margin-left:  var(--min-side-margin);
+    margin-right: var(--min-side-margin);
 
     font-variation-settings: "wght" 400;
     line-height: 100%;
@@ -134,10 +135,6 @@ hr.article-separator::before {
 }
 #main-header #tagline-nav {
     padding-top: 35px;
-
-    max-width:    var( --max-main-width );
-    padding-left:  auto;
-    padding-right: auto;
 
     display: grid;
     grid-template-rows: auto;
@@ -218,8 +215,10 @@ article {
     font-size: 75%;
 }
 #main-footer {
-    margin-left:  var(--min-side-margin);
-    margin-right: var(--min-side-margin);
+    max-width:    var( --max-main-width );
+    margin-left:  auto;
+    margin-right: auto;
+
     
     display: grid;
     grid-template-rows: auto 4em;
