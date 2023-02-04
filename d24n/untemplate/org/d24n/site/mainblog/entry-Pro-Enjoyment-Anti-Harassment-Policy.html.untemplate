@@ -1,0 +1,24 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "Pro-Enjoyment, Anti-Harassment Policy",
+>   "Author"    -> "Chris Peel",
+>   "PubDate"   -> "2019-08-26",
+>   "Permalink" -> "2019/08/26/pro-enjoyment/index.html",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### just add markup or html below!
+
+<p>The Decentralization Foundation supports several community groups, and looks forward to supporting others.  Our main goal in supporting them is to to provide technical content and education about decentralizing technology in an enjoyable way.  With this goal in mind, here is the foundation&#8217;s pro-enjoyment pro-enjoyment, anti-harassment policy that the foundation applies to itself, and requires groups that it supports to follow. </p>
+
+<p>Specifically, the foundation is dedicated to providing a enjoyable and harassment-free experience for everyone, regardless of gender, gender identity and expression, sexual orientation, disability, physical appearance, body size, race, age, religion, or whether you favor one crypto-currency or another. We do not tolerate harassment of event or group participants in any form. Sexual language and imagery is not appropriate for any event, including talks. Participants violating these rules may be expelled from an event or from a group at the discretion of the organizers.&nbsp; Harassment includes, but is not limited to:</p>
+
+<ul><li>Sexual images in public spaces</li><li>Deliberate intimidation, stalking, or following&nbsp;</li><li>Harassing photography or recording</li><li>Sustained disruption of talks or other events</li><li>Inappropriate physical contact</li><li>Unwelcome sexual attention</li><li>Advocating for, or encouraging, any of the above behavior</li></ul>
+
+<p>Participants asked to stop any harassing behavior are expected to comply immediately.</p>
+
+<p>If a participant engages in harassing behavior, event organizers retain the right to take any actions to keep the event a welcoming environment for all participants. This includes warning the offender or expulsion from the event and group.&nbsp;</p>
+
+<p>If someone makes you or anyone else feel unsafe or unwelcome, please report it as soon as possible to an organizer or event host in person, or to decentralizationfoundation@gmail.com.  Harassment and other code of conduct violations reduce the value of events for everyone. We want you to be happy and enjoy events we sponsor. People like you make our event a better place.</p>
+
+

@@ -1,11 +1,11 @@
 > val UntemplateAttributes = immutable.Map[String,Any] (
->   "Title"     -> "Funding Technical Classes",
+>   "Title"     -> "Activities in 2018",
 >   "Author"    -> "Chris Peel",
->   "PubDate"   -> "2021-08-17",
->   "Permalink" -> "2021/08/17/funding-technical-classes/index.html",
+>   "PubDate"   -> "2019-04-17",
+>   "Permalink" -> "2019/04/17/activities-in-2018/index.html",
 > )
 
 given PageBase = PageBase.fromPage(input.renderLocation)
 
-(input : D24nSite.MainBlog.EntryInput)[]~()>      ### just add markup or html below!
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markup or html below!
 
