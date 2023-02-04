@@ -1,0 +1,18 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "Thank you!",
+>   "Author"    -> "Chris Peel",
+>   "PubDate"   -> "2020-11-06",
+>   "Permalink" -> "2020/11/06/thank-you/index.html",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### just add markup or html below!
+
+<p>Thank you <a href="https://twitter.com/jamesfickel">James Fickel</a>! The Decentralization Foundation is a 501(c)(3) nonprofit and relies entirely on donations to operate and continue our vision of a decentralized future. Everyone at D24N.org is grateful for a very generous donation by James. This donation reinforces our belief of a decentralized future as well as a trust given to everyone at the Foundation to realize these goals; we at D24N.org will work hard to ensure this trust is well earned. James’ donation will help the Foundation fulfill its mission of promoting decentralizing technology, educating the world on its transformative potential, and funding research to improve it.</p>
+
+<p>Thank you Gustav Simonsson!  Gustav made a large donation that funded much of our work through 2019.</p>
+
+<p>Donations to 501(c)(3) organizations can be restricted to a specific area of focus, or be unrestricted. As an example of restricted donations, the foundation until recently allowed donations specifically for Ethereum 2 Research and Development. Unrestricted donations may be used for any of the non-profit&#8217;s charitable purposes, and are much easier for the non-profit to use.  James&#8217; and Gustav&#8217;s donations were unrestricted.</p>
+
+<p>Thank you James and Gustav! And many thanks to our smaller donors and supporters. We are, for obvious reasons, very grateful to our larger supporters. But it&#8217;s our small donations that keep us decentralized, in harmony with our mission. Thanks to each and every one.</p>

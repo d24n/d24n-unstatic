@@ -1,0 +1,22 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "Grant to Sigma Prime for Ethereum 2 Research",
+>   "Author"    -> "Chris Peel",
+>   "PubDate"   -> "2020-11-04",
+>   "Permalink" -> "2020/11/04/grant-to-sigma-prime-for-ethereum-2-research/index.html",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### just add markup or html below!
+
+
+<p>The Foundation has made a significant grant to <a href="https://sigmaprime.io/">Sigma Prime</a> for continued scientific research and development related to Ethereum 2. This will fund critical efforts, with all findings open to the public in the form of a research paper to be published later. We are committed to a decentralized future, including pushing the envelope of necessary core technologies such as Ethereum 2 forward through support of innovative efforts and teams.</p>
+
+<p>Ethereum 2 is a long-planned upgrade focusing on scalability and proof-of-stake. Phase 0 is implementation of the beacon chain which lays the ground for shard chains and staked ETH. The Foundation believes that continued research on Ethereum 2 and development of associated open-source clients will benefit the Ethereum community as well as other blockchains.</p>
+
+<p>Sigma Prime has implemented Phase 0 of Ethereum 2 in the <a href="https://lighthouse.sigmaprime.io/">Lighthouse</a> client. This is one of the leading implementations; we are very happy to support Sigma Primes&#8217; work. Here is a quote from our grant agreement (with some legalese removed):</p>
+
+<blockquote class="wp-block-quote"><p>Sigma Prime will perform scientific research geared towards a) analysis of the appropriate mechanism for implementing an environmentally sustainable proof-of-stake consensus mechanism in an Ethereum 2 client; b) preliminary implementation of sharding to allow transaction scalability. <span style="font-size:inherit;">&#8230;</span>  <span style="font-size:inherit;">Sigma Prime will engage with the Ethereum community in order to educate and disseminate the fruits of the supported research.</span></p><p>Sigma Prime will deliver a scientific report that will include a) an executive summary aimed at a non-technical audience, b) an introduction to Ethereum 2, c) a summary of Ethereum 2 research and engineering challenges, d) a Lighthouse architecture overview, e) a review of the Lighthouse development process, f) key takeaways, and g) a roadmap for further scientific research and education.</p></blockquote>
+
+<p>We look forward to the report from Sigma Prime!</p>
+
