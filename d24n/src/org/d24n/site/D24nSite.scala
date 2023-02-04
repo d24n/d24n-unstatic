@@ -59,7 +59,10 @@ object D24nSite extends ZTSite.Composite:
     override val frontPage = Link.Inside.Home
     override val maxFrontPageEntries = None
     override def entryUntemplates =
-      val raw = IndexedUntemplates.filter { case (fqn, _) => fqn.indexOf(".mainblog.entry") >= 0 }.map( _(1) )
+      def isEntry( fqn : String ) =
+        val asVec = fqn.split('.').toVector
+        asVec.length > 1 && asVec.last.startsWith("entry") && asVec.contains("mainblog")
+      val raw = IndexedUntemplates.filter { case (fqn, _) => isEntry(fqn) }.map( _(1) )
       raw.map( _.asInstanceOf[EntryUntemplate] ).toSet
     override def mediaPathPermalink( checkable : Attribute.Checkable, ut : untemplate.Untemplate[?,?] ) : MediaPathPermalink =
       // a bit complicated, because we want to preserve original links, so we enable manual permalink specification
