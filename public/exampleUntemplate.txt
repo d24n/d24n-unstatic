@@ -2,7 +2,6 @@
 >   "Title"     -> "Activities in 2018",
 >   "Author"    -> "Chris Peel",
 >   "PubDate"   -> "2019-04-17",
->   "Permalink" -> "2019/04/17/activities-in-2018/index.html",
 > )
 
 given PageBase = PageBase.fromPage(input.renderLocation)
