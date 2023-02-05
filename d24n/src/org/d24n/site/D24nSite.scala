@@ -81,4 +81,4 @@ object D24nSite extends ZTSite.Composite:
       layout_main_html(mainLayoutInput).text
 
 // object D24nSiteGenerator extends ZTSite.Dynamic.Main(D24nSite)
-object D24nSiteGenerator extends ZTSite.Static.Main(D24nSite)
+object D24nSiteGenerator extends ZTSite.Main(D24nSite, "d24n-site")
