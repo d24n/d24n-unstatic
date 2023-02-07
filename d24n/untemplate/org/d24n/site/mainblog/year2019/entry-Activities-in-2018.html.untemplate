@@ -5,7 +5,8 @@
 >   "Permalink" -> "2019/04/17/activities-in-2018/index.html",
 > )
 
-val finReport = input.site.location("/wp-content/uploads/2021/09/d6fae-financial-report.pdf")
+val finReportLoc     = input.site.location("/wp-content/uploads/2021/09/d6fae-financial-report.pdf")
+val kestrelReportLoc = input.entryById("entry_Ethereum_Yellow_Paper_Improvements_Kestrel_html").permalink
 
 given PageBase = PageBase.fromPage(input.renderLocation)
 
@@ -15,8 +16,8 @@ given PageBase = PageBase.fromPage(input.renderLocation)
 
 <p>The foundation started in Aug 2018 using donations from anonymous sponsors totaling $20,000. We are very grateful for these generous donations!</p>
 
-<p>In October, the foundation gave a grant of $3,000 to the <a href="https://www.kestrel.edu/">Kestrel Institute</a> for work on the Ethereum yellow paper. The results of this grant are detailed in a separate <a href="https://d24n.org/kestrel-institute/">blog post</a>. We are very happy with Kestrel&#8217;s work. We funded a Silicon Valley Ethereum Meetup event with <a href="https://www.meetup.com/EthereumSiliconValley/events/254358234/">Yannis Smaragdakis</a> and another with <a href="https://www.meetup.com/EthereumSiliconValley/events/254621281/">Mooly Sagiv and Eric Smith</a>. These sort of events will be a priority in the future for us.</p>
+<p>In October, the foundation gave a grant of $3,000 to the <a href="https://www.kestrel.edu/">Kestrel Institute</a> for work on the Ethereum yellow paper. The results of this grant are detailed in a separate <a href="<( kestrelReportLoc.relative )>">blog post</a>. We are very happy with Kestrel&#8217;s work. We funded a Silicon Valley Ethereum Meetup event with <a href="https://www.meetup.com/EthereumSiliconValley/events/254358234/">Yannis Smaragdakis</a> and another with <a href="https://www.meetup.com/EthereumSiliconValley/events/254621281/">Mooly Sagiv and Eric Smith</a>. These sort of events will be a priority in the future for us.</p>
 
 <p>Unfortunately we paid $12,918 for legal expenses associated with setting up the foundation. Of course this is too much for our tiny foundation and we have switched to doing all legal work ourselves, including filing taxes. The other largest expense was $900 for rent; $300 per month for October, November, and December 2018. As with the legal expenses, this is too much for our non-profit and in collaboration with <a href="https://www.mindrome.com/en">Mindrome</a> and another Mindrome tenant, we found a way to keep the Mindrome address without significant expense.</p>
 
-<p>For more details, see our <a href="<( finReport.relative )>">2018 financial report</a>.</p>
+<p>For more details, see our <a href="<( finReportLoc.relative )>">2018 financial report</a>.</p>
