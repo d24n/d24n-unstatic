@@ -4,23 +4,28 @@ import java.time.format.DateTimeFormatter
 > val EndDateFormatter = DateTimeFormatter.ISO_LOCAL_DATE.withZone(java.time.ZoneId.systemDefault())
 
 val presentationTypeClass =
-  if input.presentationMultiple then "presentation-multiple" else "presentation-single"
+  s"presentation-${input.presentation.toString().toLowerCase}"
 
 given PageBase = PageBase.fromPage(input.renderLocation)
 
 (input : Layout.Input.Entry)[]~()>
       <article>
 <()
+import input.blog.Entry.Presentation
 ()>
         <div class="article-header <( presentationTypeClass)>">
+<()
+if input.presentation != Presentation.Rss then {
+()>
           <div class="article-top-date">
             <( TopDateFormatter.format(input.pubDate) )>
           </div>
 <()
-input.mbTitle.foreach { title =>
+  input.mbTitle.foreach { title =>
 ()>
           <h1><a class="permalink" href="<( input.permalinkLocation.relative )>"><( title )></a></h1>
 <()
+  }
 }
 ()>
         </div>

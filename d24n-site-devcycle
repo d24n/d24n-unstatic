@@ -1,5 +1,6 @@
 #!/bin/bash
 
-./mill -w d24n.runBackground serve
+./mill -w d24n.runBackground serve --verbose
+
 
 
