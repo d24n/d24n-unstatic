@@ -264,6 +264,7 @@ article {
 #footer-credits div {
     margin-top: 1.5em;
     font-size: 80%;
+    line-height: 160%;
     opacity: 30%;
     border-top: lightgray solid 1px;
 }
