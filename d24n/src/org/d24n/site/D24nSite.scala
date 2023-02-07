@@ -21,8 +21,12 @@ object D24nSite extends ZTSite.Composite:
 
   case class MainLayoutInput( renderLocation : SiteLocation, mainContentHtml : String )
 
-  override val serverUrl : Abs    = Abs("https://d24n.org/")
-  override val basePath  : Rooted = Rooted("/d24n-test")
+  // override val serverUrl : Abs    = Abs("https://d24n.org/")
+  // override val basePath  : Rooted = Rooted.root
+
+  // temporary values while developing on gh-pages:
+  override val serverUrl : Abs    = Abs("https://d24n.github.io/")
+  override val basePath  : Rooted = Rooted("/d24n-unstatic/")
 
   // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
   // note that static resources need to be included both as static locations and as endpoints, so that they can be
