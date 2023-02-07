@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm -rf out
+rm -rf out public docs
 touch build.sc

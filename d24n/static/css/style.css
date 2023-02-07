@@ -10,6 +10,11 @@
     font-family: 'IBMPlexMonoLight';
     src: url('../font/IBM_Plex_Mono/IBMPlexMono-Light.ttf');
 }
+@font-face {
+    font-family: 'IBMPlexMonoMedium';
+    src: url('../font/IBM_Plex_Mono/IBMPlexMono-Medium.ttf');
+}
+
 
 :root {
     --main-font-size: 17px;
@@ -78,6 +83,18 @@ hr.article-separator::before {
     content: '* * *';
     display: block;
     text-align: center;
+}
+pre code {
+    display: block;
+    font-family: 'IBMPlexMonoMedium';
+    font-size: 80%;
+    line-height: 160%;
+    background-color: black;
+    color: rgb(250, 190, 0);
+    padding: 1em 1.5em 1em 1.5em;
+    margin-left: 2em;
+    margin-right: 2em;
+    border-radius: 10px;
 }
 #hamburger {
     display:  none;
@@ -245,8 +262,10 @@ article {
     grid-row: 2 / span 1;
 }
 #footer-credits div {
-    padding-top: 1.5em;
-    font-size: 90%;
+    margin-top: 1.5em;
+    font-size: 80%;
+    opacity: 30%;
+    border-top: lightgray solid 1px;
 }
 
 .flexmark .footnotes p {

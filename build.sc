@@ -8,7 +8,7 @@ import mill.api.Result
 // huge thanks to @lolgab onn the Scala discord!
 import $file.buildCompilationSettings
 
-import $ivy.`com.mchange::untemplate-mill:0.0.2`
+import $ivy.`com.mchange::untemplate-mill:0.0.3-SNAPSHOT`
 import untemplate.mill._
 
 val TapirVersion = "1.2.6"

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./d24n-site gen -o docs

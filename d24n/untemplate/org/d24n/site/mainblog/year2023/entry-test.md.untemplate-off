@@ -1,0 +1,21 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "Test",
+>   "Author"    -> "Steve",
+>   "PubDate"   -> "2023-02-06",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markup or html below!
+
+This is just a blogpost to test auto refresh.
+
+I think it's kind of working!
+
+What next?
+
+
+
+
+
+

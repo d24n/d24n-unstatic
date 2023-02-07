@@ -5,7 +5,7 @@
 > )
 
 import unstatic.PageBase
-given PageBase = PageBase.fromPage(input.renderPath)
+given PageBase = PageBase.fromPage(input.renderLocation)
 
 (input : D24nSite.MainBlog.EntryInput)[]~()>
 

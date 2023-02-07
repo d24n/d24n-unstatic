@@ -1,0 +1,5 @@
+#!/bin/bash
+
+./mill -w d24n.runBackground serve
+
+
