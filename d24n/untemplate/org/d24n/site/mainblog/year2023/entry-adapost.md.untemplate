@@ -193,7 +193,7 @@ If you use the command
 You'll start up a server on port 8999 of your local machine.
 
 Because (temporarily), this site lives
-(on _GitHub Pages_ under the path `d24n_unstatic`, you'll need to point your browser to
+on _GitHub Pages_ under the path `d24n_unstatic`, you'll need to point your browser to
 [`http://localhost:8999/d24n-unstatic/`](http://localhost:8999/d24n-unstatic/) to see the served
 site.
 
