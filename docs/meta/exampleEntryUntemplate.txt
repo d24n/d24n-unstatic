@@ -6,4 +6,4 @@
 
 given PageBase = PageBase.fromPage(input.renderLocation)
 
-(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markup or html below!
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!

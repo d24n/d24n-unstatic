@@ -16,7 +16,7 @@ val entryUntemplateLoc          = input.site.location(entryUntemplateSiteRootPat
 // from repository root
 val untemplateTemplateText = Files.readString( Path.of("d24n/static", entryUntemplateSiteRootPath) )
 
-(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markup or html below!
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
 
 It's pretty easy. And cheaper than shelter!
 
@@ -103,7 +103,7 @@ to copy and paste [on the site itself](<( entryUntemplateLoc.relative )>). Or, h
 
 
 Now, just do as the [delimiter comment](https://github.com/swaldman/untemplate-doc#long-delimiters-header-notes-and-comments)
-instructs. Modify Title/Author/Pubdate above, add markup (since this is a `.md.untemplate` file) below!
+instructs. Modify Title/Author/Pubdate above, add markdown (since this is a `.md.untemplate` file) below!
 
 <div style="font-size: 70%;">
 
@@ -116,7 +116,7 @@ instructs. Modify Title/Author/Pubdate above, add markup (since this is a `.md.u
 
 given PageBase = PageBase.fromPage(input.renderLocation)
 
-\(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markup or html below!
+\(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
 
 Hi! My name is Steve, and I'm, well, _disagreeable_. It's lovely to meet you in any case, although
 if you've any sense that's not reciprocal, because:
