@@ -84,13 +84,19 @@ hr.article-separator::before {
     display: block;
     text-align: center;
 }
-pre code {
-    display: block;
+code {
     font-family: 'IBMPlexMonoMedium';
     font-size: 80%;
-    line-height: 160%;
     background-color: black;
+    padding-left: 3px;
+    padding-right: 3px;
+    color: #DDDDFF;
+    border-radius: 5px;
+}
+pre code {
+    display: block;
     color: rgb(250, 190, 0);
+    line-height: 160%;
     padding: 1em 1.5em 1em 1.5em;
     margin-left: 2em;
     margin-right: 2em;
