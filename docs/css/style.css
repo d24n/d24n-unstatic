@@ -101,6 +101,7 @@ pre code {
     margin-left: 2em;
     margin-right: 2em;
     border-radius: 10px;
+    overflow-x: scroll;
 }
 #hamburger {
     display:  none;
