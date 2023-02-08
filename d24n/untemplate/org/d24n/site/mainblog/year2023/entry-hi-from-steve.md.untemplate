@@ -1,0 +1,21 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "Hi from Steve!",
+>   "Author"    -> "Steve Waldman",
+>   "PubDate"   -> "2023-02-08",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markup or html below!
+
+Hi! My name is Steve, and I'm, well, _disagreeable_. It's lovely to meet you in any case, although
+if you've any sense that's not reciprocal, because:
+
+* I am stinky.
+* My head is either a porcupine or a bowling ball, depending on the day.
+* I write gratuitous lists.
+
+## The Early Years
+
+I was disagreeable then too!
+
