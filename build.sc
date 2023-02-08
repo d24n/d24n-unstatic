@@ -1,19 +1,19 @@
 import mill._
-import mill.define._
 import mill.scalalib._
-import mill.define.Source
-import mill.modules.Jvm
-import mill.api.Result
 
 // huge thanks to @lolgab onn the Scala discord!
 import $file.buildCompilationSettings
 
-import $ivy.`com.mchange::untemplate-mill:0.0.3-SNAPSHOT`
+// it would be better not to have a separate untemplate
+// dependency except via unstatic.
+//
+// consider defining an 'UnstaticModule' that extends
+// UntemplateModule, to ensure versions are sync'ed
+
+import $ivy.`com.mchange::untemplate-mill:0.0.3`
 import untemplate.mill._
 
-val TapirVersion = "1.2.6"
-
-val UnstaticVersion = "0.0.1-SNAPSHOT"
+val UnstaticVersion = "0.0.1"
 
 object Dependency {
   val Unstatic             = ivy"com.mchange::unstatic:${UnstaticVersion}"
