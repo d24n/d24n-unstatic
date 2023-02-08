@@ -40,7 +40,7 @@ i, em {
     font-family: 'LibreFranklinItalic';
 }
 b, strong {
-    font-variation-settings: "wght" 500;
+    font-variation-settings: "wght" 600;
 }
 blockquote {
     margin-left: 0;
@@ -222,16 +222,19 @@ article {
 }
 .article-body h2 {
     font-variation-settings: "wght" 600;
-    font-size: 115%;
+    font-size: 110%;
 }
 .article-body h3 {
     font-variation-settings: "wght" 600;
+    font-size: 90%;
 }
 .article-body h4 {
     font-variation-settings: "wght" 500;
+    font-size: 90%;
 }
 .article-body h5 {
-    font-variation-settings: "wght" 500;
+    font-variation-settings: "wght" 450;
+    font-size: 90%;
 }
 .article-footer {
     text-align: right;
