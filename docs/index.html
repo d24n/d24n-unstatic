@@ -1,8 +1,745 @@
-<html>
-  <head><title>Test</title></head>
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Empowering the Edges</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Decentralization Foundation Updates" href="https://d24n.github.io/d24n-unstatic/feed/index.rss" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <script type="application/javascript">
+      function toggleHamburgerMenu() {
+          const elem = document.getElementById('hamburger-menu');
+          var newVal;
+          if (elem.style.display == "flex")
+              newVal = "none"
+          else
+              newVal = "flex"
+          elem.style.display = newVal;
+      }
+    </script>
+  </head>
   <body>
-    <b>If you are seeing this, something is amiss in the ordering of generated resources!</b>
-    <p>It should be overridden / overwritten by our generated index.html.</p>
-    <p>This is only a test.</p>
+    <header id="main-header">
+      <div id="hamburger" onClick="toggleHamburgerMenu()">
+        <div class="burger"></div>
+        <div class="burger"></div>
+        <div class="burger"></div>
+      </div>
+      <div id="hamburger-menu">
+          <div><a href="index.html">Home</a></div>
+          <div><a href="about-us/index.html">About</a></div>
+          <div><a href="https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform">Apply</a></div>
+          <div><a href="donate/index.html">Donate</div>
+      </div>
+      <div id="logo">
+        <a href="index.html"><img src="image/d24n-web-logo-x2.png" width="120" height="37" /></a>
+      </div>
+      <div id="tagline-nav">
+        <div id="tagline">
+          Empowering the Edges
+        </div>
+        <nav>
+          <div><a href="donate/index.html">Donate</div>
+          <div><a href="https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform">Apply</a></div>
+          <div><a href="about-us/index.html">About</a></div>
+          <div><a href="index.html">Home</a></div>
+        </nav>
+      </div>
+    </header>
+    <main>
+
+            <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Feb 10 2023
+          </div>
+          <h1><a class="permalink" href="2023/02/10/what-is-lattice-cryptography/index.html">What is Lattice Cryptography?</a></h1>
+        </div>
+        <div class="article-body">
+          <div class="flexmark markdown">
+<h1><a href="#what-is-lattice-cryptography" id="what-is-lattice-cryptography" name="what-is-lattice-cryptography" class="anchorlink"></a>What is Lattice Cryptography?</h1>
+<p>Cryptography is based on problems that are hard to solve in general, but easy to solve with additional information. One such problem is the difficulty of factoring the product of two large prime numbers. In this case the additional information which makes factoring easy is one of the prime numbers. For the large numbers used in cryptography today, someone who does not have either of the prime factors can not find them, even with very powerful computers. Systems such as <a href="https://en.wikipedia.org/wiki/RSA_(cryptosystem)">RSA</a> which are based on prime factorization are considered secure, though <a href="https://link.springer.com/content/pdf/10.1007/3-540-68697-5_11.pdf">attacks</a> using lattice reduction have been found when library designers or users do <a href="https://link.springer.com/content/pdf/10.1007/3-540-68697-5_11.pdf">make a mistake</a> and reveal too much information.</p>
+<p>Another early <a href="https://en.wikipedia.org/wiki/Merkle%E2%80%93Hellman_knapsack_cryptosystem">cryptosystem</a> was based on the <a href="https://en.wikipedia.org/wiki/Knapsack_problem">subset-sum</a> (or knapsack) problem which was believed to be hard to solve unless one has side information (a permutation that makes the subset superincreasing). Unfortunately attacks were quickly found, including one using <a href="https://dl.acm.org/doi/10.1145/2455.2461">lattice reduction</a>; these attacks make this system insecure.</p>
+<p>Even though cryptography based on the hardness of finding prime factors is secure against current powerful computers, in 1994 it was found that if a powerful quantum computer could be built, it could <a href="https://en.wikipedia.org/wiki/Shor's_algorithm">easily find</a> these factors and also break cryptography based on <a href="https://en.wikipedia.org/wiki/Elliptic-curve_cryptography">elliptic curves</a>. After this quantum attack was found, a search began for problems that are hard even for quantum computers. Some researchers looked for lattices on which it is <a href="https://en.wikipedia.org/wiki/Lattice_problem">hard</a> to do lattice reduction in both classic and quantum computers. These efforts resulted in a <a href="https://en.wikipedia.org/wiki/Kyber">lattice-based standard</a> being chosen in the <a href="https://en.wikipedia.org/wiki/NIST_Post-Quantum_Cryptography_Standardization#Selected_Algorithms_2022">final round</a> of NIST's search for a cryptographic standard that is believed to be secure against attack from attack from future powerful quantum (and classic) computers.</p>
+<p>Now, a warning! We will use linear algebra to illustrate lattices. If the matrix math feels menacing or intimidating, we encourage you to think of it as a sort of emoji for math nerds; sure it's fun to know what an emoji means, but you likely don't need to learn the meaning of every one. One matrix in particular (the last one, $B_{4D}$) is intentionally obscure and (essentially) impossible to visualize in an intuitive way other than as a matrix; that difficulty is the reason it's included. If it helps, consider the difficulty of understanding matrix math as representing how a computer feels about lattice problems: they are difficult.</p>
+<img src="basis.png" alt="figure showing a lattice in purple, one basis in green, and another in red" width="400"/>
+<p>It's clear that lattice reduction is a powerful tool, but what is it?  Intuitively, a lattice is a regular set of points, such as the purple points in the figure above. A lattice is generated using a basis; the green arrows in the figure represent one basis for the purple lattice. Each purple point can be found by adding some integer combination of the green arrows.  Every lattice can be generated by many bases; in the figure the red arrows illustrate another basis for the  lattice.  Lattice reduction is the process of taking a given lattice basis (such as that represented by the green arrows), and finding a basis with components that are shorter and closer to orthogonal (such as the basis represented by the red arrows).  Lattice cryptographers represent a basis with a basis matrix, such as in the following matrices for the green and red bases in the figure:</p>
+<p>$$B_{green} = \left[ \begin{array}{rr}
+5  &amp;  3 \
+1  &amp;  0<br />
+\end{array}\right] \;, \;\;\;\;\;
+B_{red} = \left[ \begin{array}{rr}
+1  &amp;  1 \
+-1  &amp;  2<br />
+\end{array}\right] \;. $$</p>
+<p>Each column of these matrices is represented by an arrow in the figure.  In fact, each column of $B_{red}$ can be represented by an integer combination of the columns of $B_{green}$, and vice-versa. If you'd like an exercise, find the matrix $T$ such that $B_{red} =B_{green} T$; this matrix $T$ is a <a href="https://en.wikipedia.org/wiki/Unimodular_matrix">unimodular matrix</a>.</p>
+<p>Lattice reduction looked pretty easy for the green and red bases above; what makes a basis hard for a powerful computer to do lattice reduction on? One thing is using much higher dimensional bases than the two-dimensional examples shown so far, say one hundred dimensions or more; another thing that makes a basis hard to reduce is using basis elements of much higher bit depth, for example sixty-four bits or more.  The basis matrix $B_{4D}$ below has more dimensions (four) than our previous examples, and also has elements of much higher bit depth than previous.  Even though the lattice that this matrix represents is impossible for a human to visualize in the same easy way as the two-dimensional lattice in the figure above, it is easy for a not-so-powerful computer to reduce. For problems that are hard (hopefully impossible!) for a powerful classic or quantum computer to reduce, the number of dimensions must be increased; see <a href="https://www.latticechallenge.org/">latticechallenge.org/</a> for examples of harder problems.</p>
+<p>$$B_{4D} = \left[ \begin{array}{rrrr}
+6714169179285760250 &amp; 3904382587709331766 &amp; 1484928972011185279 &amp;  158973427218251831 \
+222240594969818910 &amp; 1865961114972015885 &amp; 6291396082712905859 &amp; 9157617360419036595 \
+878128680551912807 &amp; 3247508428419359782 &amp; 6192395433663333636 &amp; 4340458729683974548 \
+933087331389830545 &amp; 3249492973442901692 &amp;  359041762650321617 &amp; 4539344643683695950
+\end{array}\right]$$</p>
+<p>Despite the significant step of a lattice-based standard  for public-key encryption, lattice cryptography is still in early stages, and is not nearly as easy to use as older technology such as eliptic-curve cryptography. Many who visit this site are interested in decentralizing technologies such as that used in blockchains. The lack of educational material, the larger key sizes, and less-developed technology are likely among the reasons that blockchains that use lattice cryptography do not yet (early 2023) appear to be an active area of research for academic cryptographers. Instead, they are focused on constructing and attacking post-quantum cryptosystems, fully homomorphic encryption, and functional encryption; the only known constructions of the latter two require lattice cryptography. These technologies separate encryption and computation, while preserving privacy. These important new capabilities enabled by lattice cryptography will be a continuing area of interest for cryptographers and others interested in privacy, even if quantum attacks on classic cryptography never become practical.</p>
+<p>The title above is &quot;What is Lattice Cryptography?&quot; For a more complete answer to this question see the further reading below:</p>
+<ul>
+<li>&quot;<a href="https://eprint.iacr.org/2015/939">A Decade of Lattice Cryptography</a>&quot; by Chris Peikert is a mathematical intro to the <a href="https://en.wikipedia.org/wiki/Short_integer_solution_problem">SIS</a> and <a href="https://en.wikipedia.org/wiki/Learning_with_errors">LWE</a> problems, which are at the core of lattice cryptography.</li>
+<li>For introductory material, see the <a href="https://www.youtube.com/playlist?list=PLgKuh-lKre10rqiTYqJi6P4UlBRMQtPn0">videos</a> from the &quot;<a href="https://simons.berkeley.edu/workshops/lattices-algorithms-complexity-cryptography-boot-camp/schedule#simons-tabs">Lattices: Algorithms, Complexity, and Cryptography Boot Camp</a>&quot; from the Simons Institute.</li>
+<li><a href="https://github.com/fplll/fplll">fplll</a> is a powerful C++ library implementing lattice algorithms and aimed at cryptanalysis. Results from this library are used to estimate the power of future powerful computers and hence to decide what paramters (such as the bit depth and lattice dimension) of cryptosystems so as to allow them to be secure for many years to come.</li>
+</ul>
+
+</div>
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2023/02/10/what-is-lattice-cryptography/index.html">Published by Chris Peel on 2023-02-10</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Feb 08 2023
+          </div>
+          <h1><a class="permalink" href="2023/02/08/add-a-post/index.html">Add a post!</a></h1>
+        </div>
+        <div class="article-body">
+          <div class="flexmark markdown">
+<p>It's pretty easy. And cheaper than shelter!</p>
+<h2><a href="#0-prerequisites" id="0-prerequisites" name="0-prerequisites" class="anchorlink"></a>0. Prerequisites</h2>
+<p>You'll need git on the command line, and a Java 17+ VM installed:</p>
+<pre><code>$ java -version
+java -version
+openjdk version &quot;17.0.2&quot; 2022-01-18
+OpenJDK Runtime Environment (build 17.0.2+8-86)
+OpenJDK 64-Bit Server VM (build 17.0.2+8-86, mixed mode, sharing)
+</code></pre>
+<p>(Let me know if a tutorial on how to install/select JVMs would help!)</p>
+<h2><a href="#1-clone-the-d24n-unstatic-repo" id="1-clone-the-d24n-unstatic-repo" name="1-clone-the-d24n-unstatic-repo" class="anchorlink"></a>1. Clone the <code>d24n-unstatic</code> repo</h2>
+<pre><code>$ git clone git@github.com:d24n/d24n-unstatic.git
+git clone git@github.com:d24n/d24n-unstatic.git
+Cloning into 'd24n-unstatic'...
+Enter passphrase for key '/home/swaldman/.ssh/id_ed25519': 
+remote: Enumerating objects: 1394, done.        
+remote: Counting objects: 100% (1394/1394), done.        
+remote: Compressing objects: 100% (413/413), done.        
+remote: Total 1394 (delta 472), reused 1309 (delta 388), pack-reused 0        
+Receiving objects: 100% (1394/1394), 4.87 MiB | 29.33 MiB/s, done.
+Resolving deltas: 100% (472/472), done.
+</code></pre>
+<h2><a href="#2-create-your-untemplate" id="2-create-your-untemplate" name="2-create-your-untemplate" class="anchorlink"></a>2. Create your &quot;untemplate&quot;</h2>
+<p>The blog's source — html, markdown, scala, static resources — all live in the <code>d24n</code> directory of your new
+repository.</p>
+<pre><code>  d24n
+   + - src/        (Scala/Java source code)
+   + - static/     (static resources of the website)
+   + - untemplate/ (html and markdown templates that define the generated content)
+</code></pre>
+<p>Blog entries live in untemplate, under <code>untemplate/org/d24n/site/mainblog</code>.</p>
+<ul>
+<li>Anything (recursively) under this directory
+that looks like <code>entry-whatever.md.untemplate</code> will be considered a template for a markdown blog entry.</li>
+<li>Replace the
+<code>.md.untemplate</code> suffix with <code>.html.untemplate</code> for an HTML template, etc.</li>
+<li>The <code>whatever</code> part in the middle is pretty arbitrary, though I've mostly used post titles.</li>
+<li>As a matter of pure convenience, I've organized the <code>mainblog</code> directory by year, so this post (yours too!)
+should go in <code>year2023</code>.</li>
+</ul>
+<hr />
+<div style="line-height: 150%; font-size: 80%">
+<p><strong>Note:</strong> <em>This directory hierarchy is going to map to a JVM package hierarchy, so I could not have
+named this directory simply <code>2023</code>, because that would not be a valid
+<a href="https://www.geeksforgeeks.org/java-identifiers/">identifier</a>.</em></p>
+</div>
+<hr />
+<p>Use your favorite editor to create a file in <code>untemplate/org/d24n/site/mainblog/year2023</code>.
+From the repository root (<code>d24n-unstatic</code>) directory...</p>
+<pre><code>$ emacs d24n/untemplate/org/d24n/site/mainblog/year2023/entry-hi-from-steve.md.untemplate
+</code></pre>
+<p>You'll want the file to begin with some annoying boilerplate. I've made it available
+to copy and paste <a href="meta/exampleEntryUntemplate.txt">on the site itself</a>. Or, here it is!</p>
+<div style="font-size: 70%;">
+<pre><code>&gt; val UntemplateAttributes = immutable.Map[String,Any] (
+&gt;   &quot;Title&quot;     -&gt; &quot;Activities in 2018&quot;,
+&gt;   &quot;Author&quot;    -&gt; &quot;Chris Peel&quot;,
+&gt;   &quot;PubDate&quot;   -&gt; &quot;2019-04-17&quot;,
+&gt; )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()&gt;      ### modify Title/Author/Pubdate above, add markdown or html below!
+
+</code></pre>
+</div>
+<p>Now, just do as the <a href="https://github.com/swaldman/untemplate-doc#long-delimiters-header-notes-and-comments">delimiter comment</a>
+instructs. Modify Title/Author/Pubdate above, add markdown (since this is a <code>.md.untemplate</code> file) below!</p>
+<div style="font-size: 70%;">
+<pre><code>&gt; val UntemplateAttributes = immutable.Map[String,Any] (
+&gt;   &quot;Title&quot;     -&gt; &quot;Hi from Steve!&quot;,
+&gt;   &quot;Author&quot;    -&gt; &quot;Steve Waldman&quot;,
+&gt;   &quot;PubDate&quot;   -&gt; &quot;2023-02-08&quot;,
+&gt; )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()&gt;      ### modify Title/Author/Pubdate above, add markdown or html below!
+
+Hi! My name is Steve, and I'm, well, _disagreeable_. It's lovely to meet you in any case, although
+if you've any sense that's not reciprocal, because:
+
+* I am stinky.
+* My head is either a porcupine or a bowling ball, depending on the day.
+* I write gratuitous lists.
+
+## The Early Years
+
+I was disagreeable then too!
+</code></pre>
+</div>
+<p>I'll slip this in as the post <a href="2023/02/08/hi-from-steve/index.html">below</a> this one, so you can see how it renders!</p>
+<hr />
+<div style="line-height: 150%; font-size: 80%">
+<p><strong>Note:</strong> <em>Don't write your post title above your text, just include it in <code>UntemplateAttributes</code>.
+The blog will render its posts' titles.</em></p>
+</div>
+<hr />
+<h2><a href="#3-generate-and-browse-the-static-site" id="3-generate-and-browse-the-static-site" name="3-generate-and-browse-the-static-site" class="anchorlink"></a>3. Generate and browse the static site</h2>
+<p>Just go to the root of the repository (i.e. the <code>d24n-unstatic</code> directory), and type:</p>
+<pre><code>$ ./d24n-site-gen
+</code></pre>
+<p>You should see a report showing what pages got generated and what static directories got copied.</p>
+<p>You should have a file-system browsable website under the <code>docs/</code> directory of the repository now.
+Point your browser at <code>docs/index.html</code>.</p>
+<p>If you are on a Mac, you can just type</p>
+<pre><code>$ open docs/index.html
+</code></pre>
+<hr />
+<div style="line-height: 150%; font-size: 80%">
+<p><strong>Note:</strong> <em>If you accidentally just type <code>./d24n-site</code>, the site will be generated, but into the
+more conventional <code>public</code> directory rather than <code>docs</code>. We are generating (for now) into <code>docs</code>
+because our temporary home</em> GitHub Pages <em>serves from that directory. You can just <code>rm -rf public</code>,
+or use type <code>./veryclean.sh</code> from the root of your repository directory if this happens.</em></p>
+</div>
+<hr />
+<h2><a href="#4-tweak" id="4-tweak" name="4-tweak" class="anchorlink"></a>4. Tweak!</h2>
+<p>You can, of course, look at your generated post, edit your untemplate file, regenerate again with
+<code>./d24n-site-gen</code>, reload, rinse, repeat.</p>
+<p>But this gets a smidgen cumbersome.</p>
+<p>If you use the command</p>
+<pre><code>./d24n-site-devcycle
+</code></pre>
+<p>You'll start up a server on port 8999 of your local machine.</p>
+<p>Because (temporarily), this site lives
+on <em>GitHub Pages</em> under the path <code>d24n_unstatic</code>, you'll need to point your browser to
+<a href="http://localhost:8999/d24n-unstatic/"><code>http://localhost:8999/d24n-unstatic/</code></a> to see the served
+site.</p>
+<p>Once the local development site is running, you can browse to your permalink, edit your untemplate, hit save, then refresh your
+page after 5-10 seconds to admire and critique your update.</p>
+<h2><a href="#5-publish" id="5-publish" name="5-publish" class="anchorlink"></a>5. Publish</h2>
+<p>Once you have your post looking lovely, hit <code>&lt;ctrl-c&gt;</code> to kill the development server, then</p>
+<pre><code>$ ./d24n-site-gen
+</code></pre>
+<p>to regenerate the static site. Then</p>
+<pre><code>$ git add .
+$ git commit -m &quot;Added an effing brilliant new post!&quot;
+$ git push
+</code></pre>
+<p>and within a few minutes you should have it live at <a href="https://d24n.github.io/d24n-unstatic/"><code>https://d24n.github.io/d24n-unstatic/</code></a>.
+Hooray!</p>
+<p>Give it a try!</p>
+
+</div>
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2023/02/08/add-a-post/index.html">Published by Steve Waldman on 2023-02-08</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Feb 08 2023
+          </div>
+          <h1><a class="permalink" href="2023/02/08/hi-from-steve/index.html">Hi from Steve!</a></h1>
+        </div>
+        <div class="article-body">
+          <div class="flexmark markdown">
+<p>Hi! My name is Steve, and I'm, well, <em>disagreeable</em>. It's lovely to meet you in any case, although
+if you've any sense that's not reciprocal, because:</p>
+<ul>
+<li>I am stinky.</li>
+<li>My head is either a porcupine or a bowling ball, depending on the day.</li>
+<li>I write gratuitous lists.</li>
+</ul>
+<h2><a href="#the-early-years" id="the-early-years" name="the-early-years" class="anchorlink"></a>The Early Years</h2>
+<p>I was disagreeable then too!</p>
+
+</div>
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2023/02/08/hi-from-steve/index.html">Published by Steve Waldman on 2023-02-08</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Jan 25 2022
+          </div>
+          <h1><a class="permalink" href="2022/01/25/grant-to-usp/index.html">Grant to University of São Paulo</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>The Foundation has made a grant of $18,000 to the University of São Paulo (USP) for development of a technical credit-bearing course on blockchain and other decentralizing technologies to be offered at USP. An open version of the course will also be made available online to all, even those not enrolled at the university.</p>
+<p>Quoting our very <a href="2019/03/15/intro-d24n/index.html">first</a> blog post &#8220;We want to educate this community and others on the underlying technology, including its potential and its limitations.&#8221;  As a step in this direction, we started an effort last year to <a href="2021/08/17/funding-technical-classes/index.html">fund technical classes</a>; the USP courses are the first results. Here is a quote from our grant agreement with USP (with some legalese removed):</p>
+<blockquote><p>The credit-bearing course will be developed with the expectation of becoming part of the curriculum of the Computer Engineering program offered at USP’s Escola Politécnica.</p><p>The open version will be offered free for any interested party, even for those not enrolled at the university via USP’s official platforms for online courses (namely, <a href="https://eaulas.usp.br/">https://eaulas.usp.br/</a> and <a href="https://edisciplinas.usp.br/">https://edisciplinas.usp.br/</a>). All material (slides for lectures, lecture video recordings, lecture notes, syllabus, homework, and other support material) will also be made available for free online on a site that does not require creating a login for access.</p><p>The course will be entirely built in Brazilian Portuguese, by native speakers.</p></blockquote>
+<p>We are very happy to be working with Professor <a href="https://www.larc.usp.br/marcos-antonio-simplicio-junior/">Marcos Antonio Simplicio Junior</a> and others at USP on this project. We look forward to seeing the class materials!</p>
+<hr class="centered-black" />
+<p>The Decentralization Foundation’s mission is to promote decentralizing technology, educate on its potential, and fund research to improve it. We are a 501(c)(3) non-profit and are funded by tax-deductible&nbsp;<a href="donate/index.html">donations</a>.</p>
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2022/01/25/grant-to-usp/index.html">Published by Chris Peel on 2022-01-25</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Aug 17 2021
+          </div>
+          <h1><a class="permalink" href="2021/08/17/funding-technical-classes/index.html">Funding Technical Classes</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p style="font-size:smaller"><em>Updated 10 November 2022: The requirement that classes be in a language other than English was removed.</em></p>
+
+<p>d24n.org is looking for academic courses focused on decentralizing technology to fund with significant grants. We are especially interested in funding such courses in Latin America and in other locations where such grants would go farther and where a course in the local language would allow more people to learn about blockchain technology. We require that video and other course material be made available for free online.</p>
+
+<p>Education has been part of our mission from the start; quoting our first blog post &#8220;We want to educate this community and others on the underlying technology, including its potential and limitations.&#8221; We are open to courses that are not focused on the technology, such as those focused on cryptocurrency economics and sociology, though such will face more scrutiny during the review process. We believe that high-quality technical courses (such as those below) at universities are a great aid in building local communities that are knowledgeable about decentralizing technology.</p>
+
+<p>Here are examples of technical courses that we see as excellent models:</p>
+
+<ul>
+<li>&#8220;<a href="http://web.stanford.edu/class/ee374/">Internet-Scale Consensus in the Blockchain Era</a>&#8221; taught by David Tse at Stanford in 2021. The focus of this course is on blockchain consensus such as proof-of-work and proof-of-stake, which are analyzed in terms of throughput, efficiency, and security.</li>
+<li>&#8220;<a href="https://cs251.stanford.edu/syllabus.html">Bitcoin and Cryptocurrencies</a>&#8221; was taught by Dan Boneh at Stanford in 2020. This course covered blockchain basics, consensus protocols, and blockchain scaling. This has a broader focus than Tse. &#8220;<a href="https://soc1024.ece.illinois.edu/teaching/ece398sc/spring2018/">Smart Contracts and Blockchain Security</a>&#8221; by Andrew Miller at UIUC is a similar broadly-focused course.</li>
+<li>A technical cryptography course that focuses on other areas (one-way functions, public-key cryptography, zero-knowledge proofs) yet includes significant content on the basics of how a blockchain works is acceptable.</li>
+</ul>
+
+<p>In all cases we require that the course be taught in an academic setting, that video, syllabi, and homework be made available online, and that a connection with the community outside the academic setting be made (say local meetups). We require that such courses cover potential problems with the technology (e.g. energy efficiency and scalability). We are mainly interested in funding such courses in areas where English proficiency is not as high and where online material for a course in the local language would facilitate better understanding of blockchain technology. </p>
+
+<p>We believe that these technical courses would provide critical context for local cryptocurrency, IPFS, or similar communities in which a strong technical background is not common.  Please go to <a href="index.html">d24n.org</a> and fill out an <a href="https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform">application</a>!</p>
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2021/08/17/funding-technical-classes/index.html">Published by Chris Peel on 2021-08-17</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            May 13 2021
+          </div>
+          <h1><a class="permalink" href="2021/05/13/lighthouse-research-report/index.html">Lighthouse Research Report</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>We are happy to share a <a href="https://drive.google.com/file/d/12flM_E_A3DldbOUe8EYEN6Bg2bi4Yl6w/view?usp=sharing">report</a> resulting from a <a href="2020/11/04/grant-to-sigma-prime-for-ethereum-2-research/index.html">grant</a> made last year by the foundation to Sigma Prime for scientific research and development related to Ethereum 2 (Eth2). The report outlines challenges encountered and solutions found while implementing the <a href="https://github.com/sigp/lighthouse">Lighthouse</a> Eth2 client. To illustrate the work, we list here a few items described in the report:</p>
+
+<ul><li>A validator shuffling optimization which resulted in a 200x speedup (see page 5),</li><li>An epoch processing optimization (page 6)</li><li>The Lighthouse <a href="https://hackmd.io/@sproul/min-max-slasher">slasher</a> (page 6)</li><li>The <a style="font-family:-apple-system, BlinkMacSystemFont, &quot;" href="https://github.com/libp2p/rust-libp2p/tree/master/protocols/gossipsub">Rust implementation</a><span style="font-family:-apple-system, BlinkMacSystemFont, &quot;"> of Gossipsub</span> including an online scoring system (pages 7,8)</li><li>Lighthouse client fuzzing (pages 8,9)</li><li>Weak Subjectivity Sync (page 8)</li></ul>
+
+<p>The report has a wonderful set of links to further material that we encourage you to investigate for further info on these topics. The end of the report highlights the “The Merge” in which Ethereum (and Lighthouse) will transition from proof-of-work to proof-of-stake:</p>
+
+<blockquote class="wp-block-quote"><p>In the coming year, we hope to be bringing The Merge into its final stages and hopefully production. The specification for The Merge is available <a href="http://In the coming year, we hope to be bringing The Merge into its final stages and hopefully production. The specification for The Merge is available here (inspired by this research post and still going through significant changes). The Merge is a very broad initiative involving the entire community, so it’s difficult for us to define a timeline, but we’re optimistic for a merge in late 2021.">here</a> (inspired by this <a href="http://In the coming year, we hope to be bringing The Merge into its final stages and hopefully production. The specification for The Merge is available here (inspired by this research post and still going through significant changes). The Merge is a very broad initiative involving the entire community, so it’s difficult for us to define a timeline, but we’re optimistic for a merge in late 2021.">research post</a> and still going through significant changes). The Merge is a very broad initiative involving the entire community, so it’s difficult for us to define a timeline, but we’re optimistic for a merge in late 2021.</p></blockquote>
+
+<p>Additional info can be found in the <a href="https://lighthouse-book.sigmaprime.io">Lighthouse book</a>,  by following the <a href="https://blog.sigmaprime.io/beacon-fuzz-09.html">Sigma Prime blog</a>, and by reading the report. We are grateful to Sigma Prime for their scientific research, their excellent work on the Lighthouse client, and for this research report.</p>
+
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2021/05/13/lighthouse-research-report/index.html">Published by Chris Peel on 2021-05-13</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Dec 01 2020
+          </div>
+          <h1><a class="permalink" href="2020/12/01/an-economic-analysis-of-eip-1559/index.html">An Economic Analysis of EIP 1559</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>We are happy to share the <a href="http://timroughgarden.org/papers/eip1559.pdf">report</a> resulting from Professor Tim Roughgarden&#8217;s <a href="2020/08/19/tim-roughgarden-will-work-on-eip-1559/index.html">work</a> on the Ethereum transaction price mechanism, including <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1559.md">EIP 1559</a>.  The report is detailed yet accessible and educational summary of the proposal (variable-size blocks, the burned base fee) as well as an analysis of its strengths and weaknesses compared to the current mechanism and related proposals.  </p>
+
+<p>The report is positive about EIP 1559, suggesting it meets the goals of easy fee estimation, lower variance on transaction fees, robustness to off-chain agreements by miners, and reduced inflation.  Even so, there are some &#8220;Key Takeaways&#8221; which may be unexpected (see Section 1.2): </p>
+
+<blockquote class="wp-block-quote"><p>7. The seemingly orthogonal goals of easy fee estimation and fee burning are inextricably linked, with the threat of off-chain agreements precluding one without the other. (Sections 8.1–8.2)</p><p>8. EIP-1559’s base fee update rule is somewhat arbitrary and should be adjusted over time. (Section 8.4)</p><p>9 Variable-size blocks enable a new (but expensive) attack vector: overwhelm the network with a sequence of maximum-size blocks. (Sections 8.4.5–8.4.6)</p></blockquote>
+
+<p>Tim is Professor of Computer Science at Columbia University, and is a leading algorithmic game theorist. He has been awarded the ACM <a href="https://en.wikipedia.org/wiki/Grace_Murray_Hopper_Award">Grace Murray Hopper Award,</a> the <a href="https://en.wikipedia.org/wiki/G%C3%B6del_Prize">Gödel Prize</a>, and many other awards. We are very grateful that he was willing to work on the Ethereum transaction price mechanism. We anticipate that his accessible writeup will act as an introduction and guide to Ethereum price mechanisms and bring attention to the academic world of the interesting and challenging problems found in Ethereum and other blockchains.</p>
+
+<p>We are very pleased with the <a href="http://timroughgarden.org/papers/eip1559.pdf">report</a>. Thank you Tim!</p>
+
+
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2020/12/01/an-economic-analysis-of-eip-1559/index.html">Published by Chris Peel on 2020-12-01</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Nov 06 2020
+          </div>
+          <h1><a class="permalink" href="2020/11/06/thank-you/index.html">Thank you!</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>Thank you <a href="https://twitter.com/jamesfickel">James Fickel</a>! The Decentralization Foundation is a 501(c)(3) nonprofit and relies entirely on donations to operate and continue our vision of a decentralized future. Everyone at D24N.org is grateful for a very generous donation by James. This donation reinforces our belief of a decentralized future as well as a trust given to everyone at the Foundation to realize these goals; we at D24N.org will work hard to ensure this trust is well earned. James’ donation will help the Foundation fulfill its mission of promoting decentralizing technology, educating the world on its transformative potential, and funding research to improve it.</p>
+
+<p>Thank you Gustav Simonsson!  Gustav made a large donation that funded much of our work through 2019.</p>
+
+<p>Donations to 501(c)(3) organizations can be restricted to a specific area of focus, or be unrestricted. As an example of restricted donations, the foundation until recently allowed donations specifically for Ethereum 2 Research and Development. Unrestricted donations may be used for any of the non-profit&#8217;s charitable purposes, and are much easier for the non-profit to use.  James&#8217; and Gustav&#8217;s donations were unrestricted.</p>
+
+<p>Thank you James and Gustav! And many thanks to our smaller donors and supporters. We are, for obvious reasons, very grateful to our larger supporters. But it&#8217;s our small donations that keep us decentralized, in harmony with our mission. Thanks to each and every one.</p>
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2020/11/06/thank-you/index.html">Published by Chris Peel on 2020-11-06</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Nov 04 2020
+          </div>
+          <h1><a class="permalink" href="2020/11/04/grant-to-sigma-prime-for-ethereum-2-research/index.html">Grant to Sigma Prime for Ethereum 2 Research</a></h1>
+        </div>
+        <div class="article-body">
+          
+
+<p>The Foundation has made a significant grant to <a href="https://sigmaprime.io/">Sigma Prime</a> for continued scientific research and development related to Ethereum 2. This will fund critical efforts, with all findings open to the public in the form of a research paper to be published later. We are committed to a decentralized future, including pushing the envelope of necessary core technologies such as Ethereum 2 forward through support of innovative efforts and teams.</p>
+
+<p>Ethereum 2 is a long-planned upgrade focusing on scalability and proof-of-stake. Phase 0 is implementation of the beacon chain which lays the ground for shard chains and staked ETH. The Foundation believes that continued research on Ethereum 2 and development of associated open-source clients will benefit the Ethereum community as well as other blockchains.</p>
+
+<p>Sigma Prime has implemented Phase 0 of Ethereum 2 in the <a href="https://lighthouse.sigmaprime.io/">Lighthouse</a> client. This is one of the leading implementations; we are very happy to support Sigma Primes&#8217; work. Here is a quote from our grant agreement (with some legalese removed):</p>
+
+<blockquote class="wp-block-quote"><p>Sigma Prime will perform scientific research geared towards a) analysis of the appropriate mechanism for implementing an environmentally sustainable proof-of-stake consensus mechanism in an Ethereum 2 client; b) preliminary implementation of sharding to allow transaction scalability. <span style="font-size:inherit;">&#8230;</span>  <span style="font-size:inherit;">Sigma Prime will engage with the Ethereum community in order to educate and disseminate the fruits of the supported research.</span></p><p>Sigma Prime will deliver a scientific report that will include a) an executive summary aimed at a non-technical audience, b) an introduction to Ethereum 2, c) a summary of Ethereum 2 research and engineering challenges, d) a Lighthouse architecture overview, e) a review of the Lighthouse development process, f) key takeaways, and g) a roadmap for further scientific research and education.</p></blockquote>
+
+<p>We look forward to the report from Sigma Prime!</p>
+
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2020/11/04/grant-to-sigma-prime-for-ethereum-2-research/index.html">Published by Chris Peel on 2020-11-04</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Aug 19 2020
+          </div>
+          <h1><a class="permalink" href="2020/08/19/tim-roughgarden-will-work-on-eip-1559/index.html">Tim Roughgarden will work on EIP 1559</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>The Decentralization Foundation has entered into an agreement with <a href="http://timroughgarden.org/">Tim Roughgarden</a> for 225 hours of work by him on the Ethereum transaction price mechanism, including <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1559.md">EIP-1559</a>. </p>
+
+<p>EIP 1559 proposes a new mechanism in which the base fee is adjusted by the protocol to target an average gas usage per block instead of an absolute gas usage per block. See the <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1559.md">EIP-1559</a> page for more details and <a href="https://github.com/ethereum/EIPs/pull/2593">EIP-2593</a> for another proposal. The foundation believes that the Ethereum transaction price mechanism is an important issue facing the Ethereum community, including in ETH2. The technique chosen will be analyzed by users, miners, attackers, and other blockchains.</p>
+
+<p>Tim is Professor of Computer Science at Columbia University, and is a leading algorithmic game theorist. He has been awarded the ACM <a href="https://en.wikipedia.org/wiki/Grace_Murray_Hopper_Award">Grace Murray Hopper Award,</a> the <a href="https://en.wikipedia.org/wiki/G%C3%B6del_Prize">Gödel Prize</a>, and many other awards. We are very grateful that he is willing to work on the Ethereum transaction price mechanism.  Here is a quote from Tim:</p>
+
+<blockquote class="wp-block-quote"><p>The proposed research will provide an analysis of proposed changes to the transaction fee mechanism in the Ethereum protocol, including: (i) a formal definition of the design space, including the proposals in EIP-1559 and EIP-2593; (ii) a formal definition of the objectives and constraints; (iii) a formal model of transactions; (iv) a formal game-theoretic model for miners; (v) the identification of formal trade-offs between the competing objectives; (vi) if possible, the identification of an “optimal” mechanism.</p></blockquote>
+
+<p>Tim will produce a progress report halfway through the work and a final report that will be made publicly available on arXiv. Any software produced will be made publicly available. The agreement includes 45 hours of communication with the Ethereum community, including relevant chat and discussion forums.</p>
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2020/08/19/tim-roughgarden-will-work-on-eip-1559/index.html">Published by Chris Peel on 2020-08-19</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Apr 30 2020
+          </div>
+          <h1><a class="permalink" href="2020/04/30/activities-in-2019/index.html">Activities in 2019</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>The Foundation funded eleven technical events and funded two grants in 2019. Donations worth $13,134 (at the time of donation) were received. At the end of 2019 the foundation had on- and off-chain assets worth about $7,701. We say &#8220;about&#8221; because the value of on-chain assets are not stable.</p>
+
+<p>The foundation funded Simon Castano 0.20281 BTC (about $1920) for work on Bitcoin.jl and related software in the <a href="https://www.brane.cc/">Brane</a> project. The foundation also funded Matt Quinn 0.04805 BTC (about $455)  for bootstrapping the &#8220;<a href="https://www.meetup.com/Starfish-Mission/events/259257452/">Distributed Saturdays</a>&#8221; in the <a href="https://www.meetup.com/Blockchain_Free_School/">Blockchain Free school</a>. Neither of these projects have submitted a report.</p>
+
+<p>Food for eleven Silicon Valley Ethereum Meetup events were paid for by the foundation. Examples include an <a href="https://www.meetup.com/EthereumSiliconValley/events/259342005/">event</a> on March 17 in which <a href="https://www.originprotocol.com/">Origin</a> presented their protocol for building peer-to-peer marketplaces, Vivek Bagaria presenting on <a href="https://www.meetup.com/EthereumSiliconValley/events/260861593/">operating blockchains at physical limits</a> on May 26, a <a href="https://www.meetup.com/EthereumSiliconValley/events/262421162/">proof-of-stake introduction</a> on June 30, and Steve Waldman <a href="https://www.meetup.com/EthereumSiliconValley/events/264971060/">presenting on sbt-ethereum</a> on Oct 13. The meetup.com membership expenses for the SV Eth meetup were also paid. The foundation paid $750 for 5 months of membership at Hacker Dojo, though we have found venues at which events can be held free and stopped the Hacker Dojo membership.</p>
+
+<p>Other expenses include $394 for domains and website hosting and $195 for to a law firm (they charged us for their response to our email telling them they were too expensive).  For more details, see our <a href="/d24n-unstatic/wp-content/uploads/2021/09/f7ed2-financial-report-2019.pdf">2019 financial report</a>. You may also want to compare with the <a href="2019/04/17/activities-in-2018/index.html">2018 report</a>.</p>
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2020/04/30/activities-in-2019/index.html">Published by Chris Peel on 2020-04-30</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Aug 26 2019
+          </div>
+          <h1><a class="permalink" href="2019/08/26/pro-enjoyment/index.html">Pro-Enjoyment, Anti-Harassment Policy</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>The Decentralization Foundation supports several community groups, and looks forward to supporting others.  Our main goal in supporting them is to to provide technical content and education about decentralizing technology in an enjoyable way.  With this goal in mind, here is the foundation&#8217;s pro-enjoyment pro-enjoyment, anti-harassment policy that the foundation applies to itself, and requires groups that it supports to follow. </p>
+
+<p>Specifically, the foundation is dedicated to providing a enjoyable and harassment-free experience for everyone, regardless of gender, gender identity and expression, sexual orientation, disability, physical appearance, body size, race, age, religion, or whether you favor one crypto-currency or another. We do not tolerate harassment of event or group participants in any form. Sexual language and imagery is not appropriate for any event, including talks. Participants violating these rules may be expelled from an event or from a group at the discretion of the organizers.&nbsp; Harassment includes, but is not limited to:</p>
+
+<ul><li>Sexual images in public spaces</li><li>Deliberate intimidation, stalking, or following&nbsp;</li><li>Harassing photography or recording</li><li>Sustained disruption of talks or other events</li><li>Inappropriate physical contact</li><li>Unwelcome sexual attention</li><li>Advocating for, or encouraging, any of the above behavior</li></ul>
+
+<p>Participants asked to stop any harassing behavior are expected to comply immediately.</p>
+
+<p>If a participant engages in harassing behavior, event organizers retain the right to take any actions to keep the event a welcoming environment for all participants. This includes warning the offender or expulsion from the event and group.&nbsp;</p>
+
+<p>If someone makes you or anyone else feel unsafe or unwelcome, please report it as soon as possible to an organizer or event host in person, or to decentralizationfoundation@gmail.com.  Harassment and other code of conduct violations reduce the value of events for everyone. We want you to be happy and enjoy events we sponsor. People like you make our event a better place.</p>
+
+
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2019/08/26/pro-enjoyment/index.html">Published by Chris Peel on 2019-08-26</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            May 31 2019
+          </div>
+          <h1><a class="permalink" href="2019/05/31/kestrel-institute/index.html">Ethereum Yellow Paper Improvements, Kestrel Institute</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p><em>We are very happy to share a report from the recipients of our first grant, the <a href="https://www.kestrel.edu">Kestrel Institute;</a> the grant of $3,000 was for &#8220;Ethereum Yellow Paper Improvements.&#8221;  Kestrel is known for (among other <a href="https://www.kestrel.edu/home/projects/">projects</a>) their work on formal specification and implementation of a full <a href="https://www.kestrel.edu/home/projects/ethereum/">Ethereum client</a> using the ACL2 theorem prover and APT toolkit. In the course of this client development and related <a href="https://blog.ethereum.org/2018/08/17/ethereum-foundation-grants-update-wave-3/">work</a>, they found a few ways in which the <a href="https://github.com/ethereum/yellowpaper">Ethereum Yellow Paper</a> could be improved, which was the focus of our small grant to them. <a href="https://www.kestrel.edu/home/people/coglio/">Alessandro Coglio</a> and <a href="https://www.kestrel.edu/home/people/mccarthy/">Eric McCarthy</a> implemented the changes and also wrote the report below summarizing how the grant was used.</em></p>
+<hr />
+<p><b>Ethereum Yellow Paper Improvements, Kestrel Institute<br />
+Final Report, 2019-05-31<br />
+by Alessandro Coglio and Eric McCarthy</b></p>
+<h3>What is the Yellow Paper, and how is it related to Decentralization?</h3>
+<p>The Yellow Paper (YP) is the primary specification for the Ethereum blockchain. Ethereum is the most widely used blockchain smart contract platform, and therefore it is the most widely used platform for decentralized applications. Improving the security of Ethereum is important for all applications running on the platform. Improving the precision and clarity of the YP can help implementors of Ethereum avoid bugs, so improvements to the YP are contributions to the security of Ethereum and therefore to the security of many decentralized applications.</p>
+<h3>Work done under this grant</h3>
+<p>Prior to this grant, we were working on formalizing Ethereum in the ACL2 theorem prover. The Yellow Paper (YP) is the primary specification for Ethereum, so it was our primary reference. As a specification, it should be precise and understandable by someone who recognizes notations used by mathematics and logic. Whenever we found issues with the YP, we recorded the issues and our proposed solutions.</p>
+<p>On this grant, we worked though a large part of our list of problems with the YP. This included things that seemed wrong, inconsistent, underspecified, or unclear when we attempted to formalize the YP. We studied each issue and proposed suggested improvements. We reached consensus within Kestrel and then created pull requests and participated in subsequent community discussions on Github to reach consensus with the community, in some cases modifying the suggested changes accordingly. In some cases, we studied implementations. When community consensus was reached, we pushed our changes, thus improving the YP for all current and future users.</p>
+<p>We made the following changes to the Yellow Paper (YP) under this grant. This list does not include pull requests done prior to the start of this grant. The changes vary in complexity and importance.</p>
+<p>The most interesting change from a technical point of view is:</p>
+<ul>
+<li>Explicate non-RLP-encodable structures<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/736">https://github.com/ethereum/yellowpaper/pull/736</a></li>
+</ul>
+<p>However, the cleanup tasks are also important, since they affect the general understandability (and sometimes the correctness) of the YP. Here are the other commits we did under this grant:</p>
+<ul>
+<li>Change arg max to max in Appendix D.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/734">https://github.com/ethereum/yellowpaper/pull/734</a></li>
+<li>Fix typo.</li>
+<li>The \mathrm{n} should be just n here. It is the index that the sum ranges over.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/737">https://github.com/ethereum/yellowpaper/pull/737</a></li>
+<li>Add missing comma.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/738">https://github.com/ethereum/yellowpaper/pull/738</a></li>
+<li>Clarify the definition of RLP trees.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/739">https://github.com/ethereum/yellowpaper/pull/739</a></li>
+<li>Consistently use &#8216;byte array&#8217;.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/740">https://github.com/ethereum/yellowpaper/pull/740</a></li>
+<li>Fix font and improve wording.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/741">https://github.com/ethereum/yellowpaper/pull/741</a></li>
+<li>Fix notation for sequence elements.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/742">https://github.com/ethereum/yellowpaper/pull/742</a></li>
+<li>Improve summation notation in BE definition.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/743">https://github.com/ethereum/yellowpaper/pull/743</a></li>
+<li>Make all quantified variables non-subscript.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/744">https://github.com/ethereum/yellowpaper/pull/744</a></li>
+<li>Give a general definition of sequence concatenation.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/745">https://github.com/ethereum/yellowpaper/pull/745</a></li>
+<li>Improve sentence clarity and explicitness.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/746">https://github.com/ethereum/yellowpaper/pull/746</a></li>
+<li>Improve appearance of true and false.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/748">https://github.com/ethereum/yellowpaper/pull/748</a></li>
+<li>Pass a bit as the second argument of HP.<br />
+<a href="https://github.com/ethereum/yellowpaper/pull/749">https://github.com/ethereum/yellowpaper/pull/749</a></li>
+<li>Fix two obvious typos. (Merged without pull request.)<br />
+<a href="https://github.com/ethereum/yellowpaper/commit/3e367728980573f95fb4a7e6785314500bf4a1b6">https://github.com/ethereum/yellowpaper/commit/3e367728980573f95fb4a7e6785314500bf4a1b6</a></li>
+</ul>
+<p>We also cleaned up some older, related issues and pull requests by adding explanatory comments, some of which were subsequently closed. From a technical point of view, these can be quite interesting:</p>
+<ul>
+<li><a href="https://github.com/ethereum/yellowpaper/issues/116">https://github.com/ethereum/yellowpaper/issues/116</a></li>
+<li><a href="https://github.com/ethereum/yellowpaper/pull/648">https://github.com/ethereum/yellowpaper/pull/648</a></li>
+</ul>
+<p>We added this issue, which has not yet been resolved:</p>
+<ul>
+<li><a href="https://github.com/ethereum/yellowpaper/issues/753">https://github.com/ethereum/yellowpaper/issues/753</a></li>
+</ul>
+<p>Note, we did a variety of adjunct work without charging to the grant, such as recording and discussing our proposed changes and discussions and meetings about maintainership.</p>
+<h3>Discussion</h3>
+<h3>Our experience attempting to improve the Yellow Paper</h3>
+<p>When we started working on the Yellow Paper, we thought it would be reasonably straightforward to submit pull requests with our proposed improvements. However, after Yoichi Hirai departed, his role as an active maintainer of the YP was not specifically reassigned to anyone else at the Ethereum Foundation.</p>
+<p>We would like to thank Nick Savers for stepping in to maintain the YP and to review and merge and approve many pull requests, Kenneth Ng for connecting us with Jamie Pitts, and Jamie Pitts for attempting to build a Yellow Paper community. Jamie started the Ethereum Specification mailing list (specification@ethereum.org). Jamie also set up a Doodle signup for an Ethereum Specification group call, but the only people who signed up were from Kestrel Institute: Alessandro Coglio and Eric McCarthy, and the call never happened. Then Jamie gave us push access to the Yellow Paper Github repo, so we are part of a small group of YP maintainers.</p>
+<h3>More Information about the Yellow Paper</h3>
+<p>There seem to be many people who find the YP valuable, and many who do not. There are people who want the YP to be &#8220;The Canonical Ethereum Specification&#8221;, those who want a machine-readable canonical specification (such as expanding the Jello (K-framework) specification to cover more than the EVM), and those who think it is fine not to designate any specification as &#8220;canonical&#8221; and who support a diversity of specifications. Rather than take any sides in these discussions, we mainly focused on improving what we find useful: the Yellow Paper.</p>
+<p>Currently, the main forums for discussing the Yellow Paper are:</p>
+<ul>
+<li>the issues and pull requests of the Github repo at<br />
+<a href="https://github.com/ethereum/yellowpaper">https://github.com/ethereum/yellowpaper</a></li>
+<li>Gitter: <a href="https://gitter.im/ethereum/yellowpaper">https://gitter.im/ethereum/yellowpaper</a></li>
+<li>There are also occasional discussions at Ethereum Magicians.<br />
+<a href="https://ethereum-magicians.org">https://ethereum-magicians.org</a><br />
+Example: <a href="https://ethereum-magicians.org/t/yellow-paper-maintainership/819">https://ethereum-magicians.org/t/yellow-paper-maintainership/819</a></li>
+<li>Nick Savers is the primary Maintainer:<br />
+<a href="https://github.com/ethereum/yellowpaper/issues/725">https://github.com/ethereum/yellowpaper/issues/725</a><br />
+<a href="https://en.ethereum.wiki/maintainers">https://en.ethereum.wiki/maintainers</a></li>
+</ul>
+<h3>In Conclusion</h3>
+<p>On this grant we accomplished our goal to improve the YP in quite a few ways. Also, this project has been helpful for us to become better integrated contributors to the Ethereum Ecosystem. We have met others in the intersection of Ethereum and Formal Methods. We continue to see ways the Yellow Paper can be improved, and we hope to continue contributing to the YP in the future. We thank the Decentralization Foundation for helping us get to this point.</p>
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2019/05/31/kestrel-institute/index.html">Published by Chris Peel on 2019-05-31</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Apr 17 2019
+          </div>
+          <h1><a class="permalink" href="2019/04/17/activities-in-2018/index.html">Activities in 2018</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>The following much-delayed summary gives details about significant activities of the Foundation in 2018, including donations, expenses, community events that were funded, and a grant.</p>
+
+<p>The foundation started in Aug 2018 using donations from anonymous sponsors totaling $20,000. We are very grateful for these generous donations!</p>
+
+<p>In October, the foundation gave a grant of $3,000 to the <a href="https://www.kestrel.edu/">Kestrel Institute</a> for work on the Ethereum yellow paper. The results of this grant are detailed in a separate <a href="2019/05/31/kestrel-institute/index.html">blog post</a>. We are very happy with Kestrel&#8217;s work. We funded a Silicon Valley Ethereum Meetup event with <a href="https://www.meetup.com/EthereumSiliconValley/events/254358234/">Yannis Smaragdakis</a> and another with <a href="https://www.meetup.com/EthereumSiliconValley/events/254621281/">Mooly Sagiv and Eric Smith</a>. These sort of events will be a priority in the future for us.</p>
+
+<p>Unfortunately we paid $12,918 for legal expenses associated with setting up the foundation. Of course this is too much for our tiny foundation and we have switched to doing all legal work ourselves, including filing taxes. The other largest expense was $900 for rent; $300 per month for October, November, and December 2018. As with the legal expenses, this is too much for our non-profit and in collaboration with <a href="https://www.mindrome.com/en">Mindrome</a> and another Mindrome tenant, we found a way to keep the Mindrome address without significant expense.</p>
+
+<p>For more details, see our <a href="wp-content/uploads/2021/09/d6fae-financial-report.pdf">2018 financial report</a>.</p>
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2019/04/17/activities-in-2018/index.html">Published by Chris Peel on 2019-04-17</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Apr 11 2019
+          </div>
+          <h1><a class="permalink" href="2019/04/11/what-is-it-good-for/index.html">What is it good for?</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p>This organization is called the &#8220;Decentralization Foundation&#8221; which, in its way, invites a certain kind of mockery. &#8220;Decentralized&#8221; is such a buzzword, and like most buzzwords, it has become associated more with grifting and disappointment than with the putatively good things the word was once meant to connote. The tech that often brands itself as &#8220;decentralized&#8221; — open blockchains like Bitcoin, the &#8220;dApps&#8221; built on Ethereum and similar platforms — are arguably very decentralized, and arguably not very decentralized at all. Decentralization optimists emphasize that &#8220;the applications are autonomous, outside of the control even of their creators&#8221;, or that &#8220;anyone can participate on equal terms with anyone else, just by bringing some hardware to the table.&#8221; Decentralization pessimists point out how dominated &#8220;mining&#8221; of Bitcoin and Ethereum are by just a few &#8220;pools&#8221;, how concentrated ownership of the assets that signify economic value is on these platforms, how in practice people with capital or socially connected to core groups of coders and evangelists have disproportionate influence.</p>
+<p>My own view is that &#8220;decentralization&#8221; is a completely uninteresting question to debate. Who gives a flop? Decentralization is valuable as a buzzword because it signifies other things, other <a href="https://www.interfluidity.com/uploads/2019/02/tao-of-decentralization-v3.pdf">virtues</a>. First and foremost in my mind, the &#8220;decentralized technology&#8221; movement aspires (however much it fails), to react against the leeching away of <a href="https://www.interfluidity.com/uploads/2018/06/AgencySlides_light_edit_to_share_2018-06-26.pdf">human agency</a> that is the signal social fact of an increasingly large scale, technologically mediated world. &#8220;Decentralized&#8221; systems claim to be &#8220;open&#8221; and &#8220;permissionless&#8221;. What that means, or ought to mean in my view, is that human beings — as generally as possible, not just some special technosophisticate caste — should be able to use this technology to act in ways that are socially and economically meaningful for themselves and their own communities, and that are not restricted to patterns and templates sketched out by distant &#8220;tech entrepreneurs&#8221; or by anyone else.</p>
+<p>We are very, very far from that world. A whole industry of &#8220;blockchain skeptics&#8221; has emerged, quite reasonably, to point that out. And yet this problem, that we are building a world in which, however paradoxically, the great power unlocked by advancing technology and large scale specialization and trade leaves most of us feeling ever less powerful, ever more at the mercy of distant and inchoate forces with respect to the circumstances of our own lives and families, is dire. You come to the counterrevolution with the technologies that you have, not those that you might wish to have. The current generation of overhyped, overspeculated, underdeveloped &#8220;decentralized tech&#8221; is close to the only game in town, from a human agency perspective. We&#8217;ve watched the internet itself, which was supposed to be a great equalizer, become a space more rapidly and efficiently consolidated, more disempowering from an economic perspective, than almost any sphere in the predigital world. It seems unlikely that we will undo the internet&#8217;s great achievement of stitching a naturally pluralistic world into a single gigantic economy ripe for domination. To restore some hope for human agency, we&#8217;ll need tools that let humans create and defend their own spaces, which must be economic as well as creative if they are to be sustainable. It is my hope, however well or poorly founded, that from today&#8217;s often disappointing &#8220;decentralized technology&#8221;, such tools will emerge.</p>
+<p>So, the &#8220;Decentralization Foundation&#8221;. Chris Peel, our fearless leader, is a remarkably adept builder of intellectual community around technology. His adroitness at that is what brought me into this hall of mirrors. I&#8217;m honored that, as he beats a path to turn that mission into a more formal organization, he&#8217;s chosen to invite me along for the journey. Whether as a builder or critic, grantee or donor, I hope that you&#8217;ll come along too. Let&#8217;s see where we all take ourselves.</p>
+
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2019/04/11/what-is-it-good-for/index.html">Published by Steve Randy Waldman on 2019-04-11</a>
+        </div>
+      </article>
+
+<hr class="article-separator">
+      <article>
+        <div class="article-header presentation-multiple">
+          <div class="article-top-date">
+            Mar 15 2019
+          </div>
+          <h1><a class="permalink" href="2019/03/15/intro-d24n/index.html">Introducing the Decentralization Foundation</a></h1>
+        </div>
+        <div class="article-body">
+          
+<p><strong>Update on 8 Apr 2019</strong>: We received our 501(c)(3) <a href="wp-content/uploads/2021/09/417a2-501c3approval.pdf">approval letter</a> today! This allows tax-deductible <a href="donate/index.html">donations</a> from US taxpayers. It is an important step for the foundation.</p>
+<p><strong>Original post:</strong> We are pleased to announce the launch of the Decentralization Foundation, with a mission of promoting decentralizing technology, educating the world on its potential, and funding relevant scientific research.  The foundation will raise donations and fund projects and communities that are consistent with the mission.</p>
+<p dir="ltr">Why create the Decentralization Foundation?  We want to build a community that is passionate about decentralization and is also willing to learn from others. We want to educate this community and others on the underlying technology, including its potential and its limitations. We want to fund scientific projects to improve the technology and society that would otherwise not be funded.</p>
+<h3>What will the foundation do?</h3>
+<p dir="ltr">The first focus of the foundation is to support community organizations and events by funding venues, <a href="http://meetup.com/" target="_blank" rel="noopener noreferrer">meetup.com</a> fees, and food for events. We will support groups focused on basic decentralized technology, as well as organizations and events focused on specific systems such as cryptocurrencies.  We also plan to fund documentation of decentralized systems with the goal of making the technology more accessible to beginners. We are also happy to fund community events which include criticism of the decentralized technologies above. We will promote discussion of decentralization, economics, and social stability. We have already funded a small number of events, including an event on <a href="https://www.meetup.com/EthereumSiliconValley/events/254358234/" target="_blank" rel="noopener noreferrer">decompiling smart contracts</a>, and another on <a href="https://www.meetup.com/EthereumSiliconValley/events/254621281/" target="_blank" rel="noopener noreferrer">formal verification of smart contracts</a>.</p>
+<p dir="ltr">One barrier to adoption of decentralized technologies is education. The second focus of the foundation is to develop and fund courses on important decentralized technologies such as hashes, Merkle trees, basic cryptography, and distributed consensus. We will also fund classes on systems such as Ethereum, Bitcoin, IPFS, and Circles, and finally courses on economics. We will promote a culture of critical thinking as a part of all curriculum.</p>
+<p dir="ltr">The final focus of the foundation will be on funding scientific research. We have already given a small grant to the <a href="https://www.kestrel.edu/" target="_blank" rel="noopener noreferrer">Kestrel Institute</a> which we will describe in a subsequent blog post.</p>
+<h3>Who are you? What are your goals?</h3>
+<p>I am Chris Peel, the president of the foundation. Steve Waldman is secretary and treasurer. Elaine Ou is a member of the board; Steve and I are also on the board. Jeff Flowers is vice president. See the foundation <a href="index.html">website</a> for longer bios. These are smart, wonderful people; it is a privilege to work with and be educated by them.</p>
+<p>Our long-term goal with the foundation is to grow the decentralization-focused community.  We are happy to work with big, well-established meetups, conferences, etc&#8230;; even more than this we would like to build communities and provide education in areas where there is none available at present.</p>
+<p>We acknowledge a long history of thinkers who have emphasized the value of decentralization; for example Tocqueville said:</p>
+<blockquote><p>Decentralization has, not only an administrative value, but also a civic dimension, since it increases the opportunities for citizens to take interest in public affairs; it makes them get accustomed to using freedom.</p>
+<p style="text-align:right;"><i>&#8220;Democracy in America&#8221;, Alexis de Tocqueville, 1840, Saunders and Otley (London)</i></p>
+</blockquote>
+<p>We recognize that we are building on Tocqueville and many others who contributed to the <span style="color:var(--color-neutral-600);">discussion of decentralization in government, finance, ideology and more.  Despite the breadth of work on decentralization, the foundation is</span><span style="color:var(--color-neutral-600);"> focused on technology, specifically the use of cryptography, blockchains, and incentives to build decentralized organizations.  Steve will talk more about the word &#8220;decentralization&#8221; in a subsequent post.</span></p>
+<h3>Looking ahead</h3>
+<p dir="ltr">We have <a href="wp-content/uploads/2021/09/7840f-form-1023.pdf">applied</a> to the IRS for 501(c)(3) non-profit status in the US; if this is approved we will be able to accept tax-deductible donations. We are optimistic that our application will be approved.</p>
+<p dir="ltr">Finally, we are happy to announce a new round of grants; we are accepting applications now for small ($300-$3000) grants with a focus on community groups and meetups. Applications will close April 28.  Please <a href="https://docs.google.com/forms/d/e/1FAIpQLSdT5tEz5j2NxRsrRsqBWgbRm814MiVAhrGbpxTzZSknUALfzQ/viewform">apply</a> or <a href="donate/index.html">donate</a>!</p>
+
+
+        </div>
+        <div class="article-footer">
+          <a class="permalink" href="2019/03/15/intro-d24n/index.html">Published by Chris Peel on 2019-03-15</a>
+        </div>
+      </article>
+
+
+      
+    </main>
+    <hr />
+    <footer id="main-footer">
+      <div id="footer-foundation" class="footer-contact">
+        <h4>Decentralization Foundation</h4>
+        4701 Patrick Henry Dr<br/>
+        Building 25<br/>
+        Santa Clara CA, 95054<br/>
+        <a href="mailto:decentralizationfoundation@gmail.com">decentralizationfoundation@gmail.com</a>
+      </div>
+      <div id="footer-connect" class="footer-contact">
+        <h4>Connect</h4>
+        Join our <a href="https://mailchi.mp/71870f1918c6/decentralization-foundation">email list</a><br/>
+        Read our <a href="feed/index.rss">RSS Feed</a><br/>
+        Connect on <a href="https://www.meetup.com/EthereumSiliconValley/members/271732793/profile/?returnPage=1">meetup.com</a><br/>
+        Follow us on Twitter: <a href="https://twitter.com/d24nOrg">@d24nOrg</a>
+      </div>
+      <div id="footer-credits">
+        <div>
+            <i>
+                Powered by
+                <a href="https://github.com/swaldman/unstatic">unstatic</a>,
+                <a href="https://github.com/swaldman/untemplate-doc#readme">untemplates</a>,
+                <a href="https://tapir.softwaremill.com/en/latest/index.html">tapir</a>,
+                <a href="https://zio.dev/">zio</a>,
+                <a href="https://github.com/vsch/flexmark-java/wiki">flexmark-java</a>,
+                <a href="https://jsoup.org/">jsoup</a>,
+                <a href="https://com-lihaoyi.github.io/mill/mill/Intro_to_Mill.html">mill</a>, and
+                <a href="https://scala-lang.org/">scala 3</a>
+                inter alia.
+            </i>
+        </div>
+      </div>
+    </footer>
   </body>
-</html>
+</html>  
