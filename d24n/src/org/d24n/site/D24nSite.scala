@@ -71,10 +71,8 @@ object D24nSite extends ZTSite.Composite:
       val raw = IndexedUntemplates.filter { case (fqn, _) => isEntry(fqn) }.map( _(1) )
       raw.map( _.asInstanceOf[EntryUntemplate] ).toSet
     override def mediaPathPermalink( checkable : Attribute.Checkable, ut : untemplate.Untemplate[?,?] ) : MediaPathPermalink =
-      // a bit complicated, because we want to preserve original links, so we enable manual permalink specification
       import MediaPathPermalink.*
-      val generator : MediaPathPermalink.Generator = givenPermalinkInMediaDirOrElse( yearMonthDayNameDir )
-      generator( checkable, ut )
+      overridable( yearMonthDayNameDir, ut )
 
     override def layoutEntry(input: Layout.Input.Entry): String = mainblog.layout_entry_html(input).text
 
