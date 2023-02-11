@@ -19,7 +19,7 @@ object D24nSite extends ZTSite.Composite:
     enum Outside( val url : URL ):
       case Apply extends Outside( URL("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
-  case class MainLayoutInput( renderLocation : SiteLocation, mainContentHtml : String )
+  case class MainLayoutInput( renderLocation : SiteLocation, mainContentHtml : String, sourceUntemplates : immutable.Seq[untemplate.Untemplate[Nothing,Any]] = immutable.Seq.empty )
 
   // override val serverUrl : Abs    = Abs("https://d24n.org/")
   // override val basePath  : Rooted = Rooted.root
@@ -81,7 +81,7 @@ object D24nSite extends ZTSite.Composite:
 
     // here the blog shares the sites main overall layout
     override def layoutPage(input: Layout.Input.Page): String =
-      val mainLayoutInput = MainLayoutInput( input.renderLocation, input.mainContentHtml )
+      val mainLayoutInput = MainLayoutInput( input.renderLocation, input.mainContentHtml, input.sourceEntries.map( _.entryUntemplate ) )
       layout_main_html(mainLayoutInput).text
 
 // object D24nSiteGenerator extends ZTSite.Dynamic.Main(D24nSite)
