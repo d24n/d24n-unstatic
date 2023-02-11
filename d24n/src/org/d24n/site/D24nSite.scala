@@ -8,6 +8,8 @@ import unstatic.UrlPath.*
 import unstatic.ztapir.*
 import unstatic.ztapir.simple.*
 
+import untemplate.*
+
 object D24nSite extends ZTSite.Composite:
   object Link:
     enum Inside(siteRootedPath : Rooted) extends SiteLocation(siteRootedPath, D24nSite.this):
@@ -19,7 +21,7 @@ object D24nSite extends ZTSite.Composite:
     enum Outside( val url : URL ):
       case Apply extends Outside( URL("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
-  case class MainLayoutInput( renderLocation : SiteLocation, mainContentHtml : String, sourceUntemplates : immutable.Seq[untemplate.Untemplate[Nothing,Any]] = immutable.Seq.empty )
+  case class MainLayoutInput( renderLocation : SiteLocation, mainContentHtml : String, sourceUntemplates : immutable.Seq[Untemplate.AnyUntemplate] = immutable.Seq.empty )
 
   // override val serverUrl : Abs    = Abs("https://d24n.org/")
   // override val basePath  : Rooted = Rooted.root
