@@ -48,27 +48,27 @@
     </header>
     <main>
 
-            <article>
-        <div class="article-header presentation-single">
-          <div class="article-top-date">
-            Feb 08 2023
-          </div>
-          <h1><a class="permalink" href="index.html">Add a post!</a></h1>
-        </div>
-        <div class="article-body">
-          <div class="flexmark markdown">
-<p>It's pretty easy. And cheaper than shelter!</p>
-<h2><a href="#0-prerequisites" id="0-prerequisites" name="0-prerequisites" class="anchorlink"></a>0. Prerequisites</h2>
-<p>You'll need git on the command line, and a Java 17+ VM installed:</p>
-<pre><code>$ java -version
+      <article>
+ <div class="article-header presentation-single">
+  <div class="article-top-date">
+   Feb 08 2023
+  </div>
+  <h1><a class="permalink" href="index.html">Add a post!</a></h1>
+ </div>
+ <div class="article-body">
+  <div class="flexmark markdown">
+   <p>It's pretty easy. And cheaper than shelter!</p>
+   <h2><a href="#0-prerequisites" id="0-prerequisites" name="0-prerequisites" class="anchorlink"></a>0. Prerequisites</h2>
+   <p>You'll need git on the command line, and a Java 17+ VM installed:</p>
+   <pre><code>$ java -version
 java -version
-openjdk version &quot;17.0.2&quot; 2022-01-18
+openjdk version "17.0.2" 2022-01-18
 OpenJDK Runtime Environment (build 17.0.2+8-86)
 OpenJDK 64-Bit Server VM (build 17.0.2+8-86, mixed mode, sharing)
 </code></pre>
-<p>(Let me know if a tutorial on how to install/select JVMs would help!)</p>
-<h2><a href="#1-clone-the-d24n-unstatic-repo" id="1-clone-the-d24n-unstatic-repo" name="1-clone-the-d24n-unstatic-repo" class="anchorlink"></a>1. Clone the <code>d24n-unstatic</code> repo</h2>
-<pre><code>$ git clone git@github.com:d24n/d24n-unstatic.git
+   <p>(Let me know if a tutorial on how to install/select JVMs would help!)</p>
+   <h2><a href="#1-clone-the-d24n-unstatic-repo" id="1-clone-the-d24n-unstatic-repo" name="1-clone-the-d24n-unstatic-repo" class="anchorlink"></a>1. Clone the <code>d24n-unstatic</code> repo</h2>
+   <pre><code>$ git clone git@github.com:d24n/d24n-unstatic.git
 git clone git@github.com:d24n/d24n-unstatic.git
 Cloning into 'd24n-unstatic'...
 Enter passphrase for key '/home/swaldman/.ssh/id_ed25519': 
@@ -79,42 +79,34 @@ remote: Total 1394 (delta 472), reused 1309 (delta 388), pack-reused 0
 Receiving objects: 100% (1394/1394), 4.87 MiB | 29.33 MiB/s, done.
 Resolving deltas: 100% (472/472), done.
 </code></pre>
-<h2><a href="#2-create-your-untemplate" id="2-create-your-untemplate" name="2-create-your-untemplate" class="anchorlink"></a>2. Create your &quot;untemplate&quot;</h2>
-<p>The blog's source — html, markdown, scala, static resources — all live in the <code>d24n</code> directory of your new
-repository.</p>
-<pre><code>  d24n
+   <h2><a href="#2-create-your-untemplate" id="2-create-your-untemplate" name="2-create-your-untemplate" class="anchorlink"></a>2. Create your "untemplate"</h2>
+   <p>The blog's source — html, markdown, scala, static resources — all live in the <code>d24n</code> directory of your new repository.</p>
+   <pre><code>  d24n
    + - src/        (Scala/Java source code)
    + - static/     (static resources of the website)
    + - untemplate/ (html and markdown templates that define the generated content)
 </code></pre>
-<p>Blog entries live in untemplate, under <code>untemplate/org/d24n/site/mainblog</code>.</p>
-<ul>
-<li>Anything (recursively) under this directory
-that looks like <code>entry-whatever.md.untemplate</code> will be considered a template for a markdown blog entry.</li>
-<li>Replace the
-<code>.md.untemplate</code> suffix with <code>.html.untemplate</code> for an HTML template, etc.</li>
-<li>The <code>whatever</code> part in the middle is pretty arbitrary, though I've mostly used post titles.</li>
-<li>As a matter of pure convenience, I've organized the <code>mainblog</code> directory by year, so this post (yours too!)
-should go in <code>year2023</code>.</li>
-</ul>
-<hr />
-<div style="line-height: 150%; font-size: 80%">
-<p><strong>Note:</strong> <em>This directory hierarchy is going to map to a JVM package hierarchy, so I could not have
-named this directory simply <code>2023</code>, because that would not be a valid
-<a href="https://www.geeksforgeeks.org/java-identifiers/">identifier</a>.</em></p>
-</div>
-<hr />
-<p>Use your favorite editor to create a file in <code>untemplate/org/d24n/site/mainblog/year2023</code>.
-From the repository root (<code>d24n-unstatic</code>) directory...</p>
-<pre><code>$ emacs d24n/untemplate/org/d24n/site/mainblog/year2023/entry-hi-from-steve.md.untemplate
+   <p>Blog entries live in untemplate, under <code>untemplate/org/d24n/site/mainblog</code>.</p>
+   <ul>
+    <li>Anything (recursively) under this directory that looks like <code>entry-whatever.md.untemplate</code> will be considered a template for a markdown blog entry.</li>
+    <li>Replace the <code>.md.untemplate</code> suffix with <code>.html.untemplate</code> for an HTML template, etc.</li>
+    <li>The <code>whatever</code> part in the middle is pretty arbitrary, though I've mostly used post titles.</li>
+    <li>As a matter of pure convenience, I've organized the <code>mainblog</code> directory by year, so this post (yours too!) should go in <code>year2023</code>.</li>
+   </ul>
+   <hr>
+   <div style="line-height: 150%; font-size: 80%">
+    <p><strong>Note:</strong> <em>This directory hierarchy is going to map to a JVM package hierarchy, so I could not have named this directory simply <code>2023</code>, because that would not be a valid <a href="https://www.geeksforgeeks.org/java-identifiers/">identifier</a>.</em></p>
+   </div>
+   <hr>
+   <p>Use your favorite editor to create a file in <code>untemplate/org/d24n/site/mainblog/year2023</code>. From the repository root (<code>d24n-unstatic</code>) directory...</p>
+   <pre><code>$ emacs d24n/untemplate/org/d24n/site/mainblog/year2023/entry-hi-from-steve.md.untemplate
 </code></pre>
-<p>You'll want the file to begin with some annoying boilerplate. I've made it available
-to copy and paste <a href="../../../../meta/exampleEntryUntemplate.txt">on the site itself</a>. Or, here it is!</p>
-<div style="font-size: 70%;">
-<pre><code>&gt; val UntemplateAttributes = immutable.Map[String,Any] (
-&gt;   &quot;Title&quot;     -&gt; &quot;Activities in 2018&quot;,
-&gt;   &quot;Author&quot;    -&gt; &quot;Chris Peel&quot;,
-&gt;   &quot;PubDate&quot;   -&gt; &quot;2019-04-17&quot;,
+   <p>You'll want the file to begin with some annoying boilerplate. I've made it available to copy and paste <a href="../../../../meta/exampleEntryUntemplate.txt">on the site itself</a>. Or, here it is!</p>
+   <div style="font-size: 70%;">
+    <pre><code>&gt; val UntemplateAttributes = immutable.Map[String,Any] (
+&gt;   "Title"     -&gt; "Activities in 2018",
+&gt;   "Author"    -&gt; "Chris Peel",
+&gt;   "PubDate"   -&gt; "2019-04-17",
 &gt; )
 
 given PageBase = PageBase.fromPage(input.renderLocation)
@@ -122,14 +114,13 @@ given PageBase = PageBase.fromPage(input.renderLocation)
 (input : D24nSite.MainBlog.EntryInput)[]~()&gt;      ### modify Title/Author/Pubdate above, add markdown or html below!
 
 </code></pre>
-</div>
-<p>Now, just do as the <a href="https://github.com/swaldman/untemplate-doc#long-delimiters-header-notes-and-comments">delimiter comment</a>
-instructs. Modify Title/Author/Pubdate above, add markdown (since this is a <code>.md.untemplate</code> file) below!</p>
-<div style="font-size: 70%;">
-<pre><code>&gt; val UntemplateAttributes = immutable.Map[String,Any] (
-&gt;   &quot;Title&quot;     -&gt; &quot;Hi from Steve!&quot;,
-&gt;   &quot;Author&quot;    -&gt; &quot;Steve Waldman&quot;,
-&gt;   &quot;PubDate&quot;   -&gt; &quot;2023-02-08&quot;,
+   </div>
+   <p>Now, just do as the <a href="https://github.com/swaldman/untemplate-doc#long-delimiters-header-notes-and-comments">delimiter comment</a> instructs. Modify Title/Author/Pubdate above, add markdown (since this is a <code>.md.untemplate</code> file) below!</p>
+   <div style="font-size: 70%;">
+    <pre><code>&gt; val UntemplateAttributes = immutable.Map[String,Any] (
+&gt;   "Title"     -&gt; "Hi from Steve!",
+&gt;   "Author"    -&gt; "Steve Waldman",
+&gt;   "PubDate"   -&gt; "2023-02-08",
 &gt; )
 
 given PageBase = PageBase.fromPage(input.renderLocation)
@@ -147,67 +138,52 @@ if you've any sense that's not reciprocal, because:
 
 I was disagreeable then too!
 </code></pre>
-</div>
-<p>I'll slip this in as the post <a href="../hi-from-steve/index.html">below</a> this one, so you can see how it renders!</p>
-<hr />
-<div style="line-height: 150%; font-size: 80%">
-<p><strong>Note:</strong> <em>Don't write your post title above your text, just include it in <code>UntemplateAttributes</code>.
-The blog will render its posts' titles.</em></p>
-</div>
-<hr />
-<h2><a href="#3-generate-and-browse-the-static-site" id="3-generate-and-browse-the-static-site" name="3-generate-and-browse-the-static-site" class="anchorlink"></a>3. Generate and browse the static site</h2>
-<p>Just go to the root of the repository (i.e. the <code>d24n-unstatic</code> directory), and type:</p>
-<pre><code>$ ./d24n-site-gen
+   </div>
+   <p>I'll slip this in as the post <a href="../hi-from-steve/index.html">below</a> this one, so you can see how it renders!</p>
+   <hr>
+   <div style="line-height: 150%; font-size: 80%">
+    <p><strong>Note:</strong> <em>Don't write your post title above your text, just include it in <code>UntemplateAttributes</code>. The blog will render its posts' titles.</em></p>
+   </div>
+   <hr>
+   <h2><a href="#3-generate-and-browse-the-static-site" id="3-generate-and-browse-the-static-site" name="3-generate-and-browse-the-static-site" class="anchorlink"></a>3. Generate and browse the static site</h2>
+   <p>Just go to the root of the repository (i.e. the <code>d24n-unstatic</code> directory), and type:</p>
+   <pre><code>$ ./d24n-site-gen
 </code></pre>
-<p>You should see a report showing what pages got generated and what static directories got copied.</p>
-<p>You should have a file-system browsable website under the <code>docs/</code> directory of the repository now.
-Point your browser at <code>docs/index.html</code>.</p>
-<p>If you are on a Mac, you can just type</p>
-<pre><code>$ open docs/index.html
+   <p>You should see a report showing what pages got generated and what static directories got copied.</p>
+   <p>You should have a file-system browsable website under the <code>docs/</code> directory of the repository now. Point your browser at <code>docs/index.html</code>.</p>
+   <p>If you are on a Mac, you can just type</p>
+   <pre><code>$ open docs/index.html
 </code></pre>
-<hr />
-<div style="line-height: 150%; font-size: 80%">
-<p><strong>Note:</strong> <em>If you accidentally just type <code>./d24n-site</code>, the site will be generated, but into the
-more conventional <code>public</code> directory rather than <code>docs</code>. We are generating (for now) into <code>docs</code>
-because our temporary home</em> GitHub Pages <em>serves from that directory. You can just <code>rm -rf public</code>,
-or use type <code>./veryclean.sh</code> from the root of your repository directory if this happens.</em></p>
-</div>
-<hr />
-<h2><a href="#4-tweak" id="4-tweak" name="4-tweak" class="anchorlink"></a>4. Tweak!</h2>
-<p>You can, of course, look at your generated post, edit your untemplate file, regenerate again with
-<code>./d24n-site-gen</code>, reload, rinse, repeat.</p>
-<p>But this gets a smidgen cumbersome.</p>
-<p>If you use the command</p>
-<pre><code>./d24n-site-devcycle
+   <hr>
+   <div style="line-height: 150%; font-size: 80%">
+    <p><strong>Note:</strong> <em>If you accidentally just type <code>./d24n-site</code>, the site will be generated, but into the more conventional <code>public</code> directory rather than <code>docs</code>. We are generating (for now) into <code>docs</code> because our temporary home</em> GitHub Pages <em>serves from that directory. You can just <code>rm -rf public</code>, or use type <code>./veryclean.sh</code> from the root of your repository directory if this happens.</em></p>
+   </div>
+   <hr>
+   <h2><a href="#4-tweak" id="4-tweak" name="4-tweak" class="anchorlink"></a>4. Tweak!</h2>
+   <p>You can, of course, look at your generated post, edit your untemplate file, regenerate again with <code>./d24n-site-gen</code>, reload, rinse, repeat.</p>
+   <p>But this gets a smidgen cumbersome.</p>
+   <p>If you use the command</p>
+   <pre><code>./d24n-site-devcycle
 </code></pre>
-<p>You'll start up a server on port 8999 of your local machine.</p>
-<p>Because (temporarily), this site lives
-on <em>GitHub Pages</em> under the path <code>d24n_unstatic</code>, you'll need to point your browser to
-<a href="http://localhost:8999/d24n-unstatic/"><code>http://localhost:8999/d24n-unstatic/</code></a> to see the served
-site.</p>
-<p>Once the local development site is running, you can browse to your permalink, edit your untemplate, hit save, then refresh your
-page after 5-10 seconds to admire and critique your update.</p>
-<h2><a href="#5-publish" id="5-publish" name="5-publish" class="anchorlink"></a>5. Publish</h2>
-<p>Once you have your post looking lovely, hit <code>&lt;ctrl-c&gt;</code> to kill the development server, then</p>
-<pre><code>$ ./d24n-site-gen
+   <p>You'll start up a server on port 8999 of your local machine.</p>
+   <p>Because (temporarily), this site lives on <em>GitHub Pages</em> under the path <code>d24n_unstatic</code>, you'll need to point your browser to <a href="http://localhost:8999/d24n-unstatic/"><code>http://localhost:8999/d24n-unstatic/</code></a> to see the served site.</p>
+   <p>Once the local development site is running, you can browse to your permalink, edit your untemplate, hit save, then refresh your page after 5-10 seconds to admire and critique your update.</p>
+   <h2><a href="#5-publish" id="5-publish" name="5-publish" class="anchorlink"></a>5. Publish</h2>
+   <p>Once you have your post looking lovely, hit <code>&lt;ctrl-c&gt;</code> to kill the development server, then</p>
+   <pre><code>$ ./d24n-site-gen
 </code></pre>
-<p>to regenerate the static site. Then</p>
-<pre><code>$ git add .
-$ git commit -m &quot;Added an effing brilliant new post!&quot;
+   <p>to regenerate the static site. Then</p>
+   <pre><code>$ git add .
+$ git commit -m "Added an effing brilliant new post!"
 $ git push
 </code></pre>
-<p>and within a few minutes you should have it live at <a href="https://d24n.github.io/d24n-unstatic/"><code>https://d24n.github.io/d24n-unstatic/</code></a>.
-Hooray!</p>
-<p>Give it a try!</p>
-
-</div>
-        </div>
-        <div class="article-footer">
-          <a class="permalink" href="index.html">Published by Steve Waldman on 2023-02-08</a>
-        </div>
-      </article>
-
-
+   <p>and within a few minutes you should have it live at <a href="https://d24n.github.io/d24n-unstatic/"><code>https://d24n.github.io/d24n-unstatic/</code></a>. Hooray!</p>
+   <p>Give it a try!</p>
+  </div>
+ </div>
+ <div class="article-footer"><a class="permalink" href="index.html">Published by Steve Waldman on 2023-02-08</a>
+ </div>
+</article>
       
     </main>
     <hr />

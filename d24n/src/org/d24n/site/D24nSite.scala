@@ -38,8 +38,8 @@ object D24nSite extends ZTSite.Composite:
   //   (1) early items in the lists take precedence over later items
   //   (2) endpoint bindings take precedence over location bindings
   //
-  override lazy val locationBindingSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( RootStaticResource )
-  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, MiscPageResources, RootStaticResource )
+  override lazy val locationBindingSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( RootStaticResources )
+  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, MiscPageResources, RootStaticResources )
 
   object MiscPageResources extends ZTEndpointBinding.Source:
     def task( renderLocation : SiteLocation, generator : SiteLocation => untemplate.Result[Nothing]) = zio.ZIO.attempt {
@@ -48,14 +48,15 @@ object D24nSite extends ZTSite.Composite:
     }
 
     // Home is the blog front page, which MainBlog generates
-    val AboutUsBinding = ZTEndpointBinding.publicReadOnlyHtml(Link.Inside.AboutUs, task(Link.Inside.AboutUs, page_about_us_html))
-    val DonateBinding  = ZTEndpointBinding.publicReadOnlyHtml(Link.Inside.Donate,  task(Link.Inside.Donate, page_donate_html))
+    val AboutUsBinding = D24nSite.publicReadOnlyHtml(Link.Inside.AboutUs, task(Link.Inside.AboutUs, page_about_us_html), None, immutable.Set("about","aboutUs","about-us"), false, true)
+    val DonateBinding  = D24nSite.publicReadOnlyHtml(Link.Inside.Donate,  task(Link.Inside.Donate, page_donate_html), None, immutable.Set("donate"), false, true)
 
     def endpointBindings : immutable.Seq[ZTEndpointBinding] = Vector(AboutUsBinding,DonateBinding)
 
-  object RootStaticResource extends ZTStaticResources[D24nSite.type]:
+  object RootStaticResources extends ZTStaticResources[D24nSite.type]:
     override val site = D24nSite.this
-    override def locationBindings: immutable.Seq[StaticLocationBinding] = List(StaticLocationBinding(Rooted.root, JPath.of("d24n/static")))
+    override def locationBindings: immutable.Seq[StaticLocationBinding] =
+      StaticLocationBinding(Rooted.root, JPath.of("d24n/static"), NoIdentifiers) :: StaticLocationBinding(Rooted.root, JPath.of("d24n/content"), NoIdentifiers) :: Nil
 
   object MainBlog extends SimpleBlog:
     override type Site = D24nSite.type
@@ -63,6 +64,7 @@ object D24nSite extends ZTSite.Composite:
     override lazy val rssFeed = site.location( "/feed/index.rss" )
     override val feedTitle = "Decentralization Foundation Updates"
     override val frontPage = Link.Inside.Home
+    override val frontPageIdentifiers = super.frontPageIdentifiers ++ immutable.Set("home","homePage") // since we are using the blog as home
     override val maxFrontPageEntries = None
     override def entryUntemplates =
       def isEntry( fqn : String ) =
@@ -70,7 +72,7 @@ object D24nSite extends ZTSite.Composite:
         asVec.length > 1 && asVec.last.startsWith("entry") && asVec.contains("mainblog")
       val raw = IndexedUntemplates.filter { case (fqn, _) => isEntry(fqn) }.map( _(1) )
       raw.map( _.asInstanceOf[EntryUntemplate] ).toSet
-    override def mediaPathPermalink( checkable : Attribute.Checkable, ut : untemplate.Untemplate[?,?] ) : MediaPathPermalink =
+    override def mediaPathPermalink( ut : untemplate.Untemplate[?,?] ) : MediaPathPermalink =
       import MediaPathPermalink.*
       overridable( yearMonthDayNameDir, ut )
 
