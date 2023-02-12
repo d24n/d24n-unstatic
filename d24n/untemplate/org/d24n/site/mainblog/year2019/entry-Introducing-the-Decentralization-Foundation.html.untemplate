@@ -2,7 +2,7 @@
 >   "Title"     -> "Introducing the Decentralization Foundation",
 >   "Author"    -> "Chris Peel",
 >   "PubDate"   -> "2019-03-15T18:25:11-07:00",
->   "Permalink" -> "2019/03/15/intro-d24n/index.html"
+>   "Permalink" -> "2019/03/15/intro-d24n/index.html",
 > )
 
 given PageBase = PageBase.fromPage(input.renderLocation)

@@ -3,6 +3,7 @@
 >   "Author"    -> "Chris Peel",
 >   "PubDate"   -> "2021-08-17",
 >   "Permalink" -> "2021/08/17/funding-technical-classes/index.html",
+>   "Anchor"      -> "funding-technical-classes"
 > )
 
 given PageBase = PageBase.fromPage(input.renderLocation)

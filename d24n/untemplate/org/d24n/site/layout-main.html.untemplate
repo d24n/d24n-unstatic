@@ -4,6 +4,8 @@ val site = input.renderLocation.site
 val Link = site.Link
 val blog = site.MainBlog
 
+val needsMathJax = D24nSite.needsMathJax(input.sourceUntemplates)
+
 (input : D24nSite.MainLayoutInput)[]~()>
 <!doctype html>
 <html lang="en-US">
@@ -13,6 +15,7 @@ val blog = site.MainBlog
     <( blog.feedLinkHtml )>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8"/>
+    <( if needsMathJax then partial_mathjax_scripts_html() else "" )>
     <script type="application/javascript">
       function toggleHamburgerMenu() {
           const elem = document.getElementById('hamburger-menu');

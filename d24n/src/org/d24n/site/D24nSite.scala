@@ -9,6 +9,7 @@ import unstatic.ztapir.*
 import unstatic.ztapir.simple.*
 
 import untemplate.*
+import Untemplate.AnyUntemplate
 
 object D24nSite extends ZTSite.Composite:
   object Link:
@@ -21,7 +22,7 @@ object D24nSite extends ZTSite.Composite:
     enum Outside( val url : URL ):
       case Apply extends Outside( URL("https://docs.google.com/forms/d/e/1FAIpQLScBnYypFCEngFA4tc75_rUJLHbgUpcQPlMrZeRbCarGfxNNew/viewform") )
 
-  case class MainLayoutInput( renderLocation : SiteLocation, mainContentHtml : String, sourceUntemplates : immutable.Seq[Untemplate.AnyUntemplate] = immutable.Seq.empty )
+  case class MainLayoutInput( renderLocation : SiteLocation, mainContentHtml : String, sourceUntemplates : immutable.Seq[AnyUntemplate] = immutable.Seq.empty )
 
   // override val serverUrl : Abs    = Abs("https://d24n.org/")
   // override val basePath  : Rooted = Rooted.root
@@ -52,11 +53,25 @@ object D24nSite extends ZTSite.Composite:
     val DonateBinding  = D24nSite.publicReadOnlyHtml(Link.Inside.Donate,  task(Link.Inside.Donate, page_donate_html), None, immutable.Set("donate"), false, true)
 
     def endpointBindings : immutable.Seq[ZTEndpointBinding] = Vector(AboutUsBinding,DonateBinding)
+  end MiscPageResources
 
   object RootStaticResources extends ZTStaticResources[D24nSite.type]:
     override val site = D24nSite.this
     override def locationBindings: immutable.Seq[StaticLocationBinding] =
       StaticLocationBinding(Rooted.root, JPath.of("d24n/static"), NoIdentifiers) :: StaticLocationBinding(Rooted.root, JPath.of("d24n/content"), NoIdentifiers) :: Nil
+  end RootStaticResources
+
+  private val MathJaxLowerCased = untemplate.LowerCased("MathJax")
+
+  def needsMathJax(untemplates : immutable.Seq[AnyUntemplate]) : Boolean =
+    def needsIt( ut : AnyUntemplate ) : Boolean =
+      ut.UntemplateAttributesLowerCased.get( MathJaxLowerCased ) match
+        case Some( s : String  ) => s.equalsIgnoreCase("true")
+        case Some( b : Boolean ) => b
+        case _                   => false
+    untemplates.exists( needsIt )
+  end needsMathJax
+
 
   object MainBlog extends SimpleBlog:
     override type Site = D24nSite.type
