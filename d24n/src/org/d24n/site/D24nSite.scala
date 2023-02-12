@@ -55,11 +55,16 @@ object D24nSite extends ZTSite.Composite:
     def endpointBindings : immutable.Seq[ZTEndpointBinding] = Vector(AboutUsBinding,DonateBinding)
   end MiscPageResources
 
+  val contentDir = JPath.of("d24n/static")
+
   object RootStaticResources extends ZTStaticResources[D24nSite.type]:
     override val site = D24nSite.this
     override def locationBindings: immutable.Seq[StaticLocationBinding] =
-      StaticLocationBinding(Rooted.root, JPath.of("d24n/static")) :: Nil
+      StaticLocationBinding(Rooted.root, contentDir) :: Nil
   end RootStaticResources
+
+  override val enforceUserContentFrom : Option[JPath] = Some(contentDir)
+
 
   private val MathJaxLowerCased = untemplate.LowerCased("MathJax")
 
