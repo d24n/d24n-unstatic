@@ -58,7 +58,7 @@ object D24nSite extends ZTSite.Composite:
   object RootStaticResources extends ZTStaticResources[D24nSite.type]:
     override val site = D24nSite.this
     override def locationBindings: immutable.Seq[StaticLocationBinding] =
-      StaticLocationBinding(Rooted.root, JPath.of("d24n/static"), NoIdentifiers) :: StaticLocationBinding(Rooted.root, JPath.of("d24n/content"), NoIdentifiers) :: Nil
+      StaticLocationBinding(Rooted.root, JPath.of("d24n/static")) :: Nil
   end RootStaticResources
 
   private val MathJaxLowerCased = untemplate.LowerCased("MathJax")
@@ -102,4 +102,4 @@ object D24nSite extends ZTSite.Composite:
       layout_main_html(mainLayoutInput).text
 
 // object D24nSiteGenerator extends ZTSite.Dynamic.Main(D24nSite)
-object D24nSiteGenerator extends ZTSite.Main(D24nSite, "d24n-site")
+object D24nSiteGenerator extends ZTMain(D24nSite, "d24n-site")
