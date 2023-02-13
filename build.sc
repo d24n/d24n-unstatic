@@ -10,10 +10,10 @@ import $file.buildCompilationSettings
 // consider defining an 'UnstaticModule' that extends
 // UntemplateModule, to ensure versions are sync'ed
 
-import $ivy.`com.mchange::untemplate-mill:0.0.4-SNAPSHOT`
+import $ivy.`com.mchange::untemplate-mill:0.0.4`
 import untemplate.mill._
 
-val UnstaticVersion = "0.0.2-SNAPSHOT"
+val UnstaticVersion = "0.0.2"
 
 object Dependency {
   val Unstatic             = ivy"com.mchange::unstatic:${UnstaticVersion}"
