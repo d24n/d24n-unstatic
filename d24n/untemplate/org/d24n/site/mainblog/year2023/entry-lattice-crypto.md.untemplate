@@ -9,8 +9,6 @@ given PageBase = PageBase.fromPage(input.renderLocation)
 
 (input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
 
-# What is Lattice Cryptography?
-
 Cryptography is based on problems that are hard to solve in general, but easy to solve with additional information. One such problem is the difficulty of factoring the product of two large prime numbers. In this case the additional information which makes factoring easy is one of the prime numbers. For the large numbers used in cryptography today, someone who does not have either of the prime factors can not find them, even with very powerful computers. Systems such as [RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)) which are based on prime factorization are considered secure, though [attacks](https://link.springer.com/content/pdf/10.1007/3-540-68697-5_11.pdf) using lattice reduction have been found when library designers or users do [make a mistake](https://link.springer.com/content/pdf/10.1007/3-540-68697-5_11.pdf) and reveal too much information.
 
 Another early [cryptosystem](https://en.wikipedia.org/wiki/Merkle%E2%80%93Hellman_knapsack_cryptosystem) was based on the [subset-sum](https://en.wikipedia.org/wiki/Knapsack_problem) (or knapsack) problem which was believed to be hard to solve unless one has side information (a permutation that makes the subset superincreasing). Unfortunately attacks were quickly found, including one using [lattice reduction](https://dl.acm.org/doi/10.1145/2455.2461); these attacks make this system insecure.
