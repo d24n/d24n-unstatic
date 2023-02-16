@@ -11,7 +11,7 @@ import unstatic.ztapir.simple.*
 import untemplate.*
 import Untemplate.AnyUntemplate
 
-object D24nSite extends ZTSite.Composite:
+object D24nSite extends ZTSite.SingleRootComposite( JPath.of("d24n/static") ):
   object Link:
     enum Inside(siteRootedPath : Rooted) extends SiteLocation(siteRootedPath, D24nSite.this):
       case Home extends Inside( Rooted("/index.html") )
@@ -31,16 +31,9 @@ object D24nSite extends ZTSite.Composite:
   override val serverUrl : Abs    = Abs("https://d24n.github.io/")
   override val basePath  : Rooted = Rooted("/d24n-unstatic/")
 
-  // these had better be lazy, since at this point in the constructor StaticResources and MainBlog are null!
-  // note that static resources need to be included both as static locations and as endpoints, so that they can be
-  // both generated and served!
-  //
-  // avoid conflicts, but...
-  //   (1) early items in the lists take precedence over later items
-  //   (2) endpoint bindings take precedence over location bindings
-  //
-  override lazy val locationBindingSources : immutable.Seq[StaticLocationBinding.Source] = immutable.Seq( RootStaticResources )
-  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source]     = immutable.Seq( MainBlog, MiscPageResources, RootStaticResources )
+  // should be lazy, since at this point in the constructor MainBlog is null!
+  // avoid conflicts, but early items in the lists take precedence over later items
+  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source] = immutable.Seq( MainBlog, MiscPageResources )
 
   object MiscPageResources extends ZTEndpointBinding.Source:
     def task( renderLocation : SiteLocation, generator : SiteLocation => untemplate.Result[Nothing]) = zio.ZIO.attempt {
@@ -55,17 +48,6 @@ object D24nSite extends ZTSite.Composite:
     def endpointBindings : immutable.Seq[ZTEndpointBinding] = Vector(AboutUsBinding,DonateBinding)
   end MiscPageResources
 
-  val contentDir = JPath.of("d24n/static")
-
-  object RootStaticResources extends ZTStaticResources[D24nSite.type]:
-    override val site = D24nSite.this
-    override def locationBindings: immutable.Seq[StaticLocationBinding] =
-      StaticLocationBinding(Rooted.root, contentDir) :: Nil
-  end RootStaticResources
-
-  override val enforceUserContentFrom : Option[JPath] = Some(contentDir)
-
-
   private val MathJaxLowerCased = untemplate.LowerCased("MathJax")
 
   def needsMathJax(untemplates : immutable.Seq[AnyUntemplate]) : Boolean =
@@ -77,7 +59,6 @@ object D24nSite extends ZTSite.Composite:
     untemplates.exists( needsIt )
   end needsMathJax
 
-
   object MainBlog extends SimpleBlog:
     override type Site = D24nSite.type
     override val site = D24nSite.this
@@ -87,11 +68,11 @@ object D24nSite extends ZTSite.Composite:
     override val frontPageIdentifiers = super.frontPageIdentifiers ++ immutable.Set("home","homePage") // since we are using the blog as home
     override val maxFrontPageEntries = None
     override def entryUntemplates =
-      def isEntry( fqn : String ) =
-        val asVec = fqn.split('.').toVector
-        asVec.length > 1 && asVec.last.startsWith("entry") && asVec.contains("mainblog")
-      val raw = IndexedUntemplates.filter { case (fqn, _) => isEntry(fqn) }.map( _(1) )
-      raw.map( _.asInstanceOf[EntryUntemplate] ).toSet
+      IndexFilter.fromIndex( IndexedUntemplates )
+        .inOrBeneathPackage("org.d24n.site.mainblog")
+        .withNameLike( _.startsWith("entry_") )
+        .untemplates
+        .map( _.asInstanceOf[EntryUntemplate] )
     override def mediaPathPermalink( ut : untemplate.Untemplate[?,?] ) : MediaPathPermalink =
       import MediaPathPermalink.*
       overridable( yearMonthDayNameDir, ut )

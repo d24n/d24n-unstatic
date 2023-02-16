@@ -8,22 +8,32 @@ val presentationTypeClass =
 
 given PageBase = PageBase.fromPage(input.renderLocation)
 
+val permalinkLoc = input.sourceEntry.permalink
+
+val datePart = "on " + EndDateFormatter.format(input.sourceEntry.entryInfo.pubDate)
+val publishedLine =
+  if input.sourceEntry.entryInfo.authors.isEmpty then
+    "Published " + datePart
+  else
+    s"""Published by ${input.sourceEntry.entryInfo.authors.mkString(", ")} """ + datePart
+end publishedLine
+
 (input : Layout.Input.Entry)[]~()>
       <article>
 <()
 import input.blog.Entry.Presentation
 ()>
-        <div class="article-header <( presentationTypeClass)>">
+        <div class="article-header <( presentationTypeClass )>">
 <()
 if input.presentation != Presentation.Rss then {
 ()>
           <div class="article-top-date">
-            <( TopDateFormatter.format(input.pubDate) )>
+            <( TopDateFormatter.format(input.sourceEntry.entryInfo.pubDate) )>
           </div>
 <()
-  input.mbTitle.foreach { title =>
+  input.sourceEntry.entryInfo.mbTitle.foreach { title =>
 ()>
-          <h1><a class="permalink" href="<( input.permalinkLocation.relative )>"><( title )></a></h1>
+          <h1><a class="permalink" href="<( permalinkLoc.relative )>"><( title )></a></h1>
 <()
   }
 }
@@ -32,17 +42,8 @@ if input.presentation != Presentation.Rss then {
         <div class="article-body">
           <( input.articleContentHtml )>
         </div>
-<()
-val datePart = "on " + EndDateFormatter.format(input.pubDate)
-val publishedLine =
-  if input.authors.isEmpty then
-    "Published " + datePart
-  else
-    s"""Published by ${input.authors.mkString(", ")} """ + datePart
-end publishedLine
-()>
         <div class="article-footer">
-          <a class="permalink" href="<( input.permalinkLocation.relative )>"><( publishedLine )></a>
+          <a class="permalink" href="<( permalinkLoc.relative )>"><( publishedLine )></a>
         </div>
       </article>
 
