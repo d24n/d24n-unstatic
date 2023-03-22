@@ -29,7 +29,7 @@ object D24nSite extends ZTSite.SingleRootComposite( JPath.of("d24n/static") ):
 
   // temporary values while developing on gh-pages:
   override val serverUrl : Abs    = Abs("https://d24n.github.io/")
-  override val basePath  : Rooted = Rooted("/d24n-unstatic/")
+  override val basePath  : Rooted = Rooted.root
 
   // should be lazy, since at this point in the constructor MainBlog is null!
   // avoid conflicts, but early items in the lists take precedence over later items
