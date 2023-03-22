@@ -21,12 +21,10 @@ jobs:
       - name: republish
         run: |
           cd d24n.github.io
-	  git config user.email "swaldman@mchange.com"
-	  git config user.name  "d24n autopublish github action"
+          git config user.email "swaldman@mchange.com"
+          git config user.name  "d24n autopublish github action"
           git add .
           git commit -m "Auto-publishing changes pushed to d24n-unstatic (github action)"
           git push
 
 
-
-   
