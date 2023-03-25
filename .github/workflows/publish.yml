@@ -17,7 +17,10 @@ jobs:
       - name: clone d24n.github.io
         run:  git clone git@github.com:d24n/d24n.github.io.git
       - name: regenerate site html
-        run: ./d24n-site-gen
+        run: |
+	  pushd d24n-unstatic
+	  ./d24n-site-gen
+	  popd
       - name: overwrite d24n.github.io contents
         run:  cp -r d24n-unstatic/docs/* d24n.github.io/
       - name: republish
