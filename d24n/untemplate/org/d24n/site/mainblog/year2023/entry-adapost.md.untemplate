@@ -18,7 +18,7 @@ val untemplateTemplateText = Files.readString( Path.of("d24n/static", entryUntem
 
 (input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
 
-It's pretty easy. And cheaper than shelter! (Groan......)
+It's pretty easy. And cheaper than shelter!
 
 ## 0. Prerequisites
 
