@@ -4,6 +4,8 @@ This is a reproduction of the current [d24n.org](https://www.d24n.org/) website
 built with the static-site-generator generator
 [unstatic](https://github.com/swaldman/unstatic).
 
+You can find the blog entries (in subdirectories by year) [here](https://github.com/d24n/d24n-unstatic/tree/main/d24n/untemplate/org/d24n/site/mainblog).
+
 ---
 
 
