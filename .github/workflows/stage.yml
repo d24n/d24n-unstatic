@@ -22,7 +22,7 @@ jobs:
           tar cvzf github-pages.tar.gz github-pages
           popd
       - name: upload pages artifact
-        uses: actions/upload-pages-artifact@1.0.8
+        uses: actions/upload-pages-artifact@v1.0.8
 
 
 
