@@ -1,0 +1,30 @@
+name: Publish to d24n main
+
+on:
+  push:
+    branches: [ staging ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: d24n-unstatic
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: regenerate site html
+        run: |
+          pushd d24n-unstatic
+          ./d24n-site -o github-pages
+          tar cvzf github-pages.tar.gz github-pages
+          popd
+      - name: upload pages artifact
+        uses: actions/upload-artifact@1.0.8
+
+
+
+
+
