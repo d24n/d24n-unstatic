@@ -5,7 +5,7 @@ on:
     branches: [ staging ]
 
 jobs:
-  publish:
+  stage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,12 +18,27 @@ jobs:
       - name: regenerate site html
         run: |
           pushd d24n-unstatic
-          ./d24n-site gen -o github-pages
-          tar cvzf github-pages.tar.gz github-pages
-          mkdir _site
+          ./d24n-site gen -o _site
           popd
       - name: upload pages artifact
         uses: actions/upload-pages-artifact@v1.0.8
+  deploy:
+    needs: stage
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2.0.2
+
+
+
+
 
 
 
