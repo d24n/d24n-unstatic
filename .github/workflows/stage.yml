@@ -20,6 +20,7 @@ jobs:
           pushd d24n-unstatic
           ./d24n-site gen -o github-pages
           tar cvzf github-pages.tar.gz github-pages
+          mkdir _site
           popd
       - name: upload pages artifact
         uses: actions/upload-pages-artifact@v1.0.8
