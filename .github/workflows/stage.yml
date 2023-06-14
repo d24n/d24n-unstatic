@@ -18,7 +18,7 @@ jobs:
       - name: regenerate site html
         run: |
           pushd d24n-unstatic
-          ./d24n-site -o github-pages
+          ./d24n-site gen -o github-pages
           tar cvzf github-pages.tar.gz github-pages
           popd
       - name: upload pages artifact
