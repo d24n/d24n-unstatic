@@ -18,7 +18,7 @@ jobs:
       - name: regenerate site html
         run: |
           pushd d24n-unstatic
-          ./d24n-site gen -o _site
+          ./d24n-site gen -o ../_site
           popd
       - name: upload pages artifact
         uses: actions/upload-pages-artifact@v1.0.8
