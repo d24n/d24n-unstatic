@@ -11,6 +11,8 @@ import unstatic.ztapir.simple.*
 import untemplate.*
 import Untemplate.AnyUntemplate
 
+import java.time.ZoneId
+
 object D24nSite extends ZTSite.SingleRootComposite( JPath.of("d24n/static") ):
   object Link:
     enum Inside(siteRootedPath : Rooted) extends SiteLocation(siteRootedPath, D24nSite.this):
@@ -67,6 +69,7 @@ object D24nSite extends ZTSite.SingleRootComposite( JPath.of("d24n/static") ):
     override val frontPage = Link.Inside.Home
     override val frontPageIdentifiers = super.frontPageIdentifiers ++ immutable.Set("home","homePage") // since we are using the blog as home
     override val maxFrontPageEntries = None
+    override val timeZone = ZoneId.of("America/Los_Angeles")
     override def entryUntemplates =
       IndexFilter.fromIndex( IndexedUntemplates )
         .inOrBeneathPackage("org.d24n.site.mainblog")
@@ -75,7 +78,7 @@ object D24nSite extends ZTSite.SingleRootComposite( JPath.of("d24n/static") ):
         .map( _.asInstanceOf[EntryUntemplate] )
     override def mediaPathPermalink( ut : untemplate.Untemplate[?,?] ) : MediaPathPermalink =
       import MediaPathPermalink.*
-      overridable( yearMonthDayNameDir, ut )
+      overridable( yearMonthDayNameDir(timeZone), ut )
 
     override def layoutEntry(input: Layout.Input.Entry): String = mainblog.layout_entry_html(input).text
 
