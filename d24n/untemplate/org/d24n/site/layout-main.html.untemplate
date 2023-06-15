@@ -79,6 +79,8 @@ val needsMathJax = D24nSite.needsMathJaxAny(input.sourceUntemplates)
         Connect on <a href="https://www.meetup.com/EthereumSiliconValley/members/271732793/profile/?returnPage=1">meetup.com</a><br/>
         Follow us on Twitter: <a href="https://twitter.com/d24nOrg">@d24nOrg</a>
       </div>
+<()
+/*	
       <div id="footer-credits">
         <div>
             <i>
@@ -95,6 +97,8 @@ val needsMathJax = D24nSite.needsMathJaxAny(input.sourceUntemplates)
             </i>
         </div>
       </div>
+*/
+()>      
     </footer>
   </body>
 </html>  
