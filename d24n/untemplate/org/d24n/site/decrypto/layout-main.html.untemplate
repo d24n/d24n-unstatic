@@ -11,6 +11,8 @@ val title = input.mbTitle.getOrElse("decrypto")
 
 val needsMathJax = D24nSite.needsMathJaxOnly(input.sourceUntemplates)
 
+val logoLoc = site.location("/decrypto/image/d24n-web-logo-x2.png")
+
 (input : D24nSite.MainLayoutInput)[]~()>
 <!DOCTYPE html>
 <html>
@@ -26,7 +28,7 @@ val needsMathJax = D24nSite.needsMathJaxOnly(input.sourceUntemplates)
     <div id="header">
       <div id="header-left">
 	<a href="<( Link.Inside.Home.relative )>">
-	  <img id="header-logo" src="/decrypto/image/d24n-web-logo-x2.png" />
+	  <img id="header-logo" src="<(  logoLoc.relative )>" />
 	</a>
       </div>
       <div id="header-middle" class="handwritten">
