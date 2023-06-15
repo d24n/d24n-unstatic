@@ -12,6 +12,7 @@ val title = input.mbTitle.getOrElse("decrypto")
 val needsMathJax = D24nSite.needsMathJaxOnly(input.sourceUntemplates)
 
 val logoLoc = site.location("/decrypto/image/d24n-web-logo-x2.png")
+val featherLibLoc = site.location("/decrypto/js/feather.min.js")
 
 (input : D24nSite.MainLayoutInput)[]~()>
 <!DOCTYPE html>
@@ -28,7 +29,7 @@ val logoLoc = site.location("/decrypto/image/d24n-web-logo-x2.png")
     <div id="header">
       <div id="header-left">
 	<a href="<( Link.Inside.Home.relative )>">
-	  <img id="header-logo" src="<(  logoLoc.relative )>" />
+	  <img id="header-logo" src="<( logoLoc.relative )>" />
 	</a>
       </div>
       <div id="header-middle" class="handwritten">
@@ -58,7 +59,7 @@ val logoLoc = site.location("/decrypto/image/d24n-web-logo-x2.png")
       <div id="copyright" class="footerdiv">&copy; 2023 Decentralization Foundation</div>
       <div id="footerdingbat" class="footerdiv">¯\_(ツ)_/¯</div>
     </div>
-    <script src="/decrypto/js/feather.min.js"></script>
+    <script src="<( featherLibLoc.relative )>"></script>
     <script>
       feather.replace()
     </script>
