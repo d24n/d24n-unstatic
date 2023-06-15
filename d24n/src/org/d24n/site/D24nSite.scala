@@ -43,7 +43,7 @@ object D24nSite extends ZTSite.SingleRootComposite( JPath.of("d24n/static") ):
 
   // should be lazy, since at this point in the constructor MainBlog and decrypto null!
   // avoid conflicts, but early items in the lists take precedence over later items
-  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source] = immutable.Seq( MainBlog, MiscPageResources, Decrypto, DecryptoMiscPageResources )
+  override lazy val endpointBindingSources : immutable.Seq[ZTEndpointBinding.Source] = immutable.Seq( MainBlog, MiscPageResources, /* Decrypto, DecryptoMiscPageResources */ )
 
   object MiscPageResources extends ZTEndpointBinding.Source:
     def task( renderLocation : SiteLocation, mbTitle : Option[String], generator : SiteLocation => untemplate.Result[Nothing]) = zio.ZIO.attempt {
