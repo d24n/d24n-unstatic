@@ -1,0 +1,47 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "What is decentralized authority?",
+>   "Author"    -> "Steve Waldman",
+>   "PubDate"   -> "2022-12-18",
+> )
+
+(input : D24nSite.Decrypto.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
+
+An “authority” is a source of information that governs our behavior, regardless of whether we personally agree or believe it is right.
+
+If a police officer tells you that an area of the street is off-limits, you might think she’s full of poop, but unless you have a strong reason to challenge her, you’ll probably step around it. If a weathercaster who has always been accurate reports it will rain this afternoon, you will probably bring an umbrella.
+
+In these examples, both the police officer and the weathercaster are authorities. The weathercaster is an authority because you believe what he says is right, so you behave accordingly. The police officer is an authority regardless of whether you believe what she says is right, because if you don’t act as though it’s right, you might face unpleasant consequences.
+
+“Authority” resides not in information alone, but in our relationship to information. Information that a we act as if we believe it’s true is authoritative, for some we. Sometimes we act as if information is true because we actually believe it, as with our weathercaster. Sometimes we act as if information is true even though we don’t believe it, because we would face bad consequences for not acting in accord with the information. Most often, authority derives from a combination of these two factors: If many people in our community believe some information is true, and if it were true, it would be important for people to behave in a certain way, then our community will create bad consequences for people whose behavior defies that truth.
+
+Suppose your bicycle is parked on the street. Suppose I see it, and disagree with that word “your”. Objectively, it’s just a bicycle on the street! Your claim to it is imaginary! If I take the bicycle, and you shout “Stop! Thief!”, bystanders might succeed at blocking me and insisting on some discussion of the matter. I might say, no, the bicycle is mine. But if, say, neighbors have seen you ride the bike for years, or if they know you to be trustworthy, or know me to be a scoundrel, your claim will become authoritative, because however much I protest, bad things will happen to me if I don’t surrender the bike. A *consensus* on the truth of a matter provokes social consequences, even when no "formal authority" like a police officer is around.
+
+We rely upon authority constantly. When we line up to enter a movie theater, we act as if there’s some connection between holding a ticket and occupying a seat, even though as a matter of physics there is not. You go into your house and I into mine, even though your bed would accept me as easily as it does you. When we drive on the right side of the road (or the left side, dear Brits) we act as though there is something especially permissive about that side, though the road itself is entirely indifferent. If we insist on first principles that we should be able to drive on the whatever side we please, however, bad social consequences might result (for others as well as for us). We act as if certain things that have little objective reality are true, we agree upon their social reality, because without doing so, we’d have conflict and chaos.
+
+When we want to intentionally create authority, usually we rely upon the state, directly or indirectly. If you want my house, it will become yours as a matter of social reality, if you can persuade the state to say that it is. Maybe the state will record a transaction in which you purchase the house from me. Maybe it will reward you the house in some court proceeding, as compensation for putting up with my flatulence. In either case, we’ll have the mix of truth and consequences. The state will try to offer justification for why the house *ought to* be yours (you paid for it! you nearly suffocated!), and it will threaten bad consequences (arrest for trespass!) to anyone who acts in disagreement.
+
+What if we want to intentionally create authority *without* involving the government or the police or anything like that? That is the problem of *decentralized authority*.
+
+We saw before, when I stole your bicycle, that it is possible. If we can create a strong enough *consensus* that some information is true, people will behave as if it were true, potentially rendering those few who would challenge it, whether sincerely or opportunistically, irrelevant. I may think me and that bike are *deeply,* *spiritually, connected*, but no one is going to let me have it.
+
+When we can all get together and review a situation, it may not be hard for us to come to consensus and to spontaneously engender authority. We don’t need any special technology for that. But what if we want to engender a consensus among a community of people that never interacts in person, whose members may never even identify themselves to one another, about something very consequential, in which different members might have strongly opposed interests?
+
+Suppose that a group of us has won an online lottery. We’ve never met, but we’ll all go on a trip. However, while most of us will get rooms with a sea view, a few of us will be stuck with spectacular views of the parking lot. How do we decide who goes where? We could agree over e-mail to some fair procedure — say we’ll all roll some dice and three lowest scores get the bad rooms. But then how do we perform this procedure in a way that prevents losers from cheating? We could hire some accountable person, say a lawyer, and have that person travel to observe our rolls, and then trust what she claims to observe because if she lies she could be debarred, so surely she wouldn’t risk that over whatever one of us might offer to bribe her for a good view. But that would be really, really expensive, and it wouldn’t even be decentralized, as her threat of getting debarred comes indirectly from the state. If we want cheap, decentralized, authority, we’d have to be more clever.
+
+Suppose instead of rolling dice for the bad rooms, we agreed to play “rock, scissors, paper”, each of us playing with each of the others, and the players with the lowest win rate get stuck with the parking lot. Suppose we have some trick by which we can e-mail everybody a “commitment” to rock, scissors, or paper without revealing what we have chosen, but once all the commitments are in, we can send our choices and everyone can verify that they match our commitments. If ever a choice fails to match a commitment, we all agree the player has forfeited his match. Now, without meeting, without even knowing each other’s identities beyond a perhaps made-up e-mail address, we have a way of agreeing on an allocation of rooms that’s clear enough, indisputable enough, that we — or at least the majority of us who are winners — will very likely enforce as “right”. We will have created an authoritative outcome, without any recourse to lawyers or the state or “formal authorities”, without meeting, without knowing one another’s names.
+
+We will have achieved decentralized authority.
+
+### Critiques
+
+- Decentralized authority is pointless. In the real world, we do have lawyers, judges, banks, and public officials who can supervise and regulate procedures that define high-stakes authoritative information like who gets what. We should use them.
+- The ability of unidentified parties to perform procedures that yield authoritative outcomes is harmful, as it mostly benefits criminals. Normal people should be willing to identify themselves if they want enforcement of a social consensus around high stakes, otherwise contestable information.
+
+### Answers
+
+- Judges and public officials are not easily accessible to most of us, and regulated lawyers and bankers are very expensive to access. Decentralized generation of authority can be a cheaper, more resource-efficient means of coming to a socially enforceable consensus, once we take into account the scarcity and value of formal authorities’ time.
+- States can be ineffective, corrupt, oppressive, or unjust. People who live in some states cannot rely upon formal authorities, but still require socially enforced agreement and consensus. Decentralized authority can be essential for people who live in bad states.
+- Even in reasonably decent or functional states, there are some situations and roles where states’ ability to provide authority is compromised. It may be virtuous, and *ex post* not criminal, for a whistleblower to prove her case while she is unidentifiable, where in practice she would be silenced — by corrupt use of the law or extralegal means — if she were identified prior to generating consensus about the accuracy of her information.
+
+Under some circumstances the critiques may be persuasive. Under other circumstances, they are likely not, or they are more than sufficiently answered. The value, or not, of decentralized authority — as a general idea, or in particular applications — is yours not ours to decide, dear reader!
+

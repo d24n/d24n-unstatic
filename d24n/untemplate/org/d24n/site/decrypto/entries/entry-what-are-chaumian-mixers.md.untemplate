@@ -1,0 +1,66 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "What are Chaumian mixers?",
+>   "Author"    -> "Elaine Ou",
+>   "PubDate"   -> "2022-12-22",
+> )
+
+(input : D24nSite.Decrypto.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
+
+It’s 1962 and you want to transfer money to Bob. Bob lives in Cuba, which is under US embargo. Or maybe it's 1982 and Bob is a member of the Contras. The important thing is that the bank needs to clear the payment without seeing the name of the recipient, because you don’t want a record of your association with Bob.
+
+<img class="wideimages verticalspace" src="##./to-bob.png" alt="envelope: To Bob" />
+
+
+You write Bob’s name on a slip of paper and put it in a carbon-lined envelope [^1]. You seal the envelope and put it in a bigger envelope along with a payment request of, say, $100. You seal and signs the outer envelope, then mail the whole thing to your bank in the Cayman Islands.
+
+<img class="wideimages verticalspace" src="##./to-bank.png" alt="envelope: To Bank" />
+
+The bank opens your outer envelope and finds the small envelope and withdrawal request inside. They deduct $100 from your account and print a signed demand draft on the outside of the little envelope without opening it. The bank puts the carbon envelope in a new outer envelope and sends it back to you.
+
+<img class="wideimages verticalspace" src="##./to-you.png" alt="envelope: To You" />
+
+You receive the envelope and forward it to Bob.
+
+Bob now has the carbon-lined envelope. He opens it and sees the original piece of paper with his name, now with the carbon copy of the bank’s signed demand draft imprint. Bob sends it to the bank, which processes tons of these every day. The bank doesn’t know who created the demand draft  — it only recognizes that the demand draft has a valid bank signature, and credits Bob’s account with $100.
+
+<img class="wideimages verticalspace" src="##./final-draft.png" alt="Final Draft" />
+
+## Random Numbers
+
+But wait! Bob gets his hands on a ditto machine (it's 1962, remember) and makes copies of the demand draft before sending it to the bank. Now he can redeem the same payment over and over again.
+
+Before you mail the original slip of paper to the bank, you have to generate a secret random number. The secret number is unique to each payment request. The bank keeps a running list of these numbers as each demand draft is paid out. The list is append-only, so a duplicate demand draft can’t be redeemed no matter how much time has passed.
+
+<img class="wideimages verticalspace" src="##./secret-random-number.png" alt="Secret Random Number" />
+
+And that’s how a bank can authorize a blind payment without ever knowing who did business with Bob.
+
+## Blind Payments, But on the Blockchain
+
+Cryptography can serve the same purpose as a carbon-lined envelope.
+
+It's 2022 and you want to send a humanitarian donation to, say, North Korea. Once again, you begin by generating a secret random number. Call it _x_.
+The job of the carbon-lined envelope is performed using a function _c_. 
+_c(x)_ does not reveal the value of _x_, but when the inverse of function _c_ is applied to the output of signing function _S(c(x))_, the result is a signed _x_:
+
+<blockquote  class="weight500">
+<i>c<sup>-1</sup>(S(c(x))) = S(x)</i>
+</blockquote>
+
+_c(x)_ is known as a commuting function. Furthermore, _c(x)_  is an irreversible function &mdash; one cannot deduce the value of x from knowing the value of c(x).
+
+_S(c(x))_ is the bank’s signature on the outside of the carbon-lined envelope. <i>c<sup>-1</sup></i> removes the effects of _c_ while allowing the signature to remain, just like when the carbon-lined envelope is removed.
+
+The payment process now looks like this:
+
+1. You send _c(x)_ to your bank. 
+2. The bank deducts a dollar from your account and applies _S_ to create _S(c(x))_.
+3. You compute <i>c<sup>-1</sup>(S(c(x))) = S(x)</i>, and send _S(x)_ to Bob.
+4. Bob forwards _S(x)_ to the bank and receives his dollar.
+
+Or, instead of going to the bank, Bob can transfer _S(x)_ to another person as a bearer instrument. When _S(x)_ finally returns to the bank, it is added to the list of numbers that the bank has already seen so that no one can spend it again.
+
+This is the idea behind zero-knowledge proofs: That one can prove ownership of an asset without knowing anything about the source of funds. When David Chaum conceived of blind signatures in 1982, he did not foresee the advent of smart contracts on decentralized networks. Today, the bank service can be performed by automated smart contracts such as Tornado Cash. 
+
+[^1]: Before the invention of photographic copiers, ink-coated paper was placed under documents that needed to be copied. Any writing or typing would transfer ink from the carbon paper to the sheet below. Hence the term "carbon copy".
+

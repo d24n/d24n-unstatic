@@ -1,0 +1,66 @@
+import org.d24n.site.partial_mathjax_scripts_html
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+val site = input.renderLocation.site
+val Link = site.Link
+
+val decryptoBlog = D24nSite.Decrypto
+
+val title = input.mbTitle.getOrElse("decrypto")
+
+val needsMathJax = D24nSite.needsMathJaxOnly(input.sourceUntemplates)
+
+(input : D24nSite.MainLayoutInput)[]~()>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <( decryptoBlog.feedLinkHtml )>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="<( Link.Decrypto.Stylesheet.relative )>" />
+    <( if needsMathJax then partial_mathjax_scripts_html() else "" )>
+    <title><( title )></title>
+  </head>
+  <body>
+    <div id="header">
+      <div id="header-left">
+	<a href="<( Link.Inside.Home.relative )>">
+	  <img id="header-logo" src="/decrypto/image/d24n-web-logo-x2.png" />
+	</a>
+      </div>
+      <div id="header-middle" class="handwritten">
+      </div>
+      <div id="header-right">
+	<div class="nav-link">
+          <a href="<( Link.Decrypto.RssFeed.relative )>">
+            <i data-feather="rss"></i> 
+          </a>
+	</div>
+	<div class="nav-link">
+          <a href="<( Link.Decrypto.About.relative )>">
+            <i data-feather="info"></i> 
+          </a>
+	</div>
+	<div class="nav-link">
+          <a href="<( Link.Decrypto.Home.relative )>">
+            <i data-feather="home"></i> 
+          </a>
+	</div>
+      </div>
+    </div>
+    <div id="content">
+      <( input.mainContentHtml )>
+    </div>
+    <div id="footer">
+      <div id="copyright" class="footerdiv">&copy; 2023 Decentralization Foundation</div>
+      <div id="footerdingbat" class="footerdiv">¯\_(ツ)_/¯</div>
+    </div>
+    <script src="/decrypto/js/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
+  </body>
+</html>
+
+

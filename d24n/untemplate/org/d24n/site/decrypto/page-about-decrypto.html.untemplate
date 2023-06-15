@@ -1,0 +1,15 @@
+given PageBase = PageBase.fromPage(renderLocation)
+
+val site = renderLocation.site
+
+(renderLocation : D24nSite.SiteLocation)[]~()>
+
+<div id="about-decrypto">
+  <h1>About <i>decrypto</i></h1>
+  <div class="entrytext">
+    <p>
+      <i>decrypto</i> hopes to become a resource that will help non-experts
+      develop an understanding of and intuition for decentralized technologies.
+    </p>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+import java.time.format.DateTimeFormatter
+
+val IsoLocalDate = DateTimeFormatter.ISO_LOCAL_DATE.withZone(input.blog.timeZone)
+val EndDate = DateTimeFormatter.ofPattern("MMM dd', 'yyyy").withZone(input.blog.timeZone)
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+val permalinkLoc = input.sourceEntry.permalink
+val title = input.info.mbTitle.getOrElse( throw new Exception(s"Title required, entry at ${permalinkLoc.siteRootedPath} has none.") )
+
+val pubDate = input.info.pubDate
+
+(input : D24nSite.Decrypto.Layout.Input.Entry)[]~()>
+<()
+import input.blog.Entry.Presentation
+if input.presentation == Presentation.Multiple then {
+()>
+  <li><a href="<( permalinkLoc.relative )>"><( title )></a></li>
+<()
+}
+else {
+()>
+  <div class="entrytext">  
+<()
+  if input.presentation != Presentation.Rss then { // omit title from body of RSS
+()>
+    <h1><( title )></h1>
+<()
+  }
+()>
+    <( input.articleContentHtml )>
+  </div> <!-- entrytext -->
+  <hr class="metadata-sep" />
+  <div class="metadata-after">
+    First published on <time datetime="<( IsoLocalDate.format(pubDate) )>"><( EndDate.format(pubDate) )></time><br/>
+  </div>
+<()
+}
+
+

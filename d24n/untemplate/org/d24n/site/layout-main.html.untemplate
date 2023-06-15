@@ -4,13 +4,15 @@ val site = input.renderLocation.site
 val Link = site.Link
 val blog = site.MainBlog
 
-val needsMathJax = D24nSite.needsMathJax(input.sourceUntemplates)
+val title = input.mbTitle.getOrElse("Empowering the Edges")
+
+val needsMathJax = D24nSite.needsMathJaxAny(input.sourceUntemplates)
 
 (input : D24nSite.MainLayoutInput)[]~()>
 <!doctype html>
 <html lang="en-US">
   <head>
-    <title>Empowering the Edges</title>
+    <title><( title )></title>
     <link rel="stylesheet" href="<( Link.Inside.Stylesheet.relative )>" />
     <( blog.feedLinkHtml )>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
