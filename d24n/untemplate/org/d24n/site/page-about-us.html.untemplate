@@ -12,6 +12,7 @@ val tax2018 = "https://drive.google.com/file/d/1vXRnARcjcz3JHpg6D-JGFbohJ7-ZGCU2
 val tax2019 = "https://drive.google.com/file/d/10Mo1Lu9vSvTTsij5XIbYXkaKHoUVe4L8/view?usp=sharing"
 val tax2020 = "https://apps.irs.gov/pub/epostcard/cor/831507845_202012_990_2021052418173721.pdf"
 val tax2021 = "https://drive.google.com/file/d/1ErO9fTORBdobWyN_jJU7GgwgNp6uQORI/view?usp=share_link"
+val tax2022 = "https://drive.google.com/file/d/1T8IrDdC3p4bA0LZR5ki2k5vGz4WvABkv/view?usp=sharing"
 
 (renderLocation : D24nSite.SiteLocation)[]~()>
 
@@ -87,10 +88,8 @@ val tax2021 = "https://drive.google.com/file/d/1ErO9fTORBdobWyN_jJU7GgwgNp6uQORI
             <li>Our <a href="<( artIncLoc.relative )>">Articles of Incorporation</a></li>
             <li>
                 Postcard (f990n) tax returns for <a href="<( tax2018 )>">2018</a> and
-                <a href="<( tax2019 )>">2019</a>, the form 990 tax return for
-                <a href="<( tax2020 )>">2020</a>, and a form 990-EZ for <a href="<( tax2021 )>">2021</a>.
-                 The deadline for 2022 990 returns for California is not until October 16, 2023 (due to wildfires);
-                 we plan to file before then.
+                <a href="<( tax2019 )>">2019</a>, and form 990 tax returns for
+                <a href="<( tax2020 )>">2020</a>, <a href="<( tax2021 )>">2021</a>, and <a href="<( tax2022 )>">2022</a>.
             </li>
         </ul>
     </div>
