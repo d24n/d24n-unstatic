@@ -1,0 +1,16 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "Decentralization and taxes",
+>   "Author"    -> "Chris Peel",
+>   "PubDate"   -> "2023-12-12",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
+
+The foundation’s 2022 tax return is now [available](https://drive.google.com/file/d/1T8IrDdC3p4bA0LZR5ki2k5vGz4WvABkv/view).
+
+We're a 501(c)3 tax-exempt organization, so we didn't actually _pay_ any taxes. But we do carefully keep and report our accounts!
+
+We had $19,787 in total expenses, and were left with $27,031 in total assets at the end of the year.
+

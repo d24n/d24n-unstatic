@@ -1,0 +1,25 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> """"Blockchain, criptomoedas e tecnologias descentralizadas" at University of São Paulo!""",
+>   "Author"    -> "Chris Peel",
+>   "PubDate"   -> "2023-12-13",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
+
+In 2022, we [made a grant](##usp-grant) to University of São Paulo to produce a course on blockchain
+and other decentralizing technologies.
+
+We are very pleased to report that the course has been developed,
+and is currently in progress, with an inaugural class of 67 students, by Professor Marcos Antonio Simplicio Junior!
+
+You can follow along at home. Course materials are available online:
+
+* [Lectures](https://www.youtube.com/playlist?list=PLcbbqdJgPgcXlRlPNHF2itTotEwr9kckl) via YouTube
+* [Course materials](https://edisciplinas.usp.br/course/view.php?id=106400) via the university's course management system
+
+If you are a Portuguese speaker, we hope that you can benefit as well.
+
+We are excited by the success of the course. Every student is a seed. Who knows what may grow?
+Many thanks to Professor Junior, and to teaching assistant Pedro Correa, for their excellent work!

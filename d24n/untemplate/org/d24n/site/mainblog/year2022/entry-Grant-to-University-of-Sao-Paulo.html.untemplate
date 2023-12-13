@@ -3,6 +3,7 @@
 >   "Author"    -> "Chris Peel",
 >   "PubDate"   -> "2022-01-25T10:08:05-08:00",
 >   "Permalink" -> "2022/01/25/grant-to-usp/index.html",
+>   "Anchor"    -> "usp-grant"
 > )
 
 given PageBase = PageBase.fromPage(input.renderLocation)
