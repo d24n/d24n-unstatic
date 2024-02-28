@@ -1,0 +1,27 @@
+> val UntemplateAttributes = immutable.Map[String,Any] (
+>   "Title"     -> "The Decentralization Foundation is shutting down",
+>   "Author"    -> "Chris Peel",
+>   "PubDate"   -> "2024-02-28",
+> )
+
+given PageBase = PageBase.fromPage(input.renderLocation)
+
+(input : D24nSite.MainBlog.EntryInput)[]~()>      ### modify Title/Author/Pubdate above, add markdown or html below!
+
+The Decentralization Foundation is shutting down. The officers and directors of the foundation still believe in the utility of decentralizing technology and may still fund worthy projects, but they will do this as individuals.
+
+Why are we dissolving? First, we don't need the non-profit status and can fund projects as individuals without it. Second, we did not meet the "[public support](https://www.501c3.org/understanding-the-501c3-public-support-test/)" threshold to continue as a 501(c)(3) public charity. We could have continued with a different legal structure, but chose not to.  Finally, Chris wanted to take a break from directly organizing the foundation, and no successor was found. The fact that we would not satisfy the public support threshold in 2024 was a catalyst for our decision to dissolve.
+
+In December 2023 we unsuccessfully looked for people to help run the foundation and unsucessfully looked for grantees which would match our mission (community, education, and research on decentralizing tech) to whom we might make grants of our remaining assets. On the 19th of December the board met and almost voted to dissolve, but chose to explore a few final options. These did not pan out, and on the 21st the board reluctantly, but unanimously, voted to "wind up and dissolve". The board unanimously voted to grant our remaining assets to [GiveDirectly](https://www.givedirectly.org/) (EIN 27-1661997) because of their excellent, well-understood mission.
+
+On 26 Dec we made the following grants to GiveDirectly:
+
+* $2,043.96 in our bank account were sent via a debit card donation (tx id fd441c970e175be2).
+
+* 0.00975884 BTC worth about $412 was sent to GiveDirectly (address 34kwsubU6ExhXJdTfdNN1CHYyPvfHajFnX) from our Coinbase account as described in this [transaction](https://www.blockchain.com/explorer/transactions/btc/d17248b3b3a37bae688c234615ce846ad6076a0a3e4cfc4407a52c59c2020cf3). Note that this tx also contains other outputs.
+
+* 0.41974330 BTC (Worth about $17,751) was also sent to GiveDirectly’s address (34kwsubU6ExhXJdTfdNN1CHYyPvfHajFnX) from our wallet as described in this [transaction](https://www.blockchain.com/explorer/transactions/btc/10545c13d1a966f0df25a8e3a1581ece5172e71b5b95758aa801a1eb437032c7).
+
+* 15.149438665 ETH were sent to GiveDirectly (address 0x750EF1D7a0b4Ab1c97B7A623D7917CcEb5ea779C) from our  wallet as described in this [transaction](https://etherscan.io/tx/0x37939481c528ac81aaceb865497840dfa08d441bac1fcc724e031b6ddb1ee9a0). 
+
+The board and officers were reluctant to dissolve. We are very grateful to those who have contributed in any way to the foundation.  We still plan to act as individuals to fulfill the mission of the foundation:  promote decentralizing technology, educate the world on its potential, and fund research to improve it. 
