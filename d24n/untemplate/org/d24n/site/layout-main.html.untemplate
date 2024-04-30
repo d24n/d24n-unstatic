@@ -67,14 +67,12 @@ val needsMathJax = D24nSite.needsMathJaxAny(input.sourceUntemplates)
     <footer id="main-footer">
       <div id="footer-foundation" class="footer-contact">
         <h4>Decentralization Foundation</h4>
-        4701 Patrick Henry Dr<br/>
-        Building 1<br/>
+        4701 Patrick Henry Dr, Building 1<br/>
         Santa Clara CA, 95054<br/>
         <a href="mailto:decentralizationfoundation@gmail.com">decentralizationfoundation@gmail.com</a>
       </div>
       <div id="footer-connect" class="footer-contact">
         <h4>Connect</h4>
-        Join our <a href="https://mailchi.mp/71870f1918c6/decentralization-foundation">email list</a><br/>
         Read our <a href="<( input.renderLocation.site.MainBlog.rssFeed.relative )>">RSS Feed</a><br/>
         Connect on <a href="https://www.meetup.com/EthereumSiliconValley/members/271732793/profile/?returnPage=1">meetup.com</a><br/>
         Follow us on Twitter: <a href="https://twitter.com/d24nOrg">@d24nOrg</a>
